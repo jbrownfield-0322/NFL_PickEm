@@ -1,0 +1,72 @@
+package com.nflpickem.pickem.service;
+
+import com.nflpickem.pickem.model.Game;
+import com.nflpickem.pickem.repository.GameRepository;
+import jakarta.annotation.PostConstruct;
+import org.springframework.stereotype.Service;
+import com.nflpickem.pickem.util.NflScheduleScraper;
+
+import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
+
+@Service
+public class GameService {
+    private final GameRepository gameRepository;
+    private final NflScheduleScraper nflScheduleScraper;
+
+    public GameService(GameRepository gameRepository, NflScheduleScraper nflScheduleScraper) {
+        this.gameRepository = gameRepository;
+        this.nflScheduleScraper = nflScheduleScraper;
+    }
+
+    @PostConstruct
+    public void init() {
+        if (gameRepository.count() == 0) {
+            try {
+                int currentYear = LocalDate.now().getYear();
+                // Scrape all regular season weeks (assuming 18 weeks in total)
+                for (int week = 1; week <= 18; week++) {
+                    List<Game> games = nflScheduleScraper.scrapeGames(currentYear, week);
+                    gameRepository.saveAll(games);
+                    System.out.println("Scraped and saved " + games.size() + " games for Week " + week + " of " + currentYear + " from Pro-Football-Reference.com");
+                }
+            } catch (IOException e) {
+                System.err.println("Error scraping NFL schedule: " + e.getMessage());
+            }
+        }
+    }
+
+    public List<Game> getAllGames() {
+        return gameRepository.findAll();
+    }
+
+    public List<Game> getGamesByWeek(Integer week) {
+        return gameRepository.findByWeek(week);
+    }
+
+    public Game getGameById(Long id) {
+        return gameRepository.findById(id).orElse(null);
+    }
+
+    public Integer getCurrentWeek() {
+        return calculateCurrentNflWeek(LocalDate.now().getYear());
+    }
+
+    private int calculateCurrentNflWeek(int year) {
+        LocalDate today = LocalDate.now();
+        LocalDate septemberFirst = LocalDate.of(year, 9, 1);
+        LocalDate nflSeasonStart = septemberFirst.with(TemporalAdjusters.firstInMonth(DayOfWeek.THURSDAY));
+        if (septemberFirst.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            nflSeasonStart = septemberFirst;
+        }
+        if (today.isBefore(nflSeasonStart)) {
+            return 1;
+        }
+        long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(nflSeasonStart, today);
+        return (int) (daysBetween / 7) + 1;
+    }
+} 

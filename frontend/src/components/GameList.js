@@ -1,0 +1,223 @@
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../AuthContext';
+
+const GameList = () => {
+  const [games, setGames] = useState([]);
+  const [userPicks, setUserPicks] = useState([]);
+  const [selectedLeagueId, setSelectedLeagueId] = useState('');
+  const [leagues, setLeagues] = useState([]);
+  const [pickMessages, setPickMessages] = useState({});
+  const [selectedGamePicks, setSelectedGamePicks] = useState({});
+  const { user } = useAuth();
+
+  // API base URL - will work for both development and Railway production
+  const API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8080');
+
+  useEffect(() => {
+    fetchGames();
+    fetchUserPicks();
+    fetchLeagues();
+  }, []);
+
+  const fetchGames = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/games`);
+      if (response.ok) {
+        const data = await response.json();
+        setGames(data);
+      }
+    } catch (error) {
+      console.error('Error fetching games:', error);
+    }
+  };
+
+  const fetchUserPicks = async () => {
+    if (!user) return;
+    
+    try {
+      const response = await fetch(`${API_BASE}/picks/user/${user.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setUserPicks(data);
+        
+        // Initialize selectedGamePicks with existing picks
+        const initialPicks = {};
+        data.forEach(pick => {
+          initialPicks[pick.game.id] = pick.pickedTeam;
+        });
+        setSelectedGamePicks(initialPicks);
+      }
+    } catch (error) {
+      console.error('Error fetching user picks:', error);
+    }
+  };
+
+  const fetchLeagues = async () => {
+    if (!user) return;
+    
+    try {
+      const response = await fetch(`${API_BASE}/leagues/user/${user.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setLeagues(data);
+      }
+    } catch (error) {
+      console.error('Error fetching leagues:', error);
+    }
+  };
+
+  const handlePickChange = (gameId, pickedTeam) => {
+    setSelectedGamePicks(prev => ({
+      ...prev,
+      [gameId]: pickedTeam
+    }));
+  };
+
+  const submitPick = async (gameId, pickedTeam) => {
+    if (!user) return;
+
+    try {
+      const pickData = {
+        userId: user.id,
+        gameId: gameId,
+        pickedTeam: pickedTeam,
+        leagueId: selectedLeagueId || null
+      };
+
+      const response = await fetch(`${API_BASE}/picks/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(pickData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        
+        // Update pick messages
+        setPickMessages(prev => ({
+          ...prev,
+          [gameId]: `Pick submitted: ${pickedTeam}`
+        }));
+
+        // Refresh user picks
+        fetchUserPicks();
+      } else {
+        const errorData = await response.json();
+        setPickMessages(prev => ({
+          ...prev,
+          [gameId]: `Error: ${errorData.message || 'Failed to submit pick'}`
+        }));
+      }
+    } catch (error) {
+      setPickMessages(prev => ({
+        ...prev,
+        [gameId]: 'Error: Failed to submit pick'
+      }));
+    }
+  };
+
+  const formatKickoffTime = (kickoffTime) => {
+    if (!kickoffTime) return 'TBD';
+    const date = new Date(kickoffTime);
+    return date.toLocaleString();
+  };
+
+  const isGameLocked = (kickoffTime) => {
+    if (!kickoffTime) return false;
+    const now = new Date();
+    const gameTime = new Date(kickoffTime);
+    return now >= gameTime;
+  };
+
+  return (
+    <div>
+      <h2>NFL Games</h2>
+      
+      <div>
+        <label htmlFor="league-select">Select League (optional):</label>
+        <select 
+          id="league-select"
+          value={selectedLeagueId} 
+          onChange={(e) => setSelectedLeagueId(e.target.value)}
+        >
+          <option value="">Global Picks (No League)</option>
+          {leagues.map(league => (
+            <option key={league.id} value={league.id}>
+              {league.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Week</th>
+              <th>Date</th>
+              <th>Away Team</th>
+              <th>Home Team</th>
+              <th>Kickoff</th>
+              <th>Your Pick</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {games.map(game => {
+              const userPickForGame = userPicks.find(pick => 
+                pick.game.id === game.id && 
+                (selectedLeagueId === "" ? pick.league === null : pick.league?.id === parseInt(selectedLeagueId))
+              );
+              const hasPicked = !!userPickForGame;
+              const isLockedByTime = isGameLocked(game.kickoffTime);
+              const isLocked = isLockedByTime;
+              const currentPick = selectedGamePicks[game.id] || (userPickForGame?.pickedTeam || '');
+
+              return (
+                <tr key={game.id}>
+                  <td>{game.week}</td>
+                  <td>{formatKickoffTime(game.kickoffTime)}</td>
+                  <td>{game.awayTeam}</td>
+                  <td>{game.homeTeam}</td>
+                  <td>{formatKickoffTime(game.kickoffTime)}</td>
+                  <td>
+                    {isLocked ? (
+                      <p>{pickMessages[game.id] || (hasPicked ? `Your pick: ${userPickForGame.pickedTeam}` : 'Picks are locked for this game.')}</p>
+                    ) : (
+                      <form onSubmit={(e) => {
+                        e.preventDefault();
+                        if (currentPick) {
+                          submitPick(game.id, currentPick);
+                        }
+                      }}>
+                        <select
+                          value={currentPick}
+                          onChange={(e) => handlePickChange(game.id, e.target.value)}
+                          disabled={isLocked}
+                        >
+                          <option value="">Select a team</option>
+                          <option value={game.awayTeam}>{game.awayTeam}</option>
+                          <option value={game.homeTeam}>{game.homeTeam}</option>
+                        </select>
+                        <button type="submit" disabled={!currentPick || isLocked}>
+                          Submit Pick
+                        </button>
+                      </form>
+                    )}
+                  </td>
+                  <td>
+                    {pickMessages[game.id] && <p>{pickMessages[game.id]}</p>}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default GameList;

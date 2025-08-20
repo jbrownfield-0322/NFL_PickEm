@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: nfl-pickem-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/nflpickem
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: nfl-pickem-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    container_name: nfl-pickem-db
+    environment:
+      - POSTGRES_DB=nflpickem
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

@@ -1,0 +1,51 @@
+# Maven
+target/
+!target/*.jar
+!target/*.war
+
+# IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+
+# Node.js (for frontend)
+frontend/node_modules/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Build outputs
+frontend/build/
+frontend/dist/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Documentation
+README.md
+DEPLOYMENT.md
+*.md
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore

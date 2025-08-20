@@ -1,0 +1,244 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure app takes full viewport height */
+}
+
+.App-logo {
+  /* Removed - not typically used for production apps unless custom animated logo */
+  display: none; /* Hide the logo if not used */
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    /* Removed animation as logo is hidden */
+    animation: none;
+  }
+}
+
+.App-header {
+  background-color: #2c3e50; /* Darker blue-gray for a professional look */
+  padding: 20px 40px;
+  color: white;
+  display: flex;
+  justify-content: space-between; /* Space out title and navigation */
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  min-height: auto; /* Remove fixed min-height */
+  font-size: 1.5rem; /* Larger font size for header title */
+}
+
+.App-header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.main-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.main-nav li {
+  margin-left: 20px;
+}
+
+.main-nav a,
+.main-nav button {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.main-nav a:hover {
+  color: #a4defa; /* Lighter blue on hover */
+}
+
+.main-nav button {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.nav-button:hover {
+  color: #a4defa;
+  text-decoration: none;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+/* General Form Styling */
+form {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+form div {
+  margin-bottom: 15px;
+}
+
+form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form input[type="password"]:focus,
+form input[type="number"]:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+form button {
+  /* Defined separately for general button styling */
+}
+
+/* General Button Styling */
+button {
+  background-color: #007bff; /* Primary blue button */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* General Table Styling */
+.table-container {
+  margin: 20px auto;
+  max-width: 90%;
+  overflow-x: auto; /* For responsive tables */
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+
+table th,
+table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+table th {
+  background-color: #f2f2f2;
+  color: #333;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.9em;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tbody tr:hover {
+  background-color: #eef;
+}
+
+/* Adjustments for specific components if needed later */
+.form-container {
+  padding: 20px;
+  max-width: 500px;
+  margin: 40px auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.form-container h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.member-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.member-list li {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  padding: 8px 15px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
