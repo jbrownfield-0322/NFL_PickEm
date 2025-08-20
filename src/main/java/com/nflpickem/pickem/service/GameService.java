@@ -3,6 +3,7 @@ package com.nflpickem.pickem.service;
 import com.nflpickem.pickem.model.Game;
 import com.nflpickem.pickem.repository.GameRepository;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.nflpickem.pickem.util.NflScheduleScraper;
 
@@ -17,6 +18,9 @@ import java.util.List;
 public class GameService {
     private final GameRepository gameRepository;
     private final NflScheduleScraper nflScheduleScraper;
+    
+    @Value("${ENABLE_NFL_SCRAPING:false}")
+    private boolean enableNflScraping;
 
     public GameService(GameRepository gameRepository, NflScheduleScraper nflScheduleScraper) {
         this.gameRepository = gameRepository;
@@ -26,16 +30,22 @@ public class GameService {
     @PostConstruct
     public void init() {
         if (gameRepository.count() == 0) {
-            try {
-                int currentYear = LocalDate.now().getYear();
-                // Scrape all regular season weeks (assuming 18 weeks in total)
-                for (int week = 1; week <= 18; week++) {
-                    List<Game> games = nflScheduleScraper.scrapeGames(currentYear, week);
-                    gameRepository.saveAll(games);
-                    System.out.println("Scraped and saved " + games.size() + " games for Week " + week + " of " + currentYear + " from Pro-Football-Reference.com");
+            if (enableNflScraping) {
+                try {
+                    int currentYear = LocalDate.now().getYear();
+                    // Scrape all regular season weeks (assuming 18 weeks in total)
+                    for (int week = 1; week <= 18; week++) {
+                        List<Game> games = nflScheduleScraper.scrapeGames(currentYear, week);
+                        gameRepository.saveAll(games);
+                        System.out.println("Scraped and saved " + games.size() + " games for Week " + week + " of " + currentYear + " from Pro-Football-Reference.com");
+                    }
+                } catch (IOException e) {
+                    System.err.println("Error scraping NFL schedule: " + e.getMessage());
+                    System.err.println("This is expected in Railway deployment. You can manually add games via API or set ENABLE_NFL_SCRAPING=true");
                 }
-            } catch (IOException e) {
-                System.err.println("Error scraping NFL schedule: " + e.getMessage());
+            } else {
+                System.out.println("NFL schedule scraping is disabled. Set ENABLE_NFL_SCRAPING=true to enable automatic scraping.");
+                System.out.println("You can manually add games via the API endpoints.");
             }
         }
     }

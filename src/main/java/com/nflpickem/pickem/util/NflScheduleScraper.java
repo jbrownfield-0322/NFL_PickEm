@@ -27,84 +27,95 @@ public class NflScheduleScraper {
     public List<Game> scrapeGames(Integer year, Integer targetWeekNum) throws IOException {
         List<Game> games = new ArrayList<>();
         String url = BASE_NFL_SCHEDULE_URL + year + "/games.htm";
-        Document doc = Jsoup.connect(url).get();
+        
+        try {
+            Document doc = Jsoup.connect(url)
+                .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+                .timeout(30000) // 30 second timeout
+                .followRedirects(true)
+                .get();
 
-        Elements gameRows = doc.select("table#games tbody tr");
+            Elements gameRows = doc.select("table#games tbody tr");
 
-        for (Element row : gameRows) {
-            try {
-                String weekNumStr = row.select("th[data-stat=week_num]").text();
-                if (weekNumStr.isEmpty()) {
-                    weekNumStr = row.select("td[data-stat=week_num]").text();
-                }
-
-                // Skip header rows or rows that don't have a numeric week number for regular season
-                if (row.hasClass("thead")) {
-                    System.err.println("Skipping header row (hasClass(\"thead\")): " + row.outerHtml());
-                    continue;
-                }
-
-                Integer week = null;
+            for (Element row : gameRows) {
                 try {
-                    week = Integer.parseInt(weekNumStr);
-                } catch (NumberFormatException e) {
-                    System.err.println("Skipping row with non-numeric week number: '" + weekNumStr + "'. Full row: " + row.outerHtml());
-                    continue;
-                }
-
-                if (!week.equals(targetWeekNum)) {
-                    // This is intentional, as we only want games for targetWeekNum for this specific scrape call
-                    // System.err.println("Skipping game not for target week " + targetWeekNum + ": Week " + week + ". Full row: " + row.outerHtml());
-                    continue;
-                }
-
-                String awayTeam = row.select("td[data-stat=visitor_team]").text();
-                String homeTeam = row.select("td[data-stat=home_team]").text();
-                String dateStr = row.select("td[data-stat=boxscore_word]").text().trim();
-                String timeStr = row.select("td[data-stat=gametime]").text().trim();
-
-                if (dateStr.isEmpty() || timeStr.isEmpty()) {
-                    System.err.println("Skipping row due to empty date or time string. Full row: " + row.outerHtml());
-                    continue;
-                }
-
-                String awayScoreStr = row.select("td[data-stat=pts_vis]").text();
-                String homeScoreStr = row.select("td[data-stat=pts_home]").text();
-
-                String winningTeam = null;
-                if (!awayScoreStr.isEmpty() && !homeScoreStr.isEmpty()) {
-                    try {
-                        int awayScore = Integer.parseInt(awayScoreStr);
-                        int homeScore = Integer.parseInt(homeScoreStr);
-                        if (awayScore > homeScore) {
-                            winningTeam = awayTeam;
-                        } else if (homeScore > awayScore) {
-                            winningTeam = homeTeam;
-                        } else {
-                            winningTeam = "TIE";
-                        }
-                    } catch (NumberFormatException e) {
-                        winningTeam = null;
+                    String weekNumStr = row.select("th[data-stat=week_num]").text();
+                    if (weekNumStr.isEmpty()) {
+                        weekNumStr = row.select("td[data-stat=week_num]").text();
                     }
-                }
 
-                String fullDateTimeStr = dateStr + ", " + year + " " + timeStr;
-                Instant kickoffInstant = parseDateTime(fullDateTimeStr); // Now returns Instant
+                    // Skip header rows or rows that don't have a numeric week number for regular season
+                    if (row.hasClass("thead")) {
+                        System.err.println("Skipping header row (hasClass(\"thead\")): " + row.outerHtml());
+                        continue;
+                    }
 
-                if (kickoffInstant != null) {
-                    Game game = new Game();
-                    game.setWeek(targetWeekNum);
-                    game.setHomeTeam(homeTeam);
-                    game.setAwayTeam(awayTeam);
-                    game.setKickoffTime(kickoffInstant); // Set Instant
-                    game.setWinningTeam(winningTeam);
-                    games.add(game);
-                } else {
-                    System.err.println("Skipping game due to parsing error: " + fullDateTimeStr);
+                    Integer week = null;
+                    try {
+                        week = Integer.parseInt(weekNumStr);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Skipping row with non-numeric week number: '" + weekNumStr + "'. Full row: " + row.outerHtml());
+                        continue;
+                    }
+
+                    if (!week.equals(targetWeekNum)) {
+                        // This is intentional, as we only want games for targetWeekNum for this specific scrape call
+                        // System.err.println("Skipping game not for target week " + targetWeekNum + ": Week " + week + ". Full row: " + row.outerHtml());
+                        continue;
+                    }
+
+                    String awayTeam = row.select("td[data-stat=visitor_team]").text();
+                    String homeTeam = row.select("td[data-stat=home_team]").text();
+                    String dateStr = row.select("td[data-stat=boxscore_word]").text().trim();
+                    String timeStr = row.select("td[data-stat=gametime]").text().trim();
+
+                    if (dateStr.isEmpty() || timeStr.isEmpty()) {
+                        System.err.println("Skipping row due to empty date or time string. Full row: " + row.outerHtml());
+                        continue;
+                    }
+
+                    String awayScoreStr = row.select("td[data-stat=pts_vis]").text();
+                    String homeScoreStr = row.select("td[data-stat=pts_home]").text();
+
+                    String winningTeam = null;
+                    if (!awayScoreStr.isEmpty() && !homeScoreStr.isEmpty()) {
+                        try {
+                            int awayScore = Integer.parseInt(awayScoreStr);
+                            int homeScore = Integer.parseInt(homeScoreStr);
+                            if (awayScore > homeScore) {
+                                winningTeam = awayTeam;
+                            } else if (homeScore > awayScore) {
+                                winningTeam = homeTeam;
+                            } else {
+                                winningTeam = "TIE";
+                            }
+                        } catch (NumberFormatException e) {
+                            winningTeam = null;
+                        }
+                    }
+
+                    String fullDateTimeStr = dateStr + ", " + year + " " + timeStr;
+                    Instant kickoffInstant = parseDateTime(fullDateTimeStr); // Now returns Instant
+
+                    if (kickoffInstant != null) {
+                        Game game = new Game();
+                        game.setWeek(targetWeekNum);
+                        game.setHomeTeam(homeTeam);
+                        game.setAwayTeam(awayTeam);
+                        game.setKickoffTime(kickoffInstant); // Set Instant
+                        game.setWinningTeam(winningTeam);
+                        games.add(game);
+                    } else {
+                        System.err.println("Skipping game due to parsing error: " + fullDateTimeStr);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error parsing game row: " + row.outerHtml() + ", Error: " + e.getMessage());
                 }
-            } catch (Exception e) {
-                System.err.println("Error parsing game row: " + row.outerHtml() + ", Error: " + e.getMessage());
             }
+        } catch (IOException e) {
+            System.err.println("Failed to connect to " + url + ": " + e.getMessage());
+            System.err.println("This is expected in Railway deployment due to network restrictions.");
+            throw e;
         }
         return games;
     }
