@@ -1,11 +1,17 @@
 [phases.setup]
-nixPkgs = ["openjdk17", "maven"]
+nixPkgs = ["openjdk17", "maven", "nodejs_18", "npm"]
 
 [phases.install]
-cmds = ["mvn clean package -DskipTests"]
+cmds = [
+    "cd frontend && npm install",
+    "cd frontend && npm run build",
+    "mkdir -p src/main/resources/static",
+    "cp -r frontend/build/* src/main/resources/static/",
+    "mvn clean package -DskipTests"
+]
 
 [phases.build]
-cmds = ["echo 'Build completed'", "ls -la target/"]
+cmds = ["echo 'Build completed'", "ls -la target/", "ls -la src/main/resources/static/"]
 
 [start]
 cmd = "java -jar target/pickem-0.0.1-SNAPSHOT.jar --spring.profiles.active=railway"
