@@ -1,13 +1,12 @@
 package com.nflpickem.pickem.config;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
+import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 public class DatabaseConfig {
@@ -17,22 +16,24 @@ public class DatabaseConfig {
 
     @Bean
     @Primary
-    @ConfigurationProperties("spring.datasource")
-    public DataSourceProperties dataSourceProperties() {
-        DataSourceProperties properties = new DataSourceProperties();
+    public DataSource dataSource() {
+        HikariDataSource dataSource = new HikariDataSource();
         
         // Convert Railway's postgresql:// URL to jdbc:postgresql:// format
         if (databaseUrl != null && !databaseUrl.isEmpty()) {
             String jdbcUrl = databaseUrl.replace("postgresql://", "jdbc:postgresql://");
-            properties.setUrl(jdbcUrl);
+            dataSource.setJdbcUrl(jdbcUrl);
+        } else {
+            // Fallback for local development
+            dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/nflpickem");
+            dataSource.setUsername("postgres");
+            dataSource.setPassword("password");
         }
         
-        return properties;
-    }
-
-    @Bean
-    @Primary
-    public DataSource dataSource(DataSourceProperties properties) {
-        return properties.initializeDataSourceBuilder().build();
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setMaximumPoolSize(10);
+        dataSource.setMinimumIdle(5);
+        
+        return dataSource;
     }
 }
