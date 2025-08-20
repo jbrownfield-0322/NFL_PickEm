@@ -29,7 +29,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/ping", "/health", "/actuator/health", "/actuator/info").permitAll() // Health checks always accessible
+                .requestMatchers("/", "/ping", "/health", "/actuator/health", "/actuator/info").permitAll() // Health checks always accessible
                 .requestMatchers("/api/auth/**", "/api/games/**", "/api/picks/**", "/api/leagues/**", "/api/leaderboard/**").permitAll()
                 .anyRequest().authenticated()
             );
