@@ -27,7 +27,8 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/auth/**", "/api/games/**", "/api/picks/**", "/api/leagues/**", "/api/leaderboard/**", "/actuator/**").permitAll()
+                .requestMatchers("/actuator/health", "/actuator/info").permitAll() // Health checks always accessible
+                .requestMatchers("/api/auth/**", "/api/games/**", "/api/picks/**", "/api/leagues/**", "/api/leaderboard/**").permitAll()
                 .anyRequest().authenticated()
             );
         return http.build();
