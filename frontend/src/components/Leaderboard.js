@@ -100,9 +100,9 @@ function Leaderboard() {
           <tbody>
             {data.map((player, index) => (
               <tr key={player.username}>
-                <td>{index + 1}</td>
-                <td>{player.username}</td>
-                <td>{player.score}</td>
+                <td data-label="Rank">{index + 1}</td>
+                <td data-label="Username">{player.username}</td>
+                <td data-label="Score">{player.score}</td>
               </tr>
             ))}
           </tbody>
@@ -115,27 +115,28 @@ function Leaderboard() {
     <div className="main-content">
       <h2>Leaderboards</h2>
 
-      <div>
-        <label htmlFor="week-select">Select Week:</label>
-        <select id="week-select" value={selectedWeek} onChange={(e) => setSelectedWeek(parseInt(e.target.value, 10))}>
-          {[...Array(totalWeeks).keys()].map((weekNum) => (
-            <option key={weekNum + 1} value={weekNum + 1}>
-              Week {weekNum + 1}
-            </option>
-          ))}
-        </select>
-      </div>
+      <div className="leaderboard-controls">
+        <div>
+          <label htmlFor="week-select">Select Week:</label>
+          <select id="week-select" value={selectedWeek} onChange={(e) => setSelectedWeek(parseInt(e.target.value, 10))}>
+            {[...Array(totalWeeks).keys()].map((weekNum) => (
+              <option key={weekNum + 1} value={weekNum + 1}>
+                Week {weekNum + 1}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <div>
-        <label htmlFor="league-select">View Leaderboard For:</label>
-        <select id="league-select" value={selectedLeagueId} onChange={(e) => setSelectedLeagueId(e.target.value)}>
-          <option value="">Global Leaderboard</option>
-          {leagues.map(league => (
-            <option key={league.id} value={league.id}>{league.name}</option>
-          ))}
-        </select>
+        <div>
+          <label htmlFor="league-select">View Leaderboard For:</label>
+          <select id="league-select" value={selectedLeagueId} onChange={(e) => setSelectedLeagueId(e.target.value)}>
+            <option value="">Global Leaderboard</option>
+            {leagues.map(league => (
+              <option key={league.id} value={league.id}>{league.name}</option>
+            ))}
+          </select>
+        </div>
       </div>
-      <br/>
 
       {renderTable(`Weekly Leaderboard (Week ${selectedWeek})`, weeklyLeaderboard)}
       {renderTable("Season Leaderboard", seasonLeaderboard)}

@@ -90,9 +90,9 @@ function LeagueDetails() {
           <tbody>
             {data.map((player, index) => (
               <tr key={player.username}>
-                <td>{index + 1}</td>
-                <td>{player.username}</td>
-                <td>{player.score}</td>
+                <td data-label="Rank">{index + 1}</td>
+                <td data-label="Username">{player.username}</td>
+                <td data-label="Score">{player.score}</td>
               </tr>
             ))}
           </tbody>

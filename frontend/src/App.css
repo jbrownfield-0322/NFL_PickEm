@@ -242,3 +242,548 @@ table tbody tr:hover {
     transform: rotate(360deg);
   }
 }
+
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+
+/* Mobile Navigation */
+@media (max-width: 768px) {
+  .App-header {
+    flex-direction: column;
+    padding: 15px 20px;
+    text-align: center;
+  }
+
+  .App-header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+
+  .main-nav {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .main-nav li {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .main-nav a,
+  .main-nav button,
+  .nav-button {
+    display: block;
+    width: 100%;
+    padding: 12px 15px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    margin-bottom: 5px;
+    font-size: 1rem;
+  }
+
+  .main-nav a:hover,
+  .main-nav button:hover,
+  .nav-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #a4defa;
+  }
+
+  .main-content {
+    padding: 15px;
+  }
+
+  /* Mobile Form Improvements */
+  form {
+    padding: 15px;
+    margin: 15px auto;
+    max-width: 100%;
+  }
+
+  .form-container {
+    padding: 15px;
+    margin: 20px auto;
+    max-width: 100%;
+  }
+
+  form input[type="text"],
+  form input[type="email"],
+  form input[type="password"],
+  form input[type="number"],
+  form select {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 12px;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  /* Mobile Table Improvements */
+  .table-container {
+    max-width: 100%;
+    margin: 15px auto;
+    border-radius: 6px;
+  }
+
+  table {
+    font-size: 14px;
+  }
+
+  table th,
+  table td {
+    padding: 8px 10px;
+  }
+
+  /* Responsive table for mobile */
+  @media (max-width: 600px) {
+    table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    table th,
+    table td {
+      min-width: 100px;
+    }
+
+    /* Stack table cells for very small screens */
+    @media (max-width: 480px) {
+      table,
+      table thead,
+      table tbody,
+      table th,
+      table td,
+      table tr {
+        display: block;
+      }
+
+      table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+      }
+
+      table tr {
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        background-color: #f9f9f9;
+      }
+
+      table td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        min-width: auto;
+        white-space: normal;
+      }
+
+      table td:before {
+        content: attr(data-label) ": ";
+        position: absolute;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #333;
+      }
+
+      table td:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  /* Mobile Typography */
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+  }
+
+  /* Mobile Spacing */
+  .main-content > div {
+    margin-bottom: 20px;
+  }
+
+  /* Mobile Select Improvements */
+  select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+  }
+
+  /* Mobile Game List Specific */
+  .game-list-container {
+    margin: 15px 0;
+  }
+
+  .game-list-container > div {
+    margin-bottom: 15px;
+  }
+
+  .game-list-container label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+
+  /* Mobile Leaderboard Specific */
+  .leaderboard-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .leaderboard-controls > div {
+    width: 100%;
+  }
+
+  /* Mobile League Controls */
+  .league-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .league-controls > div {
+    width: 100%;
+  }
+
+  /* Mobile Form Improvements */
+  form select {
+    margin-bottom: 10px;
+  }
+
+  form button {
+    margin-top: 15px;
+  }
+
+  /* Mobile Text Wrapping */
+  p, span, div {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Mobile Link Improvements */
+  a {
+    color: #007bff;
+    text-decoration: none;
+    padding: 8px 0;
+    display: inline-block;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* Mobile Member List */
+  .member-list {
+    margin: 15px 0;
+  }
+
+  .member-list li {
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+  }
+
+  /* Mobile Message Improvements */
+  p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+
+  /* Mobile Loading and Error States */
+  div:empty::before {
+    content: "Loading...";
+    color: #666;
+    font-style: italic;
+  }
+
+  /* Mobile Form Validation */
+  input:invalid,
+  select:invalid {
+    border-color: #dc3545;
+  }
+
+  input:valid,
+  select:valid {
+    border-color: #28a745;
+  }
+
+  /* Mobile Button Groups */
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .button-group button {
+    margin: 0;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .App-header {
+    padding: 20px 30px;
+  }
+
+  .App-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .main-nav li {
+    margin-left: 15px;
+  }
+
+  .main-content {
+    padding: 25px;
+  }
+
+  .table-container {
+    max-width: 95%;
+  }
+}
+
+/* Large Screen Optimizations */
+@media (min-width: 1025px) {
+  .main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .table-container {
+    max-width: 100%;
+  }
+}
+
+/* Touch-friendly improvements for all mobile devices */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  .main-nav a,
+  .main-nav button,
+  .nav-button {
+    min-height: 44px; /* Minimum touch target size */
+  }
+
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .App-header {
+    background-color: #000;
+  }
+
+  table th {
+    background-color: #000;
+    color: #fff;
+  }
+
+  button {
+    background-color: #000;
+    border: 2px solid #fff;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Very Small Screen Optimizations */
+@media (max-width: 480px) {
+  .App-header {
+    padding: 10px 15px;
+  }
+
+  .App-header h1 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+  }
+
+  .main-content {
+    padding: 10px;
+  }
+
+  form {
+    padding: 10px;
+    margin: 10px auto;
+  }
+
+  .form-container {
+    padding: 10px;
+    margin: 15px auto;
+  }
+
+  .table-container {
+    margin: 10px auto;
+  }
+
+  table th,
+  table td {
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+
+  /* Improve table stacking for very small screens */
+  table td:before {
+    font-size: 12px;
+    width: 40%;
+  }
+
+  /* Better button sizing for small screens */
+  button {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+
+  /* Improve form elements for small screens */
+  form input[type="text"],
+  form input[type="email"],
+  form input[type="password"],
+  form input[type="number"],
+  form select {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  /* Better spacing for small screens */
+  .main-content > div {
+    margin-bottom: 15px;
+  }
+
+  .leaderboard-controls,
+  .league-controls {
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  /* Improve member list for small screens */
+  .member-list li {
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  /* Better typography for small screens */
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+
+  p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+/* Landscape Mobile Optimizations */
+@media (max-width: 768px) and (orientation: landscape) {
+  .App-header {
+    flex-direction: row;
+    padding: 10px 20px;
+  }
+
+  .App-header h1 {
+    font-size: 1.3rem;
+    margin-bottom: 0;
+  }
+
+  .main-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .main-nav li {
+    width: auto;
+  }
+
+  .main-nav a,
+  .main-nav button,
+  .nav-button {
+    padding: 8px 12px;
+    font-size: 14px;
+    margin-bottom: 0;
+  }
+}
+
+/* High DPI Screen Optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .App-header {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  table th,
+  table td {
+    border-bottom-width: 0.5px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .App-header {
+    background-color: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+
+  .main-nav {
+    display: none !important;
+  }
+
+  .table-container {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+
+  table th {
+    background-color: #f0f0f0 !important;
+    color: black !important;
+  }
+
+  button {
+    display: none !important;
+  }
+}
