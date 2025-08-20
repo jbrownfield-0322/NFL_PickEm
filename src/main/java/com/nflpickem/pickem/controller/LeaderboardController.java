@@ -22,11 +22,22 @@ public class LeaderboardController {
 
     @GetMapping("/weekly/{weekNum}")
     public ResponseEntity<List<PlayerScore>> getWeeklyLeaderboard(@PathVariable Integer weekNum, @RequestParam(required = false) Long leagueId) {
-        return ResponseEntity.ok(leaderboardService.getWeeklyLeaderboard(weekNum, leagueId));
+        try {
+            if (weekNum == null || weekNum < 1) {
+                return ResponseEntity.badRequest().build();
+            }
+            return ResponseEntity.ok(leaderboardService.getWeeklyLeaderboard(weekNum, leagueId));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/season")
     public ResponseEntity<List<PlayerScore>> getSeasonLeaderboard(@RequestParam(required = false) Long leagueId) {
-        return ResponseEntity.ok(leaderboardService.getSeasonLeaderboard(leagueId));
+        try {
+            return ResponseEntity.ok(leaderboardService.getSeasonLeaderboard(leagueId));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 } 

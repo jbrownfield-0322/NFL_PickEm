@@ -8,14 +8,19 @@ import com.nflpickem.pickem.repository.PickRepository;
 import com.nflpickem.pickem.repository.GameRepository;
 import com.nflpickem.pickem.repository.LeagueRepository;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class LeaderboardService {
+    private static final Logger logger = LoggerFactory.getLogger(LeaderboardService.class);
+    
     private final PickRepository pickRepository;
     private final GameRepository gameRepository;
     private final LeagueRepository leagueRepository;
@@ -27,33 +32,67 @@ public class LeaderboardService {
     }
 
     public List<PlayerScore> getWeeklyLeaderboard(Integer week, Long leagueId) {
-        List<Game> gamesInWeek = gameRepository.findByWeek(week);
-        List<Pick> picksToScore;
+        logger.info("Getting weekly leaderboard for week: {}, leagueId: {}", week, leagueId);
+        
+        try {
+            List<Game> gamesInWeek = gameRepository.findByWeek(week);
+            logger.info("Found {} games for week {}", gamesInWeek.size(), week);
+            
+            Set<Long> gameIdsInWeek = gamesInWeek.stream()
+                    .map(Game::getId)
+                    .collect(Collectors.toSet());
+            
+            List<Pick> picksToScore;
 
-        if (leagueId != null) {
-            League league = leagueRepository.findById(leagueId)
-                    .orElseThrow(() -> new RuntimeException("League not found"));
-            picksToScore = pickRepository.findByLeague(league).stream()
-                    .filter(pick -> gamesInWeek.contains(pick.getGame()))
-                    .collect(Collectors.toList());
-        } else {
-            picksToScore = pickRepository.findAll().stream()
-                    .filter(pick -> gamesInWeek.contains(pick.getGame()))
-                    .collect(Collectors.toList());
+            if (leagueId != null) {
+                logger.info("Fetching picks for league: {}", leagueId);
+                League league = leagueRepository.findById(leagueId)
+                        .orElseThrow(() -> new RuntimeException("League not found with id: " + leagueId));
+                picksToScore = pickRepository.findByLeague(league).stream()
+                        .filter(pick -> gameIdsInWeek.contains(pick.getGame().getId()))
+                        .collect(Collectors.toList());
+                logger.info("Found {} picks for league {} in week {}", picksToScore.size(), leagueId, week);
+            } else {
+                logger.info("Fetching all picks for week {}", week);
+                picksToScore = pickRepository.findAll().stream()
+                        .filter(pick -> gameIdsInWeek.contains(pick.getGame().getId()))
+                        .collect(Collectors.toList());
+                logger.info("Found {} picks for week {}", picksToScore.size(), week);
+            }
+            
+            List<PlayerScore> result = calculateLeaderboard(picksToScore);
+            logger.info("Calculated leaderboard with {} players", result.size());
+            return result;
+        } catch (Exception e) {
+            logger.error("Error getting weekly leaderboard for week: {}, leagueId: {}", week, leagueId, e);
+            throw e;
         }
-        return calculateLeaderboard(picksToScore);
     }
 
     public List<PlayerScore> getSeasonLeaderboard(Long leagueId) {
-        List<Pick> allPicks;
-        if (leagueId != null) {
-            League league = leagueRepository.findById(leagueId)
-                    .orElseThrow(() -> new RuntimeException("League not found"));
-            allPicks = pickRepository.findByLeague(league);
-        } else {
-            allPicks = pickRepository.findAll();
+        logger.info("Getting season leaderboard for leagueId: {}", leagueId);
+        
+        try {
+            List<Pick> allPicks;
+            if (leagueId != null) {
+                logger.info("Fetching picks for league: {}", leagueId);
+                League league = leagueRepository.findById(leagueId)
+                        .orElseThrow(() -> new RuntimeException("League not found with id: " + leagueId));
+                allPicks = pickRepository.findByLeague(league);
+                logger.info("Found {} picks for league {}", allPicks.size(), leagueId);
+            } else {
+                logger.info("Fetching all picks for season");
+                allPicks = pickRepository.findAll();
+                logger.info("Found {} picks for season", allPicks.size());
+            }
+            
+            List<PlayerScore> result = calculateLeaderboard(allPicks);
+            logger.info("Calculated season leaderboard with {} players", result.size());
+            return result;
+        } catch (Exception e) {
+            logger.error("Error getting season leaderboard for leagueId: {}", leagueId, e);
+            throw e;
         }
-        return calculateLeaderboard(allPicks);
     }
 
     private List<PlayerScore> calculateLeaderboard(List<Pick> picks) {
