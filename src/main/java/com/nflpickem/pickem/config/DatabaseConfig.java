@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 import com.zaxxer.hikari.HikariDataSource;
+import java.net.URI;
 
 @Configuration
 public class DatabaseConfig {
@@ -19,10 +20,30 @@ public class DatabaseConfig {
     public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource();
         
-        // Convert Railway's postgresql:// URL to jdbc:postgresql:// format
         if (databaseUrl != null && !databaseUrl.isEmpty()) {
-            String jdbcUrl = databaseUrl.replace("postgresql://", "jdbc:postgresql://");
-            dataSource.setJdbcUrl(jdbcUrl);
+            try {
+                // Parse Railway's DATABASE_URL format: postgresql://user:pass@host:port/db
+                URI uri = new URI(databaseUrl);
+                
+                // Extract components
+                String username = uri.getUserInfo().split(":")[0];
+                String password = uri.getUserInfo().split(":")[1];
+                String host = uri.getHost();
+                int port = uri.getPort();
+                String database = uri.getPath().substring(1); // Remove leading slash
+                
+                // Build JDBC URL
+                String jdbcUrl = String.format("jdbc:postgresql://%s:%d/%s", host, port, database);
+                
+                dataSource.setJdbcUrl(jdbcUrl);
+                dataSource.setUsername(username);
+                dataSource.setPassword(password);
+                
+            } catch (Exception e) {
+                // Fallback: try simple string replacement
+                String jdbcUrl = databaseUrl.replace("postgresql://", "jdbc:postgresql://");
+                dataSource.setJdbcUrl(jdbcUrl);
+            }
         } else {
             // Fallback for local development
             dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/nflpickem");
