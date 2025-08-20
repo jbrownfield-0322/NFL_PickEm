@@ -16,6 +16,8 @@ public class HealthController {
         response.put("status", "UP");
         response.put("service", "NFL Pick'em Backend");
         response.put("timestamp", System.currentTimeMillis());
+        response.put("version", "1.0.0");
+        response.put("environment", System.getenv("SPRING_PROFILES_ACTIVE"));
         return ResponseEntity.ok(response);
     }
 
@@ -26,6 +28,12 @@ public class HealthController {
         response.put("status", "running");
         response.put("health", "/health");
         response.put("actuator", "/actuator/health");
+        response.put("timestamp", System.currentTimeMillis());
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/ping")
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("pong");
     }
 }
