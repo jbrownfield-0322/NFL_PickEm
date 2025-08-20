@@ -24,11 +24,16 @@ function Leaderboard() {
 
       try {
         // Fetch current week from backend
+        console.log('Fetching current week...');
         const weekResponse = await fetch(`${API_BASE}/games/currentWeek`);
+        console.log('Week response status:', weekResponse.status);
         if (!weekResponse.ok) {
-          throw new Error(`HTTP error! status: ${weekResponse.status}`);
+          const errorText = await weekResponse.text();
+          console.error('Week response error:', errorText);
+          throw new Error(`Failed to fetch current week: HTTP ${weekResponse.status} - ${errorText}`);
         }
         const weekData = await weekResponse.text();
+        console.log('Week data:', weekData);
         const fetchedWeek = parseInt(weekData, 10);
         setCurrentWeek(fetchedWeek);
         // Set selectedWeek to fetchedWeek only if it's the initial load or selectedWeek is not yet set by user
@@ -37,32 +42,54 @@ function Leaderboard() {
         }
 
         // Fetch user's leagues
+        console.log('Fetching user leagues...');
         const leaguesResponse = await fetch(`${API_BASE}/leagues/user/${user.id}`);
+        console.log('Leagues response status:', leaguesResponse.status);
         if (!leaguesResponse.ok) {
-          throw new Error(`HTTP error! status: ${leaguesResponse.status}`);
+          const errorText = await leaguesResponse.text();
+          console.error('Leagues response error:', errorText);
+          throw new Error(`Failed to fetch leagues: HTTP ${leaguesResponse.status} - ${errorText}`);
         }
         const leaguesData = await leaguesResponse.json();
+        console.log('Leagues data:', leaguesData);
         setLeagues(leaguesData);
 
         // Fetch weekly leaderboard
-        const weeklyLeaderboardUrl = selectedLeagueId ? `${API_BASE}/leaderboard/weekly/${selectedWeek}?leagueId=${selectedLeagueId}` : `${API_BASE}/leaderboard/weekly/${selectedWeek}`;
+        console.log('Fetching weekly leaderboard...');
+        const weeklyLeaderboardUrl = selectedLeagueId ? 
+          `${API_BASE}/leaderboard/weekly/${selectedWeek}?leagueId=${parseInt(selectedLeagueId, 10)}` : 
+          `${API_BASE}/leaderboard/weekly/${selectedWeek}`;
+        console.log('Weekly leaderboard URL:', weeklyLeaderboardUrl);
         const weeklyResponse = await fetch(weeklyLeaderboardUrl);
+        console.log('Weekly response status:', weeklyResponse.status);
         if (!weeklyResponse.ok) {
-          throw new Error(`HTTP error! status: ${weeklyResponse.status}`);
+          const errorText = await weeklyResponse.text();
+          console.error('Weekly response error:', errorText);
+          throw new Error(`Failed to fetch weekly leaderboard: HTTP ${weeklyResponse.status} - ${errorText}`);
         }
         const weeklyData = await weeklyResponse.json();
+        console.log('Weekly data:', weeklyData);
         setWeeklyLeaderboard(weeklyData);
 
         // Fetch season leaderboard
-        const seasonLeaderboardUrl = selectedLeagueId ? `${API_BASE}/leaderboard/season?leagueId=${selectedLeagueId}` : `${API_BASE}/leaderboard/season`;
+        console.log('Fetching season leaderboard...');
+        const seasonLeaderboardUrl = selectedLeagueId ? 
+          `${API_BASE}/leaderboard/season?leagueId=${parseInt(selectedLeagueId, 10)}` : 
+          `${API_BASE}/leaderboard/season`;
+        console.log('Season leaderboard URL:', seasonLeaderboardUrl);
         const seasonResponse = await fetch(seasonLeaderboardUrl);
+        console.log('Season response status:', seasonResponse.status);
         if (!seasonResponse.ok) {
-          throw new Error(`HTTP error! status: ${seasonResponse.status}`);
+          const errorText = await seasonResponse.text();
+          console.error('Season response error:', errorText);
+          throw new Error(`Failed to fetch season leaderboard: HTTP ${seasonResponse.status} - ${errorText}`);
         }
         const seasonData = await seasonResponse.json();
+        console.log('Season data:', seasonData);
         setSeasonLeaderboard(seasonData);
 
       } catch (error) {
+        console.error('Leaderboard fetch error:', error);
         setError(error);
       } finally {
         setLoading(false);
@@ -77,7 +104,17 @@ function Leaderboard() {
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return (
+      <div className="main-content">
+        <h2>Leaderboards</h2>
+        <div style={{ color: 'red', padding: '20px', border: '1px solid red', borderRadius: '5px', margin: '20px 0' }}>
+          <h3>Error Loading Leaderboards</h3>
+          <p><strong>Error:</strong> {error.message}</p>
+          <p>Please check the browser console for more details.</p>
+          <button onClick={() => window.location.reload()}>Retry</button>
+        </div>
+      </div>
+    );
   }
 
   // Assuming a max of 18 regular season weeks
