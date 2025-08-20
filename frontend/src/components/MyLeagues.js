@@ -61,9 +61,9 @@ function MyLeagues() {
             <tbody>
               {leagues.map(league => (
                 <tr key={league.id}>
-                  <td>{league.name}</td>
-                  <td>{league.joinCode}</td>
-                  <td><Link to={`/leagues/${league.id}`}>View Details</Link></td>
+                  <td data-label="League Name">{league.name}</td>
+                  <td data-label="Join Code">{league.joinCode}</td>
+                  <td data-label="Action"><Link to={`/leagues/${league.id}`}>View Details</Link></td>
                 </tr>
               ))}
             </tbody>

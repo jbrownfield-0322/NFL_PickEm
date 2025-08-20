@@ -132,10 +132,10 @@ const GameList = () => {
   };
 
   return (
-    <div>
+    <div className="game-list-container">
       <h2>NFL Games</h2>
       
-      <div>
+      <div className="league-controls">
         <label htmlFor="league-select">Select League (optional):</label>
         <select 
           id="league-select"
@@ -177,12 +177,12 @@ const GameList = () => {
 
               return (
                 <tr key={game.id}>
-                  <td>{game.week}</td>
-                  <td>{formatKickoffTime(game.kickoffTime)}</td>
-                  <td>{game.awayTeam}</td>
-                  <td>{game.homeTeam}</td>
-                  <td>{formatKickoffTime(game.kickoffTime)}</td>
-                  <td>
+                  <td data-label="Week">{game.week}</td>
+                  <td data-label="Date">{formatKickoffTime(game.kickoffTime)}</td>
+                  <td data-label="Away Team">{game.awayTeam}</td>
+                  <td data-label="Home Team">{game.homeTeam}</td>
+                  <td data-label="Kickoff">{formatKickoffTime(game.kickoffTime)}</td>
+                  <td data-label="Your Pick">
                     {isLocked ? (
                       <p>{pickMessages[game.id] || (hasPicked ? `Your pick: ${userPickForGame.pickedTeam}` : 'Picks are locked for this game.')}</p>
                     ) : (
@@ -207,7 +207,7 @@ const GameList = () => {
                       </form>
                     )}
                   </td>
-                  <td>
+                  <td data-label="Action">
                     {pickMessages[game.id] && <p>{pickMessages[game.id]}</p>}
                   </td>
                 </tr>
