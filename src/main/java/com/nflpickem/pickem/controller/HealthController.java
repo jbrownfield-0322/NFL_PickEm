@@ -18,6 +18,9 @@ public class HealthController {
         response.put("timestamp", System.currentTimeMillis());
         response.put("version", "1.0.0");
         response.put("environment", System.getenv("SPRING_PROFILES_ACTIVE"));
+        response.put("port", System.getenv("PORT"));
+        response.put("database_url_set", System.getenv("DATABASE_URL") != null);
+        System.out.println("Health check accessed at: " + System.currentTimeMillis());
         return ResponseEntity.ok(response);
     }
 
@@ -28,12 +31,16 @@ public class HealthController {
         response.put("status", "running");
         response.put("health", "/health");
         response.put("actuator", "/actuator/health");
+        response.put("ping", "/ping");
         response.put("timestamp", System.currentTimeMillis());
+        response.put("port", System.getenv("PORT"));
+        System.out.println("Root endpoint accessed at: " + System.currentTimeMillis());
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/ping")
     public ResponseEntity<String> ping() {
+        System.out.println("Ping endpoint accessed at: " + System.currentTimeMillis());
         return ResponseEntity.ok("pong");
     }
 }
