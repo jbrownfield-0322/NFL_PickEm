@@ -81,6 +81,31 @@ window.clearAuthData = clearAuthData; // Exposed globally
 
 **✅ FIXED:** Removed debug function exposure.
 
+### **6. Hardcoded Credentials in Configuration Files**
+
+**❌ VULNERABILITY:** Hardcoded passwords and admin credentials in configuration files.
+
+**Location:** `docker-compose.yml`, `application-*.properties`
+```yaml
+# BEFORE (DANGEROUS):
+- SPRING_DATASOURCE_PASSWORD=password
+- POSTGRES_PASSWORD=password
+```
+
+```properties
+# BEFORE (DANGEROUS):
+spring.security.user.name=admin
+spring.security.user.password=admin
+```
+
+**✅ FIXED:** Replaced with environment variables.
+
+**Files Modified:**
+- `docker-compose.yml`
+- `src/main/resources/application-railway.properties`
+- `src/main/resources/application-prod.properties`
+- `env.example` (new)
+
 ## 🔒 **SECURITY IMPROVEMENTS IMPLEMENTED**
 
 ### **Data Sanitization**
@@ -98,35 +123,48 @@ window.clearAuthData = clearAuthData; // Exposed globally
 - ✅ Created `LeagueResponse` DTO for safe league data
 - ✅ All controllers now return sanitized data
 
+### **Configuration Security**
+- ✅ Removed hardcoded passwords from docker-compose.yml
+- ✅ Removed hardcoded admin credentials from properties files
+- ✅ All sensitive data now uses environment variables
+- ✅ Created env.example file for documentation
+
 ## 🛡️ **ADDITIONAL SECURITY RECOMMENDATIONS**
 
 ### **For Production Deployment:**
 
-1. **Implement JWT Tokens**
+1. **Set Environment Variables**
+   ```bash
+   # Create a .env file with secure passwords
+   DB_PASSWORD=your_very_secure_password_here
+   ADMIN_PASSWORD=your_very_secure_admin_password_here
+   ```
+
+2. **Implement JWT Tokens**
    ```java
    // Instead of storing user data in localStorage, use JWT tokens
    String token = jwtService.generateToken(user);
    return new ResponseEntity<>(new AuthResponse(token), HttpStatus.OK);
    ```
 
-2. **Add Request Validation**
+3. **Add Request Validation**
    ```java
    @Valid @RequestBody LoginRequest request
    ```
 
-3. **Implement Rate Limiting**
+4. **Implement Rate Limiting**
    ```java
    @RateLimit(value = 5, timeUnit = TimeUnit.MINUTES)
    @PostMapping("/login")
    ```
 
-4. **Add HTTPS Enforcement**
+5. **Add HTTPS Enforcement**
    ```properties
    server.ssl.enabled=true
    security.require-ssl=true
    ```
 
-5. **Implement Session Management**
+6. **Implement Session Management**
    ```java
    // Add session timeout and invalidation
    session.setMaxInactiveInterval(3600); // 1 hour
@@ -164,13 +202,8 @@ Your application is now **significantly more secure** with these fixes:
 - ✅ No debug functions exposed globally
 - ✅ localStorage contains only safe user information
 - ✅ All API endpoints return sanitized data
-
-**Next Steps:**
-1. Deploy these security fixes immediately
-2. Consider implementing JWT tokens for better security
-3. Add HTTPS enforcement for production
-4. Implement proper session management
-5. Add rate limiting for authentication endpoints
+- ✅ No hardcoded credentials in configuration files
+- ✅ All sensitive data uses environment variables
 
 ## 🚨 **IMMEDIATE ACTION REQUIRED**
 
@@ -180,5 +213,11 @@ These security vulnerabilities were **critical** and should be deployed immediat
 2. **Sensitive data is not logged** to browser console
 3. **User information is properly sanitized** before storage
 4. **No debug functions are exposed** globally
+5. **No hardcoded credentials** in configuration files
+
+**Before deploying, make sure to:**
+1. Set secure environment variables for `DB_PASSWORD` and `ADMIN_PASSWORD`
+2. Never commit the actual `.env` file to version control
+3. Use strong, unique passwords for each environment
 
 **Deploy these changes before going live with your application!**
