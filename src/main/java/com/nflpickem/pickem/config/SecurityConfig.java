@@ -30,6 +30,8 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/", "/ping", "/health", "/actuator/health", "/actuator/info").permitAll() // Health checks always accessible
+                .requestMatchers("/static/**", "/static/js/**", "/static/css/**", "/static/media/**").permitAll() // Static assets
+                .requestMatchers("/register", "/login", "/games", "/leaderboard", "/leagues/**", "/my-leagues", "/account").permitAll() // React routes
                 .requestMatchers("/api/auth/**", "/api/games/**", "/api/picks/**", "/api/leagues/**", "/api/leaderboard/**").permitAll()
                 .anyRequest().authenticated()
             );
