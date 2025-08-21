@@ -12,6 +12,7 @@ import MyLeagues from './components/MyLeagues';
 import LeagueDetails from './components/LeagueDetails';
 import Account from './components/Account'; // Import Account component
 import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
+import GameManagement from './components/GameManagement'; // Import GameManagement component
 
 function App() {
   const { isLoggedIn, logout } = useAuth(); // Use isLoggedIn and logout from AuthContext
@@ -36,6 +37,7 @@ function App() {
                 <li><Link to="/leagues/create">Create League</Link></li>
                 <li><Link to="/leagues/join">Join League</Link></li>
                 <li><Link to="/my-leagues">My Leagues</Link></li>
+                <li><Link to="/game-management">Game Management</Link></li>
               </>
             )}
             {isLoggedIn ? (
@@ -89,6 +91,11 @@ function App() {
           <Route path="/account" element={
             <ProtectedRoute>
               <Account />
+            </ProtectedRoute>
+          } />
+          <Route path="/game-management" element={
+            <ProtectedRoute>
+              <GameManagement />
             </ProtectedRoute>
           } />
           <Route path="/" element={<h2>Welcome to the NFL Pick'em App!</h2>} />

@@ -1,0 +1,23 @@
+{
+  "name": "nfl-pickem-scripts",
+  "version": "1.0.0",
+  "description": "Scripts for NFL Pick'em application",
+  "main": "scrape-nfl-schedule.js",
+  "scripts": {
+    "scrape": "node scrape-nfl-schedule.js",
+    "scrape:from-file": "node scrape-nfl-schedule.js --from-file",
+    "scores": "node scrape-nfl-scores.js",
+    "load-sample": "node ../add-sample-games.js",
+    "run": "./run-scraper.sh",
+    "run:windows": "powershell -ExecutionPolicy Bypass -File run-scraper.ps1",
+    "run:batch": "run-scraper.bat"
+  },
+  "dependencies": {
+    "jsdom": "^22.1.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {},
+  "keywords": ["nfl", "pickem", "scraper", "schedule"],
+  "author": "",
+  "license": "MIT"
+}

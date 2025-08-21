@@ -62,6 +62,20 @@ public class GameService {
         return gameRepository.findById(id).orElse(null);
     }
 
+    public Game saveGame(Game game) {
+        return gameRepository.save(game);
+    }
+
+    public Game updateGameScore(Long gameId, String winningTeam) {
+        Game game = gameRepository.findById(gameId).orElse(null);
+        if (game != null) {
+            game.setWinningTeam(winningTeam);
+            game.setScored(true);
+            return gameRepository.save(game);
+        }
+        return null;
+    }
+
     public Integer getCurrentWeek() {
         return calculateCurrentNflWeek(LocalDate.now().getYear());
     }
