@@ -104,15 +104,14 @@ function GameManagement() {
     if (!kickoffTime) return 'TBD';
     const date = new Date(kickoffTime);
     
-    // Format the date to show Eastern Time (NFL standard)
+    // Format the date to show in user's local timezone
     const options = {
       year: 'numeric',
       month: 'numeric',
       day: 'numeric',
       hour: 'numeric',
       minute: '2-digit',
-      hour12: true,
-      timeZone: 'America/New_York'
+      hour12: true
     };
     
     return date.toLocaleString('en-US', options);
