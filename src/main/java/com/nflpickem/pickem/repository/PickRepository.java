@@ -13,7 +13,7 @@ import java.util.List;
 public interface PickRepository extends JpaRepository<Pick, Long> {
     List<Pick> findByUser(User user);
     List<Pick> findByGame(Game game);
-    Pick findByUserAndGame(User user, Game game);
+    List<Pick> findByUserAndGame(User user, Game game);
     Pick findByUserAndGameAndLeague(User user, Game game, League league);
     List<Pick> findByUserAndLeague(User user, League league);
     List<Pick> findByGameAndLeague(Game game, League league);
