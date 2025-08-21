@@ -19,13 +19,21 @@ function MyLeagues() {
       }
 
       try {
+        console.log('Fetching leagues for user:', user.id);
         const response = await fetch(`${API_BASE}/leagues/user/${user.id}`);
+        console.log('Leagues response status:', response.status);
+        
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          const errorText = await response.text();
+          console.error('Leagues response error:', errorText);
+          throw new Error(`Failed to fetch leagues: HTTP ${response.status} - ${errorText}`);
         }
+        
         const data = await response.json();
+        console.log('Leagues data:', data);
         setLeagues(data);
       } catch (error) {
+        console.error('MyLeagues fetch error:', error);
         setError(error);
       } finally {
         setLoading(false);
@@ -40,7 +48,17 @@ function MyLeagues() {
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return (
+      <div className="main-content">
+        <h2>My Leagues</h2>
+        <div style={{ color: 'red', padding: '20px', border: '1px solid red', borderRadius: '5px', margin: '20px 0' }}>
+          <h3>Error Loading Leagues</h3>
+          <p><strong>Error:</strong> {error.message}</p>
+          <p>Please check the browser console for more details.</p>
+          <button onClick={() => window.location.reload()}>Retry</button>
+        </div>
+      </div>
+    );
   }
 
   return (
