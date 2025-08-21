@@ -8,6 +8,8 @@ import com.nflpickem.pickem.repository.PickRepository;
 import com.nflpickem.pickem.repository.UserRepository;
 import com.nflpickem.pickem.repository.LeagueRepository;
 import com.nflpickem.pickem.dto.PickComparisonDto;
+import com.nflpickem.pickem.dto.BulkPickRequest;
+import com.nflpickem.pickem.dto.PickRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant; // Import Instant
@@ -143,5 +145,66 @@ public class PickService {
         }
         
         return comparisonData;
+    }
+
+    public List<Pick> submitBulkPicks(BulkPickRequest bulkRequest) {
+        User user = userRepository.findById(bulkRequest.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        League league = null;
+        if (bulkRequest.getLeagueId() != null) {
+            league = leagueRepository.findById(bulkRequest.getLeagueId())
+                    .orElseThrow(() -> new RuntimeException("League not found"));
+            if (!league.getMembers().contains(user)) {
+                throw new RuntimeException("User is not a member of this league");
+            }
+        }
+        
+        List<Pick> submittedPicks = new ArrayList<>();
+        
+        for (PickRequest pickRequest : bulkRequest.getPicks()) {
+            try {
+                Game game = gameService.getGameById(pickRequest.getGameId());
+                if (game == null) {
+                    throw new RuntimeException("Game not found: " + pickRequest.getGameId());
+                }
+                
+                if (game.getKickoffTime().isBefore(Instant.now())) {
+                    throw new RuntimeException("Cannot submit pick after kickoff time for game: " + game.getId());
+                }
+                
+                if (!pickRequest.getPickedTeam().equals(game.getHomeTeam()) && 
+                    !pickRequest.getPickedTeam().equals(game.getAwayTeam())) {
+                    throw new RuntimeException("Invalid team picked for game: " + game.getId());
+                }
+                
+                Pick existingPick = (league != null) ? 
+                    pickRepository.findByUserAndGameAndLeague(user, game, league) : 
+                    pickRepository.findByUserAndGame(user, game);
+                
+                Pick pick;
+                if (existingPick != null) {
+                    // Update existing pick
+                    existingPick.setPickedTeam(pickRequest.getPickedTeam());
+                    pick = pickRepository.save(existingPick);
+                } else {
+                    // Create new pick
+                    pick = new Pick();
+                    pick.setUser(user);
+                    pick.setGame(game);
+                    pick.setLeague(league);
+                    pick.setPickedTeam(pickRequest.getPickedTeam());
+                    pick.setCorrect(false);
+                    pick = pickRepository.save(pick);
+                }
+                
+                submittedPicks.add(pick);
+                
+            } catch (Exception e) {
+                throw new RuntimeException("Error processing pick for game " + pickRequest.getGameId() + ": " + e.getMessage());
+            }
+        }
+        
+        return submittedPicks;
     }
 } 

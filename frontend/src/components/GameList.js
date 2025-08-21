@@ -9,6 +9,8 @@ const GameList = () => {
   const [leagues, setLeagues] = useState([]);
   const [pickMessages, setPickMessages] = useState({});
   const [selectedGamePicks, setSelectedGamePicks] = useState({});
+  const [bulkSubmitMessage, setBulkSubmitMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useAuth();
 
   // API base URL - will work for both development and Railway production
@@ -74,45 +76,63 @@ const GameList = () => {
     }));
   };
 
-  const submitPick = async (gameId, pickedTeam) => {
+  const submitBulkPicks = async () => {
     if (!user) return;
 
+    // Get all games for the selected week that have picks selected
+    const weekGames = selectedWeek === 'all' ? games : games.filter(game => game.week === parseInt(selectedWeek));
+    const picksToSubmit = [];
+    
+    for (const game of weekGames) {
+      const pickedTeam = selectedGamePicks[game.id];
+      if (pickedTeam && !isGameLocked(game.kickoffTime)) {
+        picksToSubmit.push({
+          gameId: game.id,
+          pickedTeam: pickedTeam
+        });
+      }
+    }
+
+    if (picksToSubmit.length === 0) {
+      setBulkSubmitMessage('No picks to submit. Please select teams for games that haven\'t started yet.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setBulkSubmitMessage('');
+
     try {
-      const pickData = {
+      const bulkPickData = {
         userId: user.id,
-        gameId: gameId,
-        pickedTeam: pickedTeam,
-        leagueId: selectedLeagueId || null
+        leagueId: selectedLeagueId || null,
+        picks: picksToSubmit
       };
 
-      console.log('Submitting pick to:', `${API_BASE}/picks/submit`);
-      console.log('Pick data:', pickData);
+      console.log('Submitting bulk picks to:', `${API_BASE}/picks/submit-bulk`);
+      console.log('Bulk pick data:', bulkPickData);
 
-      const response = await fetch(`${API_BASE}/picks/submit`, {
+      const response = await fetch(`${API_BASE}/picks/submit-bulk`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(pickData),
+        body: JSON.stringify(bulkPickData),
       });
 
       console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
 
       if (response.ok) {
         const result = await response.json();
+        setBulkSubmitMessage(`Successfully submitted ${picksToSubmit.length} picks!`);
         
-        // Update pick messages
-        setPickMessages(prev => ({
-          ...prev,
-          [gameId]: `Pick submitted: ${pickedTeam}`
-        }));
-
+        // Clear individual pick messages
+        setPickMessages({});
+        
         // Refresh user picks
         fetchUserPicks();
       } else {
         console.log('Error response status:', response.status);
-        let errorMessage = 'Failed to submit pick';
+        let errorMessage = 'Failed to submit picks';
         try {
           const errorData = await response.json();
           errorMessage = errorData.message || errorMessage;
@@ -120,16 +140,13 @@ const GameList = () => {
         } catch (e) {
           console.log('Could not parse error response as JSON');
         }
-        setPickMessages(prev => ({
-          ...prev,
-          [gameId]: `Error: ${errorMessage}`
-        }));
+        setBulkSubmitMessage(`Error: ${errorMessage}`);
       }
     } catch (error) {
-      setPickMessages(prev => ({
-        ...prev,
-        [gameId]: 'Error: Failed to submit pick'
-      }));
+      console.error('Error submitting bulk picks:', error);
+      setBulkSubmitMessage('Error: Failed to submit picks');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -202,6 +219,23 @@ const GameList = () => {
       </div>
 
       <div className="table-container">
+        {selectedWeek !== 'all' && (
+          <div className="bulk-submit-section">
+            <button 
+              onClick={submitBulkPicks} 
+              disabled={isSubmitting}
+              className="bulk-submit-button"
+            >
+              {isSubmitting ? 'Submitting...' : `Submit All Picks for Week ${selectedWeek}`}
+            </button>
+            {bulkSubmitMessage && (
+              <div className={`bulk-message ${bulkSubmitMessage.includes('Error') ? 'error' : 'success'}`}>
+                {bulkSubmitMessage}
+              </div>
+            )}
+          </div>
+        )}
+        
         <table>
           <thead>
             <tr>
@@ -211,7 +245,7 @@ const GameList = () => {
               <th>Home Team</th>
               <th>Kickoff</th>
               <th>Your Pick</th>
-              <th>Action</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -234,31 +268,30 @@ const GameList = () => {
                   <td data-label="Kickoff">{formatKickoffTime(game.kickoffTime)}</td>
                   <td data-label="Your Pick">
                     {isLocked ? (
-                      <p>{pickMessages[game.id] || (hasPicked ? `Your pick: ${userPickForGame.pickedTeam}` : 'Picks are locked for this game.')}</p>
+                      <span className="locked-pick">
+                        {hasPicked ? userPickForGame.pickedTeam : 'Picks locked'}
+                      </span>
                     ) : (
-                      <form onSubmit={(e) => {
-                        e.preventDefault();
-                        if (currentPick) {
-                          submitPick(game.id, currentPick);
-                        }
-                      }}>
-                        <select
-                          value={currentPick}
-                          onChange={(e) => handlePickChange(game.id, e.target.value)}
-                          disabled={isLocked}
-                        >
-                          <option value="">Select a team</option>
-                          <option value={game.awayTeam}>{game.awayTeam}</option>
-                          <option value={game.homeTeam}>{game.homeTeam}</option>
-                        </select>
-                        <button type="submit" disabled={!currentPick || isLocked}>
-                          Submit Pick
-                        </button>
-                      </form>
+                      <select
+                        value={currentPick}
+                        onChange={(e) => handlePickChange(game.id, e.target.value)}
+                        disabled={isLocked}
+                        className="pick-select"
+                      >
+                        <option value="">Select a team</option>
+                        <option value={game.awayTeam}>{game.awayTeam}</option>
+                        <option value={game.homeTeam}>{game.homeTeam}</option>
+                      </select>
                     )}
                   </td>
-                  <td data-label="Action">
-                    {pickMessages[game.id] && <p>{pickMessages[game.id]}</p>}
+                  <td data-label="Status">
+                    {isLocked ? (
+                      <span className="status-locked">Locked</span>
+                    ) : hasPicked ? (
+                      <span className="status-picked">Picked</span>
+                    ) : (
+                      <span className="status-pending">Pending</span>
+                    )}
                   </td>
                 </tr>
               );

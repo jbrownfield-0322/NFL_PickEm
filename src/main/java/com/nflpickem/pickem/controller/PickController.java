@@ -3,6 +3,7 @@ package com.nflpickem.pickem.controller;
 import com.nflpickem.pickem.dto.PickRequest;
 import com.nflpickem.pickem.dto.ErrorResponse;
 import com.nflpickem.pickem.dto.PickComparisonDto;
+import com.nflpickem.pickem.dto.BulkPickRequest;
 import com.nflpickem.pickem.model.Pick;
 import com.nflpickem.pickem.service.PickService;
 import org.springframework.http.HttpStatus;
@@ -56,6 +57,22 @@ public class PickController {
             logger.error("Error getting pick comparison: {}", e.getMessage(), e);
             ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value(), System.currentTimeMillis());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/submit-bulk")
+    public ResponseEntity<Object> submitBulkPicks(@RequestBody BulkPickRequest bulkRequest) {
+        logger.info("Received bulk pick submission request: userId={}, leagueId={}, picksCount={}", 
+                   bulkRequest.getUserId(), bulkRequest.getLeagueId(), bulkRequest.getPicks().size());
+        
+        try {
+            List<Pick> submittedPicks = pickService.submitBulkPicks(bulkRequest);
+            logger.info("Bulk picks submitted successfully: {} picks", submittedPicks.size());
+            return new ResponseEntity<>(submittedPicks, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            logger.error("Error submitting bulk picks: {}", e.getMessage(), e);
+            ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value(), System.currentTimeMillis());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
