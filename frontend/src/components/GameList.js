@@ -5,7 +5,7 @@ const GameList = () => {
   const [games, setGames] = useState([]);
   const [userPicks, setUserPicks] = useState([]);
   const [selectedLeagueId, setSelectedLeagueId] = useState('');
-  const [selectedWeek, setSelectedWeek] = useState('all');
+  const [selectedWeek, setSelectedWeek] = useState(1);
   const [leagues, setLeagues] = useState([]);
   const [pickMessages, setPickMessages] = useState({});
   const [selectedGamePicks, setSelectedGamePicks] = useState({});
@@ -80,7 +80,7 @@ const GameList = () => {
     if (!user) return;
 
     // Get all games for the selected week that have picks selected
-    const weekGames = selectedWeek === 'all' ? games : games.filter(game => game.week === parseInt(selectedWeek));
+    const weekGames = games.filter(game => game.week === parseInt(selectedWeek));
     const picksToSubmit = [];
     
     for (const game of weekGames) {
@@ -171,9 +171,6 @@ const GameList = () => {
 
   // Filter games by selected week
   const getFilteredGames = () => {
-    if (selectedWeek === 'all') {
-      return games;
-    }
     return games.filter(game => game.week === parseInt(selectedWeek));
   };
 
@@ -191,7 +188,6 @@ const GameList = () => {
               value={selectedWeek} 
               onChange={(e) => setSelectedWeek(e.target.value)}
             >
-              <option value="all">All Weeks</option>
               {getAvailableWeeks().map(week => (
                 <option key={week} value={week}>
                   Week {week}
@@ -219,22 +215,20 @@ const GameList = () => {
       </div>
 
       <div className="table-container">
-        {selectedWeek !== 'all' && (
-          <div className="bulk-submit-section">
-            <button 
-              onClick={submitBulkPicks} 
-              disabled={isSubmitting}
-              className="bulk-submit-button"
-            >
-              {isSubmitting ? 'Submitting...' : `Submit All Picks for Week ${selectedWeek}`}
-            </button>
-            {bulkSubmitMessage && (
-              <div className={`bulk-message ${bulkSubmitMessage.includes('Error') ? 'error' : 'success'}`}>
-                {bulkSubmitMessage}
-              </div>
-            )}
-          </div>
-        )}
+        <div className="bulk-submit-section">
+          <button 
+            onClick={submitBulkPicks} 
+            disabled={isSubmitting}
+            className="bulk-submit-button"
+          >
+            {isSubmitting ? 'Submitting...' : `Submit All Picks for Week ${selectedWeek}`}
+          </button>
+          {bulkSubmitMessage && (
+            <div className={`bulk-message ${bulkSubmitMessage.includes('Error') ? 'error' : 'success'}`}>
+              {bulkSubmitMessage}
+            </div>
+          )}
+        </div>
         
         <table>
           <thead>
