@@ -60,7 +60,12 @@ public class PickService {
             existingPick = pickRepository.findByUserAndGameAndLeague(user, game, league);
         } else {
             // For non-league picks, only look for picks with no league
-            existingPick = pickRepository.findByUserAndGame(user, game);
+            // We need to handle this differently since findByUserAndGame might include league picks
+            List<Pick> userPicksForGame = pickRepository.findByUserAndGame(user, game);
+            existingPick = userPicksForGame.stream()
+                .filter(pick -> pick.getLeague() == null)
+                .findFirst()
+                .orElse(null);
         }
         
         if (existingPick != null) {
@@ -193,7 +198,12 @@ public class PickService {
                     existingPick = pickRepository.findByUserAndGameAndLeague(user, game, league);
                 } else {
                     // For non-league picks, only look for picks with no league
-                    existingPick = pickRepository.findByUserAndGame(user, game);
+                    // We need to handle this differently since findByUserAndGame might include league picks
+                    List<Pick> userPicksForGame = pickRepository.findByUserAndGame(user, game);
+                    existingPick = userPicksForGame.stream()
+                        .filter(pick -> pick.getLeague() == null)
+                        .findFirst()
+                        .orElse(null);
                 }
                 
                 Pick pick;

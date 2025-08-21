@@ -22,6 +22,12 @@ const GameList = () => {
     fetchLeagues();
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      fetchUserPicks();
+    }
+  }, [selectedLeagueId, user]);
+
   const fetchGames = async () => {
     try {
       const response = await fetch(`${API_BASE}/games`);
@@ -38,7 +44,11 @@ const GameList = () => {
     if (!user) return;
     
     try {
-      const response = await fetch(`${API_BASE}/picks/user/${user.id}`);
+      const url = selectedLeagueId 
+        ? `${API_BASE}/picks/user/${user.id}?leagueId=${selectedLeagueId}`
+        : `${API_BASE}/picks/user/${user.id}`;
+      
+      const response = await fetch(url);
       if (response.ok) {
         const data = await response.json();
         setUserPicks(data);
@@ -286,16 +296,14 @@ const GameList = () => {
               <th>Away Team</th>
               <th>Home Team</th>
               <th>Kickoff</th>
+              <th>Current Pick</th>
               <th>Your Pick</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
             {filteredGames.map(game => {
-              const userPickForGame = userPicks.find(pick => 
-                pick.game.id === game.id && 
-                (selectedLeagueId === "" ? pick.league === null : pick.league?.id === parseInt(selectedLeagueId))
-              );
+              const userPickForGame = userPicks.find(pick => pick.game.id === game.id);
               const hasPicked = !!userPickForGame;
               const isLockedByTime = isGameLocked(game.kickoffTime);
               const isLocked = isLockedByTime;
@@ -307,6 +315,13 @@ const GameList = () => {
                   <td data-label="Away Team">{game.awayTeam}</td>
                   <td data-label="Home Team">{game.homeTeam}</td>
                   <td data-label="Kickoff">{formatKickoffTime(game.kickoffTime)}</td>
+                  <td data-label="Current Pick">
+                    {userPickForGame ? (
+                      <span className="current-pick">{userPickForGame.pickedTeam}</span>
+                    ) : (
+                      <span className="no-pick">No pick made</span>
+                    )}
+                  </td>
                   <td data-label="Your Pick">
                     {isLocked ? (
                       <span className="locked-pick">
