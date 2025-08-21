@@ -37,7 +37,6 @@ function App() {
                 <li><Link to="/leagues/create">Create League</Link></li>
                 <li><Link to="/leagues/join">Join League</Link></li>
                 <li><Link to="/my-leagues">My Leagues</Link></li>
-                <li><Link to="/game-management">Game Management</Link></li>
               </>
             )}
             {isLoggedIn ? (
