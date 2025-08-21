@@ -100,6 +100,75 @@ form {
   margin: 20px auto;
 }
 
+/* Pick Comparison Table Styles */
+.toggle-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-button:hover {
+  background-color: #2980b9;
+}
+
+.correct-pick {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.incorrect-pick {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.pending-pick {
+  color: #f39c12;
+  font-weight: bold;
+}
+
+.no-pick {
+  color: #95a5a6;
+  font-style: italic;
+}
+
+.no-picks {
+  color: #95a5a6;
+  font-style: italic;
+}
+
+.game-result {
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+.pending {
+  color: #95a5a6;
+  font-style: italic;
+}
+
+.other-picks {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pick-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.username {
+  font-weight: bold;
+  color: #2c3e50;
+  min-width: 80px;
+}
+
 form div {
   margin-bottom: 15px;
 }
