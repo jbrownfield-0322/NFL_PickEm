@@ -24,11 +24,16 @@ function Leaderboard() {
 
       try {
         // Fetch current week from backend
+        console.log('Fetching current week...');
         const weekResponse = await fetch(`${API_BASE}/games/currentWeek`);
+        console.log('Week response status:', weekResponse.status);
         if (!weekResponse.ok) {
-          throw new Error(`HTTP error! status: ${weekResponse.status}`);
+          const errorText = await weekResponse.text();
+          console.error('Week response error:', errorText);
+          throw new Error(`Failed to fetch current week: HTTP ${weekResponse.status} - ${errorText}`);
         }
         const weekData = await weekResponse.text();
+        console.log('Week data:', weekData);
         const fetchedWeek = parseInt(weekData, 10);
         setCurrentWeek(fetchedWeek);
         // Set selectedWeek to fetchedWeek only if it's the initial load or selectedWeek is not yet set by user
@@ -37,32 +42,54 @@ function Leaderboard() {
         }
 
         // Fetch user's leagues
+        console.log('Fetching user leagues...');
         const leaguesResponse = await fetch(`${API_BASE}/leagues/user/${user.id}`);
+        console.log('Leagues response status:', leaguesResponse.status);
         if (!leaguesResponse.ok) {
-          throw new Error(`HTTP error! status: ${leaguesResponse.status}`);
+          const errorText = await leaguesResponse.text();
+          console.error('Leagues response error:', errorText);
+          throw new Error(`Failed to fetch leagues: HTTP ${leaguesResponse.status} - ${errorText}`);
         }
         const leaguesData = await leaguesResponse.json();
+        console.log('Leagues data:', leaguesData);
         setLeagues(leaguesData);
 
         // Fetch weekly leaderboard
-        const weeklyLeaderboardUrl = selectedLeagueId ? `${API_BASE}/leaderboard/weekly/${selectedWeek}?leagueId=${selectedLeagueId}` : `${API_BASE}/leaderboard/weekly/${selectedWeek}`;
+        console.log('Fetching weekly leaderboard...');
+        const weeklyLeaderboardUrl = selectedLeagueId ? 
+          `${API_BASE}/leaderboard/weekly/${selectedWeek}?leagueId=${parseInt(selectedLeagueId, 10)}` : 
+          `${API_BASE}/leaderboard/weekly/${selectedWeek}`;
+        console.log('Weekly leaderboard URL:', weeklyLeaderboardUrl);
         const weeklyResponse = await fetch(weeklyLeaderboardUrl);
+        console.log('Weekly response status:', weeklyResponse.status);
         if (!weeklyResponse.ok) {
-          throw new Error(`HTTP error! status: ${weeklyResponse.status}`);
+          const errorText = await weeklyResponse.text();
+          console.error('Weekly response error:', errorText);
+          throw new Error(`Failed to fetch weekly leaderboard: HTTP ${weeklyResponse.status} - ${errorText}`);
         }
         const weeklyData = await weeklyResponse.json();
+        console.log('Weekly data:', weeklyData);
         setWeeklyLeaderboard(weeklyData);
 
         // Fetch season leaderboard
-        const seasonLeaderboardUrl = selectedLeagueId ? `${API_BASE}/leaderboard/season?leagueId=${selectedLeagueId}` : `${API_BASE}/leaderboard/season`;
+        console.log('Fetching season leaderboard...');
+        const seasonLeaderboardUrl = selectedLeagueId ? 
+          `${API_BASE}/leaderboard/season?leagueId=${parseInt(selectedLeagueId, 10)}` : 
+          `${API_BASE}/leaderboard/season`;
+        console.log('Season leaderboard URL:', seasonLeaderboardUrl);
         const seasonResponse = await fetch(seasonLeaderboardUrl);
+        console.log('Season response status:', seasonResponse.status);
         if (!seasonResponse.ok) {
-          throw new Error(`HTTP error! status: ${seasonResponse.status}`);
+          const errorText = await seasonResponse.text();
+          console.error('Season response error:', errorText);
+          throw new Error(`Failed to fetch season leaderboard: HTTP ${seasonResponse.status} - ${errorText}`);
         }
         const seasonData = await seasonResponse.json();
+        console.log('Season data:', seasonData);
         setSeasonLeaderboard(seasonData);
 
       } catch (error) {
+        console.error('Leaderboard fetch error:', error);
         setError(error);
       } finally {
         setLoading(false);
@@ -77,7 +104,17 @@ function Leaderboard() {
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return (
+      <div className="main-content">
+        <h2>Leaderboards</h2>
+        <div style={{ color: 'red', padding: '20px', border: '1px solid red', borderRadius: '5px', margin: '20px 0' }}>
+          <h3>Error Loading Leaderboards</h3>
+          <p><strong>Error:</strong> {error.message}</p>
+          <p>Please check the browser console for more details.</p>
+          <button onClick={() => window.location.reload()}>Retry</button>
+        </div>
+      </div>
+    );
   }
 
   // Assuming a max of 18 regular season weeks
@@ -100,9 +137,9 @@ function Leaderboard() {
           <tbody>
             {data.map((player, index) => (
               <tr key={player.username}>
-                <td>{index + 1}</td>
-                <td>{player.username}</td>
-                <td>{player.score}</td>
+                <td data-label="Rank">{index + 1}</td>
+                <td data-label="Username">{player.username}</td>
+                <td data-label="Score">{player.score}</td>
               </tr>
             ))}
           </tbody>
@@ -115,27 +152,28 @@ function Leaderboard() {
     <div className="main-content">
       <h2>Leaderboards</h2>
 
-      <div>
-        <label htmlFor="week-select">Select Week:</label>
-        <select id="week-select" value={selectedWeek} onChange={(e) => setSelectedWeek(parseInt(e.target.value, 10))}>
-          {[...Array(totalWeeks).keys()].map((weekNum) => (
-            <option key={weekNum + 1} value={weekNum + 1}>
-              Week {weekNum + 1}
-            </option>
-          ))}
-        </select>
-      </div>
+      <div className="leaderboard-controls">
+        <div>
+          <label htmlFor="week-select">Select Week:</label>
+          <select id="week-select" value={selectedWeek} onChange={(e) => setSelectedWeek(parseInt(e.target.value, 10))}>
+            {[...Array(totalWeeks).keys()].map((weekNum) => (
+              <option key={weekNum + 1} value={weekNum + 1}>
+                Week {weekNum + 1}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <div>
-        <label htmlFor="league-select">View Leaderboard For:</label>
-        <select id="league-select" value={selectedLeagueId} onChange={(e) => setSelectedLeagueId(e.target.value)}>
-          <option value="">Global Leaderboard</option>
-          {leagues.map(league => (
-            <option key={league.id} value={league.id}>{league.name}</option>
-          ))}
-        </select>
+        <div>
+          <label htmlFor="league-select">View Leaderboard For:</label>
+          <select id="league-select" value={selectedLeagueId} onChange={(e) => setSelectedLeagueId(e.target.value)}>
+            <option value="">Global Leaderboard</option>
+            {leagues.map(league => (
+              <option key={league.id} value={league.id}>{league.name}</option>
+            ))}
+          </select>
+        </div>
       </div>
-      <br/>
 
       {renderTable(`Weekly Leaderboard (Week ${selectedWeek})`, weeklyLeaderboard)}
       {renderTable("Season Leaderboard", seasonLeaderboard)}

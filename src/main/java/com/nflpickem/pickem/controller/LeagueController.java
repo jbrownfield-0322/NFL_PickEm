@@ -24,8 +24,9 @@ public class LeagueController {
 
     @PostMapping("/create")
     public ResponseEntity<LeagueResponse> createLeague(@RequestBody CreateLeagueRequest request) {
-        Long adminId = 1L; // Hardcoded for now
         try {
+            // TODO: Get actual user ID from authentication context
+            Long adminId = 1L; // Hardcoded for now - should be replaced with actual user ID
             League league = leagueService.createLeague(request.getLeagueName(), adminId);
             LeagueResponse leagueResponse = new LeagueResponse(league);
             return new ResponseEntity<>(leagueResponse, HttpStatus.CREATED);
@@ -36,8 +37,9 @@ public class LeagueController {
 
     @PostMapping("/join")
     public ResponseEntity<LeagueResponse> joinLeague(@RequestBody JoinLeagueRequest request) {
-        Long userId = 1L; // Hardcoded for now
         try {
+            // TODO: Get actual user ID from authentication context
+            Long userId = 1L; // Hardcoded for now - should be replaced with actual user ID
             League league = leagueService.joinLeague(request.getJoinCode(), userId);
             LeagueResponse leagueResponse = new LeagueResponse(league);
             return new ResponseEntity<>(leagueResponse, HttpStatus.OK);
@@ -48,22 +50,33 @@ public class LeagueController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<LeagueResponse>> getLeaguesByUserId(@PathVariable Long userId) {
-        Long currentUserId = 1L; // Hardcoded for now
         try {
-            List<League> leagues = leagueService.getLeaguesByUserId(currentUserId);
+            if (userId == null || userId <= 0) {
+                return ResponseEntity.badRequest().build();
+            }
+            
+            List<League> leagues = leagueService.getLeaguesByUserId(userId);
             List<LeagueResponse> leagueResponses = leagues.stream()
                 .map(LeagueResponse::new)
                 .collect(Collectors.toList());
             return ResponseEntity.ok(leagueResponses);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LeagueResponse> getLeagueById(@PathVariable Long id) {
-        Optional<League> league = leagueService.getLeagueById(id);
-        return league.map(l -> ResponseEntity.ok(new LeagueResponse(l)))
-                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        try {
+            if (id == null || id <= 0) {
+                return ResponseEntity.badRequest().build();
+            }
+            
+            Optional<League> league = leagueService.getLeagueById(id);
+            return league.map(l -> ResponseEntity.ok(new LeagueResponse(l)))
+                         .orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 } 

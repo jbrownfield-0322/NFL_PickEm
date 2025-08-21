@@ -149,9 +149,8 @@ const GameList = () => {
   const filteredGames = getFilteredGames();
 
   return (
-    <div>
+    <div className="game-list-container">
       <h2>NFL Games</h2>
-      
       <div className="game-list-container">
         <div className="league-controls">
           <div>
