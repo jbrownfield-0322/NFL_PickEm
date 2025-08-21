@@ -10,6 +10,8 @@ function Leaderboard() {
   const [error, setError] = useState(null);
   const [currentWeek, setCurrentWeek] = useState(1); // Default, will be fetched
   const [selectedWeek, setSelectedWeek] = useState(1); // New state for selected week, initialize with 1
+  const [pickComparison, setPickComparison] = useState([]);
+  const [showPickComparison, setShowPickComparison] = useState(false);
   const { user } = useAuth();
 
   // API base URL - will work for both development and Railway production
@@ -88,6 +90,25 @@ function Leaderboard() {
         console.log('Season data:', seasonData);
         setSeasonLeaderboard(seasonData);
 
+        // Fetch pick comparison data
+        if (user) {
+          console.log('Fetching pick comparison...');
+          const comparisonUrl = selectedLeagueId ? 
+            `${API_BASE}/picks/comparison/${user.id}/${selectedWeek}?leagueId=${parseInt(selectedLeagueId, 10)}` : 
+            `${API_BASE}/picks/comparison/${user.id}/${selectedWeek}`;
+          console.log('Comparison URL:', comparisonUrl);
+          const comparisonResponse = await fetch(comparisonUrl);
+          console.log('Comparison response status:', comparisonResponse.status);
+          if (comparisonResponse.ok) {
+            const comparisonData = await comparisonResponse.json();
+            console.log('Comparison data:', comparisonData);
+            setPickComparison(comparisonData);
+          } else {
+            console.error('Failed to fetch pick comparison data');
+            setPickComparison([]);
+          }
+        }
+
       } catch (error) {
         console.error('Leaderboard fetch error:', error);
         setError(error);
@@ -148,6 +169,81 @@ function Leaderboard() {
     </div>
   );
 
+  const renderPickComparisonTable = () => (
+    <div className="table-container">
+      <h3>Pick Comparison - Week {selectedWeek}</h3>
+      <button 
+        onClick={() => setShowPickComparison(!showPickComparison)}
+        className="toggle-button"
+        style={{ marginBottom: '10px' }}
+      >
+        {showPickComparison ? 'Hide Pick Comparison' : 'Show Pick Comparison'}
+      </button>
+      
+      {showPickComparison && (
+        pickComparison.length === 0 ? (
+          <p>No pick comparison data available for this week.</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Game</th>
+                <th>Your Pick</th>
+                <th>Other Picks</th>
+                <th>Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pickComparison.map((game) => (
+                <tr key={game.gameId}>
+                  <td data-label="Game">
+                    <strong>{game.awayTeam} @ {game.homeTeam}</strong>
+                  </td>
+                  <td data-label="Your Pick">
+                    {game.yourPick ? (
+                      <span className={game.scored && game.yourPick === game.winningTeam ? 'correct-pick' : 
+                                      game.scored && game.yourPick !== game.winningTeam ? 'incorrect-pick' : 'pending-pick'}>
+                        {game.yourPick}
+                      </span>
+                    ) : (
+                      <span className="no-pick">No pick</span>
+                    )}
+                  </td>
+                  <td data-label="Other Picks">
+                    {game.otherPicks.length > 0 ? (
+                      <div className="other-picks">
+                        {game.otherPicks.map((pick, index) => (
+                          <div key={index} className="pick-item">
+                            <span className="username">{pick.username}:</span>
+                            <span className={game.scored && pick.pickedTeam === game.winningTeam ? 'correct-pick' : 
+                                            game.scored && pick.pickedTeam !== game.winningTeam ? 'incorrect-pick' : 'pending-pick'}>
+                              {pick.pickedTeam}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="no-picks">No other picks</span>
+                    )}
+                  </td>
+                  <td data-label="Result">
+                    {game.scored ? (
+                      <span className="game-result">
+                        <strong>{game.winningTeam} wins</strong>
+                      </span>
+                    ) : (
+                      <span className="pending">Not played</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+      )}
+    </div>
+  );
+
   return (
     <div className="main-content">
       <h2>Leaderboards</h2>
@@ -177,6 +273,7 @@ function Leaderboard() {
 
       {renderTable(`Weekly Leaderboard (Week ${selectedWeek})`, weeklyLeaderboard)}
       {renderTable("Season Leaderboard", seasonLeaderboard)}
+      {renderPickComparisonTable()}
     </div>
   );
 }
