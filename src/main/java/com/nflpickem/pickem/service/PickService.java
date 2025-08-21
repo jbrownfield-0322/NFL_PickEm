@@ -98,7 +98,11 @@ public class PickService {
                     .orElseThrow(() -> new RuntimeException("League not found"));
             return pickRepository.findByUserAndLeague(user, league);
         } else {
-            return pickRepository.findByUser(user);
+            // For global picks, only return picks with no league
+            List<Pick> allUserPicks = pickRepository.findByUser(user);
+            return allUserPicks.stream()
+                .filter(pick -> pick.getLeague() == null)
+                .collect(Collectors.toList());
         }
     }
 
