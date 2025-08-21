@@ -29,7 +29,45 @@ function GameManagement() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      setGames(data);
+      
+      // Sort games by week, then by day of week and time
+      const sortedGames = data.sort((a, b) => {
+        // First sort by week
+        if (a.week !== b.week) {
+          return a.week - b.week;
+        }
+        
+        const dateA = new Date(a.kickoffTime);
+        const dateB = new Date(b.kickoffTime);
+        
+        // Get day of week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+        const dayA = dateA.getDay();
+        const dayB = dateB.getDay();
+        
+        // Convert to NFL week order: Thu(4) -> Fri(5) -> Sat(6) -> Sun(0) -> Mon(1) -> Tue(2) -> Wed(3)
+        const nflDayOrder = {
+          0: 4, // Sunday
+          1: 5, // Monday  
+          2: 6, // Tuesday
+          3: 7, // Wednesday
+          4: 1, // Thursday
+          5: 2, // Friday
+          6: 3  // Saturday
+        };
+        
+        const nflDayA = nflDayOrder[dayA];
+        const nflDayB = nflDayOrder[dayB];
+        
+        // Then sort by day of week
+        if (nflDayA !== nflDayB) {
+          return nflDayA - nflDayB;
+        }
+        
+        // If same day, sort by time
+        return dateA.getTime() - dateB.getTime();
+      });
+      
+      setGames(sortedGames);
     } catch (error) {
       setError(error);
     } finally {
@@ -104,9 +142,11 @@ function GameManagement() {
     if (!kickoffTime) return 'TBD';
     const date = new Date(kickoffTime);
     
-    // Format the date to show in user's local timezone
+    // Get day of week abbreviation (MON, TUE, WED, etc.)
+    const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+    
+    // Format the date to show in user's local timezone (without comma)
     const options = {
-      year: 'numeric',
       month: 'numeric',
       day: 'numeric',
       hour: 'numeric',
@@ -114,7 +154,10 @@ function GameManagement() {
       hour12: true
     };
     
-    return date.toLocaleString('en-US', options);
+    const timeString = date.toLocaleString('en-US', options);
+    
+    // Return format: "MON 9/4 7:20 PM"
+    return `${dayOfWeek} ${timeString}`;
   };
 
   if (loading) {
