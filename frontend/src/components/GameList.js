@@ -5,6 +5,7 @@ const GameList = () => {
   const [games, setGames] = useState([]);
   const [userPicks, setUserPicks] = useState([]);
   const [selectedLeagueId, setSelectedLeagueId] = useState('');
+  const [selectedWeek, setSelectedWeek] = useState('all');
   const [leagues, setLeagues] = useState([]);
   const [pickMessages, setPickMessages] = useState({});
   const [selectedGamePicks, setSelectedGamePicks] = useState({});
@@ -131,24 +132,59 @@ const GameList = () => {
     return now >= gameTime;
   };
 
+  // Get unique weeks from games
+  const getAvailableWeeks = () => {
+    const weeks = [...new Set(games.map(game => game.week))].sort((a, b) => a - b);
+    return weeks;
+  };
+
+  // Filter games by selected week
+  const getFilteredGames = () => {
+    if (selectedWeek === 'all') {
+      return games;
+    }
+    return games.filter(game => game.week === parseInt(selectedWeek));
+  };
+
+  const filteredGames = getFilteredGames();
+
   return (
     <div className="game-list-container">
       <h2>NFL Games</h2>
-      
-      <div className="league-controls">
-        <label htmlFor="league-select">Select League (optional):</label>
-        <select 
-          id="league-select"
-          value={selectedLeagueId} 
-          onChange={(e) => setSelectedLeagueId(e.target.value)}
-        >
-          <option value="">Global Picks (No League)</option>
-          {leagues.map(league => (
-            <option key={league.id} value={league.id}>
-              {league.name}
-            </option>
-          ))}
-        </select>
+      <div className="game-list-container">
+        <div className="league-controls">
+          <div>
+            <label htmlFor="week-select">Select Week:</label>
+            <select 
+              id="week-select"
+              value={selectedWeek} 
+              onChange={(e) => setSelectedWeek(e.target.value)}
+            >
+              <option value="all">All Weeks</option>
+              {getAvailableWeeks().map(week => (
+                <option key={week} value={week}>
+                  Week {week}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <div>
+            <label htmlFor="league-select">Select League (optional):</label>
+            <select 
+              id="league-select"
+              value={selectedLeagueId} 
+              onChange={(e) => setSelectedLeagueId(e.target.value)}
+            >
+              <option value="">Global Picks (No League)</option>
+              {leagues.map(league => (
+                <option key={league.id} value={league.id}>
+                  {league.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
 
       <div className="table-container">
@@ -165,7 +201,7 @@ const GameList = () => {
             </tr>
           </thead>
           <tbody>
-            {games.map(game => {
+            {filteredGames.map(game => {
               const userPickForGame = userPicks.find(pick => 
                 pick.game.id === game.id && 
                 (selectedLeagueId === "" ? pick.league === null : pick.league?.id === parseInt(selectedLeagueId))
