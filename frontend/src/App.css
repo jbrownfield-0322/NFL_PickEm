@@ -509,72 +509,74 @@ table tbody tr:hover {
       padding: 10px 8px;
     }
 
-          /* Stack table cells for very small screens */
-      @media (max-width: 480px) {
-        table,
-        table thead,
-        table tbody,
-        table th,
-        table td,
-        table tr {
-          display: block;
-        }
+                  /* Stack table cells for very small screens */
+        @media (max-width: 480px) {
+          table,
+          table thead,
+          table tbody,
+          table th,
+          table td,
+          table tr {
+            display: block;
+          }
 
-        table thead tr {
-          position: absolute;
-          top: -9999px;
-          left: -9999px;
-        }
+          table thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+          }
 
-        table tr {
-          border: 1px solid #ccc;
-          margin-bottom: 10px;
-          border-radius: 6px;
-          background-color: #f9f9f9;
-          padding: 10px;
-        }
+          table tr {
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+            padding: 10px;
+          }
 
-        table td {
-          border: none;
-          border-bottom: 1px solid #eee;
-          position: relative;
-          padding: 8px 0 8px 120px; /* Increased left padding to prevent overlap */
-          text-align: left;
-          min-width: auto;
-          white-space: normal;
-          min-height: 20px; /* Ensure minimum height for content */
-        }
+          table td {
+            border: none;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding: 12px 15px;
+            text-align: left;
+            min-width: auto;
+            white-space: normal;
+            min-height: 20px;
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            grid-gap: 10px;
+            align-items: center;
+          }
 
-        table td:before {
-          content: attr(data-label) ": ";
-          position: absolute;
-          left: 10px;
-          width: 100px; /* Fixed width for labels */
-          padding-right: 10px;
-          white-space: nowrap;
-          font-weight: bold;
-          color: #333;
-          font-size: 14px;
-          line-height: 1.4;
-        }
+          table td:before {
+            content: attr(data-label) ": ";
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.4;
+            grid-column: 1;
+          }
 
-        table td:last-child {
-          border-bottom: none;
-        }
+          table td > * {
+            grid-column: 2;
+          }
 
-        /* Special handling for select elements in table cells */
-        table td select {
-          width: 100%;
-          max-width: 200px;
-          margin-top: 4px;
-        }
+          table td:last-child {
+            border-bottom: none;
+          }
 
-        /* Special handling for links in table cells */
-        table td a {
-          display: inline-block;
-          margin-top: 4px;
+          /* Special handling for select elements in table cells */
+          table td select {
+            width: 100%;
+            max-width: 200px;
+          }
+
+          /* Special handling for links in table cells */
+          table td a {
+            display: inline-block;
+          }
         }
-      }
   }
 
   /* Mobile Typography */
@@ -837,7 +839,9 @@ table tbody tr:hover {
   /* Improve table stacking for very small screens */
   table td:before {
     font-size: 12px;
-    width: 100px; /* Fixed width for consistency */
+    width: 120px; /* Increased width for consistency */
+    left: 15px;
+    padding-right: 15px;
   }
 
   /* Better handling for complex content in table cells */
