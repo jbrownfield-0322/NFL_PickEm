@@ -504,55 +504,77 @@ table tbody tr:hover {
       min-width: 100px;
     }
 
-    /* Stack table cells for very small screens */
-    @media (max-width: 480px) {
-      table,
-      table thead,
-      table tbody,
-      table th,
-      table td,
-      table tr {
-        display: block;
-      }
-
-      table thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-      }
-
-      table tr {
-        border: 1px solid #ccc;
-        margin-bottom: 10px;
-        border-radius: 6px;
-        background-color: #f9f9f9;
-      }
-
-      table td {
-        border: none;
-        border-bottom: 1px solid #eee;
-        position: relative;
-        padding-left: 50%;
-        text-align: left;
-        min-width: auto;
-        white-space: normal;
-      }
-
-      table td:before {
-        content: attr(data-label) ": ";
-        position: absolute;
-        left: 6px;
-        width: 45%;
-        padding-right: 10px;
-        white-space: nowrap;
-        font-weight: bold;
-        color: #333;
-      }
-
-      table td:last-child {
-        border-bottom: none;
-      }
+    /* Improve spacing for medium mobile screens */
+    table td {
+      padding: 10px 8px;
     }
+
+          /* Stack table cells for very small screens */
+      @media (max-width: 480px) {
+        table,
+        table thead,
+        table tbody,
+        table th,
+        table td,
+        table tr {
+          display: block;
+        }
+
+        table thead tr {
+          position: absolute;
+          top: -9999px;
+          left: -9999px;
+        }
+
+        table tr {
+          border: 1px solid #ccc;
+          margin-bottom: 10px;
+          border-radius: 6px;
+          background-color: #f9f9f9;
+          padding: 10px;
+        }
+
+        table td {
+          border: none;
+          border-bottom: 1px solid #eee;
+          position: relative;
+          padding: 8px 0 8px 120px; /* Increased left padding to prevent overlap */
+          text-align: left;
+          min-width: auto;
+          white-space: normal;
+          min-height: 20px; /* Ensure minimum height for content */
+        }
+
+        table td:before {
+          content: attr(data-label) ": ";
+          position: absolute;
+          left: 10px;
+          width: 100px; /* Fixed width for labels */
+          padding-right: 10px;
+          white-space: nowrap;
+          font-weight: bold;
+          color: #333;
+          font-size: 14px;
+          line-height: 1.4;
+        }
+
+        table td:last-child {
+          border-bottom: none;
+        }
+
+        /* Special handling for select elements in table cells */
+        table td select {
+          width: 100%;
+          max-width: 200px;
+          margin-top: 4px;
+        }
+
+        /* Special handling for links in table cells */
+        table td a {
+          display: inline-block;
+          margin-top: 4px;
+        }
+      }
   }
 
   /* Mobile Typography */
@@ -815,7 +837,21 @@ table tbody tr:hover {
   /* Improve table stacking for very small screens */
   table td:before {
     font-size: 12px;
-    width: 40%;
+    width: 100px; /* Fixed width for consistency */
+  }
+
+  /* Better handling for complex content in table cells */
+  table td .other-picks {
+    margin-top: 8px;
+  }
+
+  table td .pick-item {
+    margin-bottom: 4px;
+  }
+
+  table td .username {
+    min-width: 60px;
+    font-size: 12px;
   }
 
   /* Better button sizing for small screens */
