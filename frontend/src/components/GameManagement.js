@@ -103,7 +103,19 @@ function GameManagement() {
   const formatKickoffTime = (kickoffTime) => {
     if (!kickoffTime) return 'TBD';
     const date = new Date(kickoffTime);
-    return date.toLocaleString();
+    
+    // Format the date to show Eastern Time (NFL standard)
+    const options = {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: 'America/New_York'
+    };
+    
+    return date.toLocaleString('en-US', options);
   };
 
   if (loading) {
