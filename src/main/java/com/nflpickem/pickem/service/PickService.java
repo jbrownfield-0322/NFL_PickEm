@@ -53,7 +53,27 @@ public class PickService {
             throw new RuntimeException("Cannot submit pick after kickoff time");
         }
 
-        Pick existingPick = (leagueId != null) ? pickRepository.findByUserAndGameAndLeague(user, game, league) : pickRepository.findByUserAndGame(user, game);
+        // Find existing pick, handling potential duplicates by taking the most recent one
+        List<Pick> existingPicks = (leagueId != null) ? 
+            pickRepository.findAllByUserAndGameAndLeague(user, game, league) : 
+            pickRepository.findAllByUserAndGame(user, game);
+        
+        Pick existingPick = null;
+        if (!existingPicks.isEmpty()) {
+            // If there are multiple picks (duplicates), take the most recent one
+            existingPick = existingPicks.stream()
+                .sorted((p1, p2) -> p2.getUpdatedAt().compareTo(p1.getUpdatedAt()))
+                .findFirst()
+                .orElse(null);
+            
+            // Delete any duplicate picks (keep only the most recent)
+            if (existingPicks.size() > 1) {
+                existingPicks.stream()
+                    .sorted((p1, p2) -> p2.getUpdatedAt().compareTo(p1.getUpdatedAt()))
+                    .skip(1) // Skip the first (most recent) one
+                    .forEach(pickRepository::delete);
+            }
+        }
         
         if (existingPick != null) {
             // Update existing pick
@@ -178,9 +198,27 @@ public class PickService {
                     throw new RuntimeException("Invalid team picked for game: " + game.getId());
                 }
                 
-                Pick existingPick = (league != null) ? 
-                    pickRepository.findByUserAndGameAndLeague(user, game, league) : 
-                    pickRepository.findByUserAndGame(user, game);
+                // Find existing pick, handling potential duplicates by taking the most recent one
+                List<Pick> existingPicks = (league != null) ? 
+                    pickRepository.findAllByUserAndGameAndLeague(user, game, league) : 
+                    pickRepository.findAllByUserAndGame(user, game);
+                
+                Pick existingPick = null;
+                if (!existingPicks.isEmpty()) {
+                    // If there are multiple picks (duplicates), take the most recent one
+                    existingPick = existingPicks.stream()
+                        .sorted((p1, p2) -> p2.getUpdatedAt().compareTo(p1.getUpdatedAt()))
+                        .findFirst()
+                        .orElse(null);
+                    
+                    // Delete any duplicate picks (keep only the most recent)
+                    if (existingPicks.size() > 1) {
+                        existingPicks.stream()
+                            .sorted((p1, p2) -> p2.getUpdatedAt().compareTo(p1.getUpdatedAt()))
+                            .skip(1) // Skip the first (most recent) one
+                            .forEach(pickRepository::delete);
+                    }
+                }
                 
                 Pick pick;
                 if (existingPick != null) {
