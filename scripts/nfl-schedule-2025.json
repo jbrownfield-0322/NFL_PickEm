@@ -1,401 +1,9 @@
 [
   {
     "week": 1,
-    "awayTeam": "Los Angeles Chargers",
-    "homeTeam": "Detroit Lions",
-    "kickoffTime": "2025-07-31T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Indianapolis Colts",
-    "homeTeam": "Baltimore Ravens",
-    "kickoffTime": "2025-08-07T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Cincinnati Bengals",
-    "homeTeam": "Philadelphia Eagles",
-    "kickoffTime": "2025-08-07T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Las Vegas Raiders",
-    "homeTeam": "Seattle Seahawks",
-    "kickoffTime": "2025-08-07T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Detroit Lions",
-    "homeTeam": "Atlanta Falcons",
-    "kickoffTime": "2025-08-08T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Cleveland Browns",
-    "homeTeam": "Carolina Panthers",
-    "kickoffTime": "2025-08-08T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Washington Commanders",
-    "homeTeam": "New England Patriots",
-    "kickoffTime": "2025-08-08T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "New York Giants",
-    "homeTeam": "Buffalo Bills",
-    "kickoffTime": "2025-08-09T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Houston Texans",
-    "homeTeam": "Minnesota Vikings",
-    "kickoffTime": "2025-08-09T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Pittsburgh Steelers",
-    "homeTeam": "Jacksonville Jaguars",
-    "kickoffTime": "2025-08-09T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Dallas Cowboys",
-    "homeTeam": "Los Angeles Rams",
-    "kickoffTime": "2025-08-09T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Tennessee Titans",
-    "homeTeam": "Tampa Bay Buccaneers",
-    "kickoffTime": "2025-08-09T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Kansas City Chiefs",
-    "homeTeam": "Arizona Cardinals",
-    "kickoffTime": "2025-08-09T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "New York Jets",
-    "homeTeam": "Green Bay Packers",
-    "kickoffTime": "2025-08-09T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Denver Broncos",
-    "homeTeam": "San Francisco 49ers",
-    "kickoffTime": "2025-08-09T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Miami Dolphins",
-    "homeTeam": "Chicago Bears",
-    "kickoffTime": "2025-08-10T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "New Orleans Saints",
-    "homeTeam": "Los Angeles Chargers",
-    "kickoffTime": "2025-08-10T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Tennessee Titans",
-    "homeTeam": "Atlanta Falcons",
-    "kickoffTime": "2025-08-15T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Kansas City Chiefs",
-    "homeTeam": "Seattle Seahawks",
-    "kickoffTime": "2025-08-15T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Green Bay Packers",
-    "homeTeam": "Indianapolis Colts",
-    "kickoffTime": "2025-08-16T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Miami Dolphins",
-    "homeTeam": "Detroit Lions",
-    "kickoffTime": "2025-08-16T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Carolina Panthers",
-    "homeTeam": "Houston Texans",
-    "kickoffTime": "2025-08-16T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "New England Patriots",
-    "homeTeam": "Minnesota Vikings",
-    "kickoffTime": "2025-08-16T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Cleveland Browns",
-    "homeTeam": "Philadelphia Eagles",
-    "kickoffTime": "2025-08-16T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "San Francisco 49ers",
-    "homeTeam": "Las Vegas Raiders",
-    "kickoffTime": "2025-08-16T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Baltimore Ravens",
-    "homeTeam": "Dallas Cowboys",
-    "kickoffTime": "2025-08-16T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "New York Jets",
-    "homeTeam": "New York Giants",
-    "kickoffTime": "2025-08-16T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Tampa Bay Buccaneers",
-    "homeTeam": "Pittsburgh Steelers",
-    "kickoffTime": "2025-08-16T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Los Angeles Chargers",
-    "homeTeam": "Los Angeles Rams",
-    "kickoffTime": "2025-08-16T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Arizona Cardinals",
-    "homeTeam": "Denver Broncos",
-    "kickoffTime": "2025-08-16T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Jacksonville Jaguars",
-    "homeTeam": "New Orleans Saints",
-    "kickoffTime": "2025-08-17T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Buffalo Bills",
-    "homeTeam": "Chicago Bears",
-    "kickoffTime": "2025-08-17T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Cincinnati Bengals",
-    "homeTeam": "Washington Commanders",
-    "kickoffTime": "2025-08-18T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Pittsburgh Steelers",
-    "homeTeam": "Carolina Panthers",
-    "kickoffTime": "2025-08-21T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "New England Patriots",
-    "homeTeam": "New York Giants",
-    "kickoffTime": "2025-08-21T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Philadelphia Eagles",
-    "homeTeam": "New York Jets",
-    "kickoffTime": "2025-08-22T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Atlanta Falcons",
-    "homeTeam": "Dallas Cowboys",
-    "kickoffTime": "2025-08-22T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Minnesota Vikings",
-    "homeTeam": "Tennessee Titans",
-    "kickoffTime": "2025-08-22T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Chicago Bears",
-    "homeTeam": "Kansas City Chiefs",
-    "kickoffTime": "2025-08-22T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Baltimore Ravens",
-    "homeTeam": "Washington Commanders",
-    "kickoffTime": "2025-08-23T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Indianapolis Colts",
-    "homeTeam": "Cincinnati Bengals",
-    "kickoffTime": "2025-08-23T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Los Angeles Rams",
-    "homeTeam": "Cleveland Browns",
-    "kickoffTime": "2025-08-23T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Houston Texans",
-    "homeTeam": "Detroit Lions",
-    "kickoffTime": "2025-08-23T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Denver Broncos",
-    "homeTeam": "New Orleans Saints",
-    "kickoffTime": "2025-08-23T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Seattle Seahawks",
-    "homeTeam": "Green Bay Packers",
-    "kickoffTime": "2025-08-23T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Jacksonville Jaguars",
-    "homeTeam": "Miami Dolphins",
-    "kickoffTime": "2025-08-23T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Buffalo Bills",
-    "homeTeam": "Tampa Bay Buccaneers",
-    "kickoffTime": "2025-08-23T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Los Angeles Chargers",
-    "homeTeam": "San Francisco 49ers",
-    "kickoffTime": "2025-08-23T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
-    "awayTeam": "Las Vegas Raiders",
-    "homeTeam": "Arizona Cardinals",
-    "kickoffTime": "2025-08-23T21:00:00.000Z",
-    "winningTeam": "",
-    "scored": false
-  },
-  {
-    "week": 1,
     "awayTeam": "Dallas Cowboys",
     "homeTeam": "Philadelphia Eagles",
-    "kickoffTime": "2025-09-04T21:00:00.000Z",
+    "kickoffTime": "2025-09-04T21:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
@@ -411,7 +19,7 @@
     "week": 1,
     "awayTeam": "Tampa Bay Buccaneers",
     "homeTeam": "Atlanta Falcons",
-    "kickoffTime": "2025-09-07T21:00:00.000Z",
+    "kickoffTime": "2025-09-07T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
@@ -419,7 +27,7 @@
     "week": 1,
     "awayTeam": "Cincinnati Bengals",
     "homeTeam": "Cleveland Browns",
-    "kickoffTime": "2025-09-07T21:00:00.000Z",
+    "kickoffTime": "2025-09-07T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
@@ -427,7 +35,7 @@
     "week": 1,
     "awayTeam": "Miami Dolphins",
     "homeTeam": "Indianapolis Colts",
-    "kickoffTime": "2025-09-07T21:00:00.000Z",
+    "kickoffTime": "2025-09-07T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
@@ -435,7 +43,7 @@
     "week": 1,
     "awayTeam": "Carolina Panthers",
     "homeTeam": "Jacksonville Jaguars",
-    "kickoffTime": "2025-09-07T21:00:00.000Z",
+    "kickoffTime": "2025-09-07T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
@@ -443,7 +51,7 @@
     "week": 1,
     "awayTeam": "Arizona Cardinals",
     "homeTeam": "New Orleans Saints",
-    "kickoffTime": "2025-09-07T21:00:00.000Z",
+    "kickoffTime": "2025-09-07T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
@@ -451,7 +59,7 @@
     "week": 1,
     "awayTeam": "Las Vegas Raiders",
     "homeTeam": "New England Patriots",
-    "kickoffTime": "2025-09-07T21:00:00.000Z",
+    "kickoffTime": "2025-09-07T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
@@ -459,7 +67,7 @@
     "week": 1,
     "awayTeam": "Pittsburgh Steelers",
     "homeTeam": "New York Jets",
-    "kickoffTime": "2025-09-07T21:00:00.000Z",
+    "kickoffTime": "2025-09-07T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
@@ -467,7 +75,7 @@
     "week": 1,
     "awayTeam": "New York Giants",
     "homeTeam": "Washington Commanders",
-    "kickoffTime": "2025-09-07T21:00:00.000Z",
+    "kickoffTime": "2025-09-07T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
@@ -475,7 +83,7 @@
     "week": 1,
     "awayTeam": "Tennessee Titans",
     "homeTeam": "Denver Broncos",
-    "kickoffTime": "2025-09-07T21:00:00.000Z",
+    "kickoffTime": "2025-09-07T17:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
@@ -483,7 +91,7 @@
     "week": 1,
     "awayTeam": "San Francisco 49ers",
     "homeTeam": "Seattle Seahawks",
-    "kickoffTime": "2025-09-07T21:00:00.000Z",
+    "kickoffTime": "2025-09-07T17:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
@@ -491,7 +99,7 @@
     "week": 1,
     "awayTeam": "Detroit Lions",
     "homeTeam": "Green Bay Packers",
-    "kickoffTime": "2025-09-07T21:00:00.000Z",
+    "kickoffTime": "2025-09-07T17:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
@@ -499,7 +107,7 @@
     "week": 1,
     "awayTeam": "Houston Texans",
     "homeTeam": "Los Angeles Rams",
-    "kickoffTime": "2025-09-07T21:00:00.000Z",
+    "kickoffTime": "2025-09-07T17:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
@@ -507,7 +115,7 @@
     "week": 1,
     "awayTeam": "Baltimore Ravens",
     "homeTeam": "Buffalo Bills",
-    "kickoffTime": "2025-09-07T21:00:00.000Z",
+    "kickoffTime": "2025-09-07T21:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
@@ -515,2055 +123,2055 @@
     "week": 1,
     "awayTeam": "Minnesota Vikings",
     "homeTeam": "Chicago Bears",
-    "kickoffTime": "2025-09-08T21:00:00.000Z",
+    "kickoffTime": "2025-09-08T21:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "Washington Commanders",
     "homeTeam": "Green Bay Packers",
-    "kickoffTime": "2025-09-11T21:00:00.000Z",
+    "kickoffTime": "2025-09-11T21:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "Jacksonville Jaguars",
     "homeTeam": "Cincinnati Bengals",
-    "kickoffTime": "2025-09-14T21:00:00.000Z",
+    "kickoffTime": "2025-09-14T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "New York Giants",
     "homeTeam": "Dallas Cowboys",
-    "kickoffTime": "2025-09-14T21:00:00.000Z",
+    "kickoffTime": "2025-09-14T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "Chicago Bears",
     "homeTeam": "Detroit Lions",
-    "kickoffTime": "2025-09-14T21:00:00.000Z",
+    "kickoffTime": "2025-09-14T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "New England Patriots",
     "homeTeam": "Miami Dolphins",
-    "kickoffTime": "2025-09-14T21:00:00.000Z",
+    "kickoffTime": "2025-09-14T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "San Francisco 49ers",
     "homeTeam": "New Orleans Saints",
-    "kickoffTime": "2025-09-14T21:00:00.000Z",
+    "kickoffTime": "2025-09-14T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "Buffalo Bills",
     "homeTeam": "New York Jets",
-    "kickoffTime": "2025-09-14T21:00:00.000Z",
+    "kickoffTime": "2025-09-14T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "Los Angeles Rams",
     "homeTeam": "Tennessee Titans",
-    "kickoffTime": "2025-09-14T21:00:00.000Z",
+    "kickoffTime": "2025-09-14T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "Seattle Seahawks",
     "homeTeam": "Pittsburgh Steelers",
-    "kickoffTime": "2025-09-14T21:00:00.000Z",
+    "kickoffTime": "2025-09-14T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "Cleveland Browns",
     "homeTeam": "Baltimore Ravens",
-    "kickoffTime": "2025-09-14T21:00:00.000Z",
+    "kickoffTime": "2025-09-14T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "Denver Broncos",
     "homeTeam": "Indianapolis Colts",
-    "kickoffTime": "2025-09-14T21:00:00.000Z",
+    "kickoffTime": "2025-09-14T17:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "Carolina Panthers",
     "homeTeam": "Arizona Cardinals",
-    "kickoffTime": "2025-09-14T21:00:00.000Z",
+    "kickoffTime": "2025-09-14T17:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "Philadelphia Eagles",
     "homeTeam": "Kansas City Chiefs",
-    "kickoffTime": "2025-09-14T21:00:00.000Z",
+    "kickoffTime": "2025-09-14T17:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "Atlanta Falcons",
     "homeTeam": "Minnesota Vikings",
-    "kickoffTime": "2025-09-14T21:00:00.000Z",
+    "kickoffTime": "2025-09-14T21:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "Tampa Bay Buccaneers",
     "homeTeam": "Houston Texans",
-    "kickoffTime": "2025-09-15T21:00:00.000Z",
+    "kickoffTime": "2025-09-15T20:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 2,
     "awayTeam": "Los Angeles Chargers",
     "homeTeam": "Las Vegas Raiders",
-    "kickoffTime": "2025-09-15T21:00:00.000Z",
+    "kickoffTime": "2025-09-15T23:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "Miami Dolphins",
     "homeTeam": "Buffalo Bills",
-    "kickoffTime": "2025-09-18T21:00:00.000Z",
+    "kickoffTime": "2025-09-18T21:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "Atlanta Falcons",
     "homeTeam": "Carolina Panthers",
-    "kickoffTime": "2025-09-21T21:00:00.000Z",
+    "kickoffTime": "2025-09-21T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "Green Bay Packers",
     "homeTeam": "Cleveland Browns",
-    "kickoffTime": "2025-09-21T21:00:00.000Z",
+    "kickoffTime": "2025-09-21T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "Houston Texans",
     "homeTeam": "Jacksonville Jaguars",
-    "kickoffTime": "2025-09-21T21:00:00.000Z",
+    "kickoffTime": "2025-09-21T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "Cincinnati Bengals",
     "homeTeam": "Minnesota Vikings",
-    "kickoffTime": "2025-09-21T21:00:00.000Z",
+    "kickoffTime": "2025-09-21T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "Pittsburgh Steelers",
     "homeTeam": "New England Patriots",
-    "kickoffTime": "2025-09-21T21:00:00.000Z",
+    "kickoffTime": "2025-09-21T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "Indianapolis Colts",
     "homeTeam": "Tennessee Titans",
-    "kickoffTime": "2025-09-21T21:00:00.000Z",
+    "kickoffTime": "2025-09-21T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "Los Angeles Rams",
     "homeTeam": "Philadelphia Eagles",
-    "kickoffTime": "2025-09-21T21:00:00.000Z",
+    "kickoffTime": "2025-09-21T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "New York Jets",
     "homeTeam": "Tampa Bay Buccaneers",
-    "kickoffTime": "2025-09-21T21:00:00.000Z",
+    "kickoffTime": "2025-09-21T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "Las Vegas Raiders",
     "homeTeam": "Washington Commanders",
-    "kickoffTime": "2025-09-21T21:00:00.000Z",
+    "kickoffTime": "2025-09-21T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "Denver Broncos",
     "homeTeam": "Los Angeles Chargers",
-    "kickoffTime": "2025-09-21T21:00:00.000Z",
+    "kickoffTime": "2025-09-21T17:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "New Orleans Saints",
     "homeTeam": "Seattle Seahawks",
-    "kickoffTime": "2025-09-21T21:00:00.000Z",
+    "kickoffTime": "2025-09-21T17:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "Dallas Cowboys",
     "homeTeam": "Chicago Bears",
-    "kickoffTime": "2025-09-21T21:00:00.000Z",
+    "kickoffTime": "2025-09-21T17:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "Arizona Cardinals",
     "homeTeam": "San Francisco 49ers",
-    "kickoffTime": "2025-09-21T21:00:00.000Z",
+    "kickoffTime": "2025-09-21T17:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "Kansas City Chiefs",
     "homeTeam": "New York Giants",
-    "kickoffTime": "2025-09-21T21:00:00.000Z",
+    "kickoffTime": "2025-09-21T21:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 3,
     "awayTeam": "Detroit Lions",
     "homeTeam": "Baltimore Ravens",
-    "kickoffTime": "2025-09-22T21:00:00.000Z",
+    "kickoffTime": "2025-09-22T21:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "Seattle Seahawks",
     "homeTeam": "Arizona Cardinals",
-    "kickoffTime": "2025-09-25T21:00:00.000Z",
+    "kickoffTime": "2025-09-25T21:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "Minnesota Vikings",
     "homeTeam": "Pittsburgh Steelers",
-    "kickoffTime": "2025-09-28T21:00:00.000Z",
+    "kickoffTime": "2025-09-28T10:30:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "Washington Commanders",
     "homeTeam": "Atlanta Falcons",
-    "kickoffTime": "2025-09-28T21:00:00.000Z",
+    "kickoffTime": "2025-09-28T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "New Orleans Saints",
     "homeTeam": "Buffalo Bills",
-    "kickoffTime": "2025-09-28T21:00:00.000Z",
+    "kickoffTime": "2025-09-28T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "Cleveland Browns",
     "homeTeam": "Detroit Lions",
-    "kickoffTime": "2025-09-28T21:00:00.000Z",
+    "kickoffTime": "2025-09-28T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "Tennessee Titans",
     "homeTeam": "Houston Texans",
-    "kickoffTime": "2025-09-28T21:00:00.000Z",
+    "kickoffTime": "2025-09-28T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "Carolina Panthers",
     "homeTeam": "New England Patriots",
-    "kickoffTime": "2025-09-28T21:00:00.000Z",
+    "kickoffTime": "2025-09-28T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "Los Angeles Chargers",
     "homeTeam": "New York Giants",
-    "kickoffTime": "2025-09-28T21:00:00.000Z",
+    "kickoffTime": "2025-09-28T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "Philadelphia Eagles",
     "homeTeam": "Tampa Bay Buccaneers",
-    "kickoffTime": "2025-09-28T21:00:00.000Z",
+    "kickoffTime": "2025-09-28T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "Indianapolis Colts",
     "homeTeam": "Los Angeles Rams",
-    "kickoffTime": "2025-09-28T21:00:00.000Z",
+    "kickoffTime": "2025-09-28T17:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "Jacksonville Jaguars",
     "homeTeam": "San Francisco 49ers",
-    "kickoffTime": "2025-09-28T21:00:00.000Z",
+    "kickoffTime": "2025-09-28T17:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "Baltimore Ravens",
     "homeTeam": "Kansas City Chiefs",
-    "kickoffTime": "2025-09-28T21:00:00.000Z",
+    "kickoffTime": "2025-09-28T17:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "Chicago Bears",
     "homeTeam": "Las Vegas Raiders",
-    "kickoffTime": "2025-09-28T21:00:00.000Z",
+    "kickoffTime": "2025-09-28T17:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "Green Bay Packers",
     "homeTeam": "Dallas Cowboys",
-    "kickoffTime": "2025-09-28T21:00:00.000Z",
+    "kickoffTime": "2025-09-28T21:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "New York Jets",
     "homeTeam": "Miami Dolphins",
-    "kickoffTime": "2025-09-29T21:00:00.000Z",
+    "kickoffTime": "2025-09-29T20:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 4,
     "awayTeam": "Cincinnati Bengals",
     "homeTeam": "Denver Broncos",
-    "kickoffTime": "2025-09-29T21:00:00.000Z",
+    "kickoffTime": "2025-09-29T21:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 5,
     "awayTeam": "San Francisco 49ers",
     "homeTeam": "Los Angeles Rams",
-    "kickoffTime": "2025-10-02T21:00:00.000Z",
+    "kickoffTime": "2025-10-02T21:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 5,
     "awayTeam": "Minnesota Vikings",
     "homeTeam": "Cleveland Browns",
-    "kickoffTime": "2025-10-05T21:00:00.000Z",
+    "kickoffTime": "2025-10-05T10:30:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 5,
     "awayTeam": "Miami Dolphins",
     "homeTeam": "Carolina Panthers",
-    "kickoffTime": "2025-10-05T21:00:00.000Z",
+    "kickoffTime": "2025-10-05T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 5,
     "awayTeam": "Las Vegas Raiders",
     "homeTeam": "Indianapolis Colts",
-    "kickoffTime": "2025-10-05T21:00:00.000Z",
+    "kickoffTime": "2025-10-05T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 5,
     "awayTeam": "New York Giants",
     "homeTeam": "New Orleans Saints",
-    "kickoffTime": "2025-10-05T21:00:00.000Z",
+    "kickoffTime": "2025-10-05T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 5,
     "awayTeam": "Dallas Cowboys",
     "homeTeam": "New York Jets",
-    "kickoffTime": "2025-10-05T21:00:00.000Z",
+    "kickoffTime": "2025-10-05T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 5,
     "awayTeam": "Denver Broncos",
     "homeTeam": "Philadelphia Eagles",
-    "kickoffTime": "2025-10-05T21:00:00.000Z",
+    "kickoffTime": "2025-10-05T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 5,
     "awayTeam": "Houston Texans",
     "homeTeam": "Baltimore Ravens",
-    "kickoffTime": "2025-10-05T21:00:00.000Z",
+    "kickoffTime": "2025-10-05T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 5,
     "awayTeam": "Tennessee Titans",
     "homeTeam": "Arizona Cardinals",
-    "kickoffTime": "2025-10-05T21:00:00.000Z",
+    "kickoffTime": "2025-10-05T17:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 5,
     "awayTeam": "Tampa Bay Buccaneers",
     "homeTeam": "Seattle Seahawks",
-    "kickoffTime": "2025-10-05T21:00:00.000Z",
+    "kickoffTime": "2025-10-05T17:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 5,
     "awayTeam": "Detroit Lions",
     "homeTeam": "Cincinnati Bengals",
-    "kickoffTime": "2025-10-05T21:00:00.000Z",
+    "kickoffTime": "2025-10-05T17:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 5,
     "awayTeam": "Washington Commanders",
     "homeTeam": "Los Angeles Chargers",
-    "kickoffTime": "2025-10-05T21:00:00.000Z",
+    "kickoffTime": "2025-10-05T17:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 5,
     "awayTeam": "New England Patriots",
     "homeTeam": "Buffalo Bills",
-    "kickoffTime": "2025-10-05T21:00:00.000Z",
+    "kickoffTime": "2025-10-05T21:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 5,
     "awayTeam": "Kansas City Chiefs",
     "homeTeam": "Jacksonville Jaguars",
-    "kickoffTime": "2025-10-06T21:00:00.000Z",
+    "kickoffTime": "2025-10-06T21:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 6,
     "awayTeam": "Philadelphia Eagles",
     "homeTeam": "New York Giants",
-    "kickoffTime": "2025-10-09T21:00:00.000Z",
+    "kickoffTime": "2025-10-09T21:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 6,
     "awayTeam": "Denver Broncos",
     "homeTeam": "New York Jets",
-    "kickoffTime": "2025-10-12T21:00:00.000Z",
+    "kickoffTime": "2025-10-12T10:30:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 6,
     "awayTeam": "Dallas Cowboys",
     "homeTeam": "Carolina Panthers",
-    "kickoffTime": "2025-10-12T21:00:00.000Z",
+    "kickoffTime": "2025-10-12T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 6,
     "awayTeam": "Arizona Cardinals",
     "homeTeam": "Indianapolis Colts",
-    "kickoffTime": "2025-10-12T21:00:00.000Z",
+    "kickoffTime": "2025-10-12T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 6,
     "awayTeam": "Seattle Seahawks",
     "homeTeam": "Jacksonville Jaguars",
-    "kickoffTime": "2025-10-12T21:00:00.000Z",
+    "kickoffTime": "2025-10-12T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 6,
     "awayTeam": "Los Angeles Chargers",
     "homeTeam": "Miami Dolphins",
-    "kickoffTime": "2025-10-12T21:00:00.000Z",
+    "kickoffTime": "2025-10-12T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 6,
     "awayTeam": "Cleveland Browns",
     "homeTeam": "Pittsburgh Steelers",
-    "kickoffTime": "2025-10-12T21:00:00.000Z",
+    "kickoffTime": "2025-10-12T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 6,
     "awayTeam": "Los Angeles Rams",
     "homeTeam": "Baltimore Ravens",
-    "kickoffTime": "2025-10-12T21:00:00.000Z",
+    "kickoffTime": "2025-10-12T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 6,
     "awayTeam": "San Francisco 49ers",
     "homeTeam": "Tampa Bay Buccaneers",
-    "kickoffTime": "2025-10-12T21:00:00.000Z",
+    "kickoffTime": "2025-10-12T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 6,
     "awayTeam": "Tennessee Titans",
     "homeTeam": "Las Vegas Raiders",
-    "kickoffTime": "2025-10-12T21:00:00.000Z",
+    "kickoffTime": "2025-10-12T17:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 6,
     "awayTeam": "Cincinnati Bengals",
     "homeTeam": "Green Bay Packers",
-    "kickoffTime": "2025-10-12T21:00:00.000Z",
+    "kickoffTime": "2025-10-12T17:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 6,
     "awayTeam": "New England Patriots",
     "homeTeam": "New Orleans Saints",
-    "kickoffTime": "2025-10-12T21:00:00.000Z",
+    "kickoffTime": "2025-10-12T17:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 6,
     "awayTeam": "Detroit Lions",
     "homeTeam": "Kansas City Chiefs",
-    "kickoffTime": "2025-10-12T21:00:00.000Z",
+    "kickoffTime": "2025-10-12T21:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 6,
     "awayTeam": "Buffalo Bills",
     "homeTeam": "Atlanta Falcons",
-    "kickoffTime": "2025-10-13T21:00:00.000Z",
+    "kickoffTime": "2025-10-13T20:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 6,
     "awayTeam": "Chicago Bears",
     "homeTeam": "Washington Commanders",
-    "kickoffTime": "2025-10-13T21:00:00.000Z",
+    "kickoffTime": "2025-10-13T21:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 7,
     "awayTeam": "Pittsburgh Steelers",
     "homeTeam": "Cincinnati Bengals",
-    "kickoffTime": "2025-10-16T21:00:00.000Z",
+    "kickoffTime": "2025-10-16T21:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 7,
     "awayTeam": "Los Angeles Rams",
     "homeTeam": "Jacksonville Jaguars",
-    "kickoffTime": "2025-10-19T21:00:00.000Z",
+    "kickoffTime": "2025-10-19T10:30:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 7,
     "awayTeam": "New Orleans Saints",
     "homeTeam": "Chicago Bears",
-    "kickoffTime": "2025-10-19T21:00:00.000Z",
+    "kickoffTime": "2025-10-19T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 7,
     "awayTeam": "Miami Dolphins",
     "homeTeam": "Cleveland Browns",
-    "kickoffTime": "2025-10-19T21:00:00.000Z",
+    "kickoffTime": "2025-10-19T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 7,
     "awayTeam": "Las Vegas Raiders",
     "homeTeam": "Kansas City Chiefs",
-    "kickoffTime": "2025-10-19T21:00:00.000Z",
+    "kickoffTime": "2025-10-19T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 7,
     "awayTeam": "Philadelphia Eagles",
     "homeTeam": "Minnesota Vikings",
-    "kickoffTime": "2025-10-19T21:00:00.000Z",
+    "kickoffTime": "2025-10-19T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 7,
     "awayTeam": "Carolina Panthers",
     "homeTeam": "New York Jets",
-    "kickoffTime": "2025-10-19T21:00:00.000Z",
+    "kickoffTime": "2025-10-19T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 7,
     "awayTeam": "New England Patriots",
     "homeTeam": "Tennessee Titans",
-    "kickoffTime": "2025-10-19T21:00:00.000Z",
+    "kickoffTime": "2025-10-19T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 7,
     "awayTeam": "New York Giants",
     "homeTeam": "Denver Broncos",
-    "kickoffTime": "2025-10-19T21:00:00.000Z",
+    "kickoffTime": "2025-10-19T17:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 7,
     "awayTeam": "Indianapolis Colts",
     "homeTeam": "Los Angeles Chargers",
-    "kickoffTime": "2025-10-19T21:00:00.000Z",
+    "kickoffTime": "2025-10-19T17:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 7,
     "awayTeam": "Green Bay Packers",
     "homeTeam": "Arizona Cardinals",
-    "kickoffTime": "2025-10-19T21:00:00.000Z",
+    "kickoffTime": "2025-10-19T17:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 7,
     "awayTeam": "Washington Commanders",
     "homeTeam": "Dallas Cowboys",
-    "kickoffTime": "2025-10-19T21:00:00.000Z",
+    "kickoffTime": "2025-10-19T17:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 7,
     "awayTeam": "Atlanta Falcons",
     "homeTeam": "San Francisco 49ers",
-    "kickoffTime": "2025-10-19T21:00:00.000Z",
+    "kickoffTime": "2025-10-19T21:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 7,
     "awayTeam": "Tampa Bay Buccaneers",
     "homeTeam": "Detroit Lions",
-    "kickoffTime": "2025-10-20T21:00:00.000Z",
+    "kickoffTime": "2025-10-20T20:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 7,
     "awayTeam": "Houston Texans",
     "homeTeam": "Seattle Seahawks",
-    "kickoffTime": "2025-10-20T21:00:00.000Z",
+    "kickoffTime": "2025-10-20T23:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 8,
     "awayTeam": "Minnesota Vikings",
     "homeTeam": "Los Angeles Chargers",
-    "kickoffTime": "2025-10-23T21:00:00.000Z",
+    "kickoffTime": "2025-10-23T21:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 8,
     "awayTeam": "Miami Dolphins",
     "homeTeam": "Atlanta Falcons",
-    "kickoffTime": "2025-10-26T21:00:00.000Z",
+    "kickoffTime": "2025-10-26T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 8,
     "awayTeam": "Buffalo Bills",
     "homeTeam": "Carolina Panthers",
-    "kickoffTime": "2025-10-26T21:00:00.000Z",
+    "kickoffTime": "2025-10-26T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 8,
     "awayTeam": "New York Jets",
     "homeTeam": "Cincinnati Bengals",
-    "kickoffTime": "2025-10-26T21:00:00.000Z",
+    "kickoffTime": "2025-10-26T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 8,
     "awayTeam": "San Francisco 49ers",
     "homeTeam": "Houston Texans",
-    "kickoffTime": "2025-10-26T21:00:00.000Z",
+    "kickoffTime": "2025-10-26T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 8,
     "awayTeam": "Cleveland Browns",
     "homeTeam": "New England Patriots",
-    "kickoffTime": "2025-10-26T21:00:00.000Z",
+    "kickoffTime": "2025-10-26T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 8,
     "awayTeam": "New York Giants",
     "homeTeam": "Philadelphia Eagles",
-    "kickoffTime": "2025-10-26T21:00:00.000Z",
+    "kickoffTime": "2025-10-26T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 8,
     "awayTeam": "Chicago Bears",
     "homeTeam": "Baltimore Ravens",
-    "kickoffTime": "2025-10-26T21:00:00.000Z",
+    "kickoffTime": "2025-10-26T14:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 8,
     "awayTeam": "Tampa Bay Buccaneers",
     "homeTeam": "New Orleans Saints",
-    "kickoffTime": "2025-10-26T21:00:00.000Z",
+    "kickoffTime": "2025-10-26T17:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 8,
     "awayTeam": "Tennessee Titans",
     "homeTeam": "Indianapolis Colts",
-    "kickoffTime": "2025-10-26T21:00:00.000Z",
+    "kickoffTime": "2025-10-26T17:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 8,
     "awayTeam": "Dallas Cowboys",
     "homeTeam": "Denver Broncos",
-    "kickoffTime": "2025-10-26T21:00:00.000Z",
+    "kickoffTime": "2025-10-26T17:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 8,
     "awayTeam": "Green Bay Packers",
     "homeTeam": "Pittsburgh Steelers",
-    "kickoffTime": "2025-10-26T21:00:00.000Z",
+    "kickoffTime": "2025-10-26T21:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 8,
     "awayTeam": "Washington Commanders",
     "homeTeam": "Kansas City Chiefs",
-    "kickoffTime": "2025-10-27T21:00:00.000Z",
+    "kickoffTime": "2025-10-27T21:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 9,
     "awayTeam": "Baltimore Ravens",
     "homeTeam": "Miami Dolphins",
-    "kickoffTime": "2025-10-30T21:00:00.000Z",
+    "kickoffTime": "2025-10-30T21:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 9,
     "awayTeam": "Chicago Bears",
     "homeTeam": "Cincinnati Bengals",
-    "kickoffTime": "2025-11-02T22:00:00.000Z",
+    "kickoffTime": "2025-11-02T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 9,
     "awayTeam": "Minnesota Vikings",
     "homeTeam": "Detroit Lions",
-    "kickoffTime": "2025-11-02T22:00:00.000Z",
+    "kickoffTime": "2025-11-02T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 9,
     "awayTeam": "Carolina Panthers",
     "homeTeam": "Green Bay Packers",
-    "kickoffTime": "2025-11-02T22:00:00.000Z",
+    "kickoffTime": "2025-11-02T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 9,
     "awayTeam": "Denver Broncos",
     "homeTeam": "Houston Texans",
-    "kickoffTime": "2025-11-02T22:00:00.000Z",
+    "kickoffTime": "2025-11-02T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 9,
     "awayTeam": "Atlanta Falcons",
     "homeTeam": "New England Patriots",
-    "kickoffTime": "2025-11-02T22:00:00.000Z",
+    "kickoffTime": "2025-11-02T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 9,
     "awayTeam": "San Francisco 49ers",
     "homeTeam": "New York Giants",
-    "kickoffTime": "2025-11-02T22:00:00.000Z",
+    "kickoffTime": "2025-11-02T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 9,
     "awayTeam": "Los Angeles Chargers",
     "homeTeam": "Tennessee Titans",
-    "kickoffTime": "2025-11-02T22:00:00.000Z",
+    "kickoffTime": "2025-11-02T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 9,
     "awayTeam": "Indianapolis Colts",
     "homeTeam": "Pittsburgh Steelers",
-    "kickoffTime": "2025-11-02T22:00:00.000Z",
+    "kickoffTime": "2025-11-02T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 9,
     "awayTeam": "Jacksonville Jaguars",
     "homeTeam": "Las Vegas Raiders",
-    "kickoffTime": "2025-11-02T22:00:00.000Z",
+    "kickoffTime": "2025-11-02T18:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 9,
     "awayTeam": "New Orleans Saints",
     "homeTeam": "Los Angeles Rams",
-    "kickoffTime": "2025-11-02T22:00:00.000Z",
+    "kickoffTime": "2025-11-02T18:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 9,
     "awayTeam": "Kansas City Chiefs",
     "homeTeam": "Buffalo Bills",
-    "kickoffTime": "2025-11-02T22:00:00.000Z",
+    "kickoffTime": "2025-11-02T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 9,
     "awayTeam": "Seattle Seahawks",
     "homeTeam": "Washington Commanders",
-    "kickoffTime": "2025-11-02T22:00:00.000Z",
+    "kickoffTime": "2025-11-02T22:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 9,
     "awayTeam": "Arizona Cardinals",
     "homeTeam": "Dallas Cowboys",
-    "kickoffTime": "2025-11-03T22:00:00.000Z",
+    "kickoffTime": "2025-11-03T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 10,
     "awayTeam": "Las Vegas Raiders",
     "homeTeam": "Denver Broncos",
-    "kickoffTime": "2025-11-06T22:00:00.000Z",
+    "kickoffTime": "2025-11-06T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 10,
     "awayTeam": "Atlanta Falcons",
     "homeTeam": "Indianapolis Colts",
-    "kickoffTime": "2025-11-09T22:00:00.000Z",
+    "kickoffTime": "2025-11-09T11:30:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 10,
     "awayTeam": "New Orleans Saints",
     "homeTeam": "Carolina Panthers",
-    "kickoffTime": "2025-11-09T22:00:00.000Z",
+    "kickoffTime": "2025-11-09T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 10,
     "awayTeam": "New York Giants",
     "homeTeam": "Chicago Bears",
-    "kickoffTime": "2025-11-09T22:00:00.000Z",
+    "kickoffTime": "2025-11-09T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 10,
     "awayTeam": "Jacksonville Jaguars",
     "homeTeam": "Houston Texans",
-    "kickoffTime": "2025-11-09T22:00:00.000Z",
+    "kickoffTime": "2025-11-09T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 10,
     "awayTeam": "Buffalo Bills",
     "homeTeam": "Miami Dolphins",
-    "kickoffTime": "2025-11-09T22:00:00.000Z",
+    "kickoffTime": "2025-11-09T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 10,
     "awayTeam": "Baltimore Ravens",
     "homeTeam": "Minnesota Vikings",
-    "kickoffTime": "2025-11-09T22:00:00.000Z",
+    "kickoffTime": "2025-11-09T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 10,
     "awayTeam": "Cleveland Browns",
     "homeTeam": "New York Jets",
-    "kickoffTime": "2025-11-09T22:00:00.000Z",
+    "kickoffTime": "2025-11-09T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 10,
     "awayTeam": "New England Patriots",
     "homeTeam": "Tampa Bay Buccaneers",
-    "kickoffTime": "2025-11-09T22:00:00.000Z",
+    "kickoffTime": "2025-11-09T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 10,
     "awayTeam": "Arizona Cardinals",
     "homeTeam": "Seattle Seahawks",
-    "kickoffTime": "2025-11-09T22:00:00.000Z",
+    "kickoffTime": "2025-11-09T18:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 10,
     "awayTeam": "Los Angeles Rams",
     "homeTeam": "San Francisco 49ers",
-    "kickoffTime": "2025-11-09T22:00:00.000Z",
+    "kickoffTime": "2025-11-09T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 10,
     "awayTeam": "Detroit Lions",
     "homeTeam": "Washington Commanders",
-    "kickoffTime": "2025-11-09T22:00:00.000Z",
+    "kickoffTime": "2025-11-09T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 10,
     "awayTeam": "Pittsburgh Steelers",
     "homeTeam": "Los Angeles Chargers",
-    "kickoffTime": "2025-11-09T22:00:00.000Z",
+    "kickoffTime": "2025-11-09T22:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 10,
     "awayTeam": "Philadelphia Eagles",
     "homeTeam": "Green Bay Packers",
-    "kickoffTime": "2025-11-10T22:00:00.000Z",
+    "kickoffTime": "2025-11-10T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 11,
     "awayTeam": "New York Jets",
     "homeTeam": "New England Patriots",
-    "kickoffTime": "2025-11-13T22:00:00.000Z",
+    "kickoffTime": "2025-11-13T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 11,
     "awayTeam": "Washington Commanders",
     "homeTeam": "Miami Dolphins",
-    "kickoffTime": "2025-11-16T22:00:00.000Z",
+    "kickoffTime": "2025-11-16T11:30:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 11,
     "awayTeam": "Carolina Panthers",
     "homeTeam": "Atlanta Falcons",
-    "kickoffTime": "2025-11-16T22:00:00.000Z",
+    "kickoffTime": "2025-11-16T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 11,
     "awayTeam": "Tampa Bay Buccaneers",
     "homeTeam": "Buffalo Bills",
-    "kickoffTime": "2025-11-16T22:00:00.000Z",
+    "kickoffTime": "2025-11-16T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 11,
     "awayTeam": "Los Angeles Chargers",
     "homeTeam": "Jacksonville Jaguars",
-    "kickoffTime": "2025-11-16T22:00:00.000Z",
+    "kickoffTime": "2025-11-16T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 11,
     "awayTeam": "Chicago Bears",
     "homeTeam": "Minnesota Vikings",
-    "kickoffTime": "2025-11-16T22:00:00.000Z",
+    "kickoffTime": "2025-11-16T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 11,
     "awayTeam": "Green Bay Packers",
     "homeTeam": "New York Giants",
-    "kickoffTime": "2025-11-16T22:00:00.000Z",
+    "kickoffTime": "2025-11-16T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 11,
     "awayTeam": "Houston Texans",
     "homeTeam": "Tennessee Titans",
-    "kickoffTime": "2025-11-16T22:00:00.000Z",
+    "kickoffTime": "2025-11-16T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 11,
     "awayTeam": "Cincinnati Bengals",
     "homeTeam": "Pittsburgh Steelers",
-    "kickoffTime": "2025-11-16T22:00:00.000Z",
+    "kickoffTime": "2025-11-16T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 11,
     "awayTeam": "San Francisco 49ers",
     "homeTeam": "Arizona Cardinals",
-    "kickoffTime": "2025-11-16T22:00:00.000Z",
+    "kickoffTime": "2025-11-16T18:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 11,
     "awayTeam": "Seattle Seahawks",
     "homeTeam": "Los Angeles Rams",
-    "kickoffTime": "2025-11-16T22:00:00.000Z",
+    "kickoffTime": "2025-11-16T18:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 11,
     "awayTeam": "Baltimore Ravens",
     "homeTeam": "Cleveland Browns",
-    "kickoffTime": "2025-11-16T22:00:00.000Z",
+    "kickoffTime": "2025-11-16T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 11,
     "awayTeam": "Kansas City Chiefs",
     "homeTeam": "Denver Broncos",
-    "kickoffTime": "2025-11-16T22:00:00.000Z",
+    "kickoffTime": "2025-11-16T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 11,
     "awayTeam": "Detroit Lions",
     "homeTeam": "Philadelphia Eagles",
-    "kickoffTime": "2025-11-16T22:00:00.000Z",
+    "kickoffTime": "2025-11-16T22:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 11,
     "awayTeam": "Dallas Cowboys",
     "homeTeam": "Las Vegas Raiders",
-    "kickoffTime": "2025-11-17T22:00:00.000Z",
+    "kickoffTime": "2025-11-17T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 12,
     "awayTeam": "Buffalo Bills",
     "homeTeam": "Houston Texans",
-    "kickoffTime": "2025-11-20T22:00:00.000Z",
+    "kickoffTime": "2025-11-20T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 12,
     "awayTeam": "Pittsburgh Steelers",
     "homeTeam": "Chicago Bears",
-    "kickoffTime": "2025-11-23T22:00:00.000Z",
+    "kickoffTime": "2025-11-23T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 12,
     "awayTeam": "New England Patriots",
     "homeTeam": "Cincinnati Bengals",
-    "kickoffTime": "2025-11-23T22:00:00.000Z",
+    "kickoffTime": "2025-11-23T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 12,
     "awayTeam": "New York Giants",
     "homeTeam": "Detroit Lions",
-    "kickoffTime": "2025-11-23T22:00:00.000Z",
+    "kickoffTime": "2025-11-23T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 12,
     "awayTeam": "Minnesota Vikings",
     "homeTeam": "Green Bay Packers",
-    "kickoffTime": "2025-11-23T22:00:00.000Z",
+    "kickoffTime": "2025-11-23T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 12,
     "awayTeam": "Indianapolis Colts",
     "homeTeam": "Kansas City Chiefs",
-    "kickoffTime": "2025-11-23T22:00:00.000Z",
+    "kickoffTime": "2025-11-23T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 12,
     "awayTeam": "Seattle Seahawks",
     "homeTeam": "Tennessee Titans",
-    "kickoffTime": "2025-11-23T22:00:00.000Z",
+    "kickoffTime": "2025-11-23T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 12,
     "awayTeam": "New York Jets",
     "homeTeam": "Baltimore Ravens",
-    "kickoffTime": "2025-11-23T22:00:00.000Z",
+    "kickoffTime": "2025-11-23T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 12,
     "awayTeam": "Jacksonville Jaguars",
     "homeTeam": "Arizona Cardinals",
-    "kickoffTime": "2025-11-23T22:00:00.000Z",
+    "kickoffTime": "2025-11-23T18:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 12,
     "awayTeam": "Cleveland Browns",
     "homeTeam": "Las Vegas Raiders",
-    "kickoffTime": "2025-11-23T22:00:00.000Z",
+    "kickoffTime": "2025-11-23T18:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 12,
     "awayTeam": "Philadelphia Eagles",
     "homeTeam": "Dallas Cowboys",
-    "kickoffTime": "2025-11-23T22:00:00.000Z",
+    "kickoffTime": "2025-11-23T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 12,
     "awayTeam": "Atlanta Falcons",
     "homeTeam": "New Orleans Saints",
-    "kickoffTime": "2025-11-23T22:00:00.000Z",
+    "kickoffTime": "2025-11-23T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 12,
     "awayTeam": "Tampa Bay Buccaneers",
     "homeTeam": "Los Angeles Rams",
-    "kickoffTime": "2025-11-23T22:00:00.000Z",
+    "kickoffTime": "2025-11-23T22:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 12,
     "awayTeam": "Carolina Panthers",
     "homeTeam": "San Francisco 49ers",
-    "kickoffTime": "2025-11-24T22:00:00.000Z",
+    "kickoffTime": "2025-11-24T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "Green Bay Packers",
     "homeTeam": "Detroit Lions",
-    "kickoffTime": "2025-11-27T22:00:00.000Z",
+    "kickoffTime": "2025-11-27T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "Kansas City Chiefs",
     "homeTeam": "Dallas Cowboys",
-    "kickoffTime": "2025-11-27T22:00:00.000Z",
+    "kickoffTime": "2025-11-27T18:30:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "Cincinnati Bengals",
     "homeTeam": "Baltimore Ravens",
-    "kickoffTime": "2025-11-27T22:00:00.000Z",
+    "kickoffTime": "2025-11-27T22:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "Chicago Bears",
     "homeTeam": "Philadelphia Eagles",
-    "kickoffTime": "2025-11-28T22:00:00.000Z",
+    "kickoffTime": "2025-11-28T17:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "Los Angeles Rams",
     "homeTeam": "Carolina Panthers",
-    "kickoffTime": "2025-11-30T22:00:00.000Z",
+    "kickoffTime": "2025-11-30T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "San Francisco 49ers",
     "homeTeam": "Cleveland Browns",
-    "kickoffTime": "2025-11-30T22:00:00.000Z",
+    "kickoffTime": "2025-11-30T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "Houston Texans",
     "homeTeam": "Indianapolis Colts",
-    "kickoffTime": "2025-11-30T22:00:00.000Z",
+    "kickoffTime": "2025-11-30T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "New Orleans Saints",
     "homeTeam": "Miami Dolphins",
-    "kickoffTime": "2025-11-30T22:00:00.000Z",
+    "kickoffTime": "2025-11-30T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "Atlanta Falcons",
     "homeTeam": "New York Jets",
-    "kickoffTime": "2025-11-30T22:00:00.000Z",
+    "kickoffTime": "2025-11-30T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "Jacksonville Jaguars",
     "homeTeam": "Tennessee Titans",
-    "kickoffTime": "2025-11-30T22:00:00.000Z",
+    "kickoffTime": "2025-11-30T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "Arizona Cardinals",
     "homeTeam": "Tampa Bay Buccaneers",
-    "kickoffTime": "2025-11-30T22:00:00.000Z",
+    "kickoffTime": "2025-11-30T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "Minnesota Vikings",
     "homeTeam": "Seattle Seahawks",
-    "kickoffTime": "2025-11-30T22:00:00.000Z",
+    "kickoffTime": "2025-11-30T18:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "Buffalo Bills",
     "homeTeam": "Pittsburgh Steelers",
-    "kickoffTime": "2025-11-30T22:00:00.000Z",
+    "kickoffTime": "2025-11-30T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "Las Vegas Raiders",
     "homeTeam": "Los Angeles Chargers",
-    "kickoffTime": "2025-11-30T22:00:00.000Z",
+    "kickoffTime": "2025-11-30T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "Denver Broncos",
     "homeTeam": "Washington Commanders",
-    "kickoffTime": "2025-11-30T22:00:00.000Z",
+    "kickoffTime": "2025-11-30T22:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 13,
     "awayTeam": "New York Giants",
     "homeTeam": "New England Patriots",
-    "kickoffTime": "2025-12-01T22:00:00.000Z",
+    "kickoffTime": "2025-12-01T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 14,
     "awayTeam": "Dallas Cowboys",
     "homeTeam": "Detroit Lions",
-    "kickoffTime": "2025-12-04T22:00:00.000Z",
+    "kickoffTime": "2025-12-04T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 14,
     "awayTeam": "Seattle Seahawks",
     "homeTeam": "Atlanta Falcons",
-    "kickoffTime": "2025-12-07T22:00:00.000Z",
+    "kickoffTime": "2025-12-07T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 14,
     "awayTeam": "Tennessee Titans",
     "homeTeam": "Cleveland Browns",
-    "kickoffTime": "2025-12-07T22:00:00.000Z",
+    "kickoffTime": "2025-12-07T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 14,
     "awayTeam": "Chicago Bears",
     "homeTeam": "Green Bay Packers",
-    "kickoffTime": "2025-12-07T22:00:00.000Z",
+    "kickoffTime": "2025-12-07T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 14,
     "awayTeam": "Indianapolis Colts",
     "homeTeam": "Jacksonville Jaguars",
-    "kickoffTime": "2025-12-07T22:00:00.000Z",
+    "kickoffTime": "2025-12-07T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 14,
     "awayTeam": "Washington Commanders",
     "homeTeam": "Minnesota Vikings",
-    "kickoffTime": "2025-12-07T22:00:00.000Z",
+    "kickoffTime": "2025-12-07T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 14,
     "awayTeam": "Miami Dolphins",
     "homeTeam": "New York Jets",
-    "kickoffTime": "2025-12-07T22:00:00.000Z",
+    "kickoffTime": "2025-12-07T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 14,
     "awayTeam": "Pittsburgh Steelers",
     "homeTeam": "Baltimore Ravens",
-    "kickoffTime": "2025-12-07T22:00:00.000Z",
+    "kickoffTime": "2025-12-07T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 14,
     "awayTeam": "New Orleans Saints",
     "homeTeam": "Tampa Bay Buccaneers",
-    "kickoffTime": "2025-12-07T22:00:00.000Z",
+    "kickoffTime": "2025-12-07T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 14,
     "awayTeam": "Denver Broncos",
     "homeTeam": "Las Vegas Raiders",
-    "kickoffTime": "2025-12-07T22:00:00.000Z",
+    "kickoffTime": "2025-12-07T18:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 14,
     "awayTeam": "Cincinnati Bengals",
     "homeTeam": "Buffalo Bills",
-    "kickoffTime": "2025-12-07T22:00:00.000Z",
+    "kickoffTime": "2025-12-07T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 14,
     "awayTeam": "Los Angeles Rams",
     "homeTeam": "Arizona Cardinals",
-    "kickoffTime": "2025-12-07T22:00:00.000Z",
+    "kickoffTime": "2025-12-07T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 14,
     "awayTeam": "Houston Texans",
     "homeTeam": "Kansas City Chiefs",
-    "kickoffTime": "2025-12-07T22:00:00.000Z",
+    "kickoffTime": "2025-12-07T22:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 14,
     "awayTeam": "Philadelphia Eagles",
     "homeTeam": "Los Angeles Chargers",
-    "kickoffTime": "2025-12-08T22:00:00.000Z",
+    "kickoffTime": "2025-12-08T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "Atlanta Falcons",
     "homeTeam": "Tampa Bay Buccaneers",
-    "kickoffTime": "2025-12-11T22:00:00.000Z",
+    "kickoffTime": "2025-12-11T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "Cleveland Browns",
     "homeTeam": "Chicago Bears",
-    "kickoffTime": "2025-12-14T22:00:00.000Z",
+    "kickoffTime": "2025-12-14T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "Baltimore Ravens",
     "homeTeam": "Cincinnati Bengals",
-    "kickoffTime": "2025-12-14T22:00:00.000Z",
+    "kickoffTime": "2025-12-14T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "Arizona Cardinals",
     "homeTeam": "Houston Texans",
-    "kickoffTime": "2025-12-14T22:00:00.000Z",
+    "kickoffTime": "2025-12-14T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "New York Jets",
     "homeTeam": "Jacksonville Jaguars",
-    "kickoffTime": "2025-12-14T22:00:00.000Z",
+    "kickoffTime": "2025-12-14T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "Los Angeles Chargers",
     "homeTeam": "Kansas City Chiefs",
-    "kickoffTime": "2025-12-14T22:00:00.000Z",
+    "kickoffTime": "2025-12-14T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "Buffalo Bills",
     "homeTeam": "New England Patriots",
-    "kickoffTime": "2025-12-14T22:00:00.000Z",
+    "kickoffTime": "2025-12-14T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "Washington Commanders",
     "homeTeam": "New York Giants",
-    "kickoffTime": "2025-12-14T22:00:00.000Z",
+    "kickoffTime": "2025-12-14T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "Las Vegas Raiders",
     "homeTeam": "Philadelphia Eagles",
-    "kickoffTime": "2025-12-14T22:00:00.000Z",
+    "kickoffTime": "2025-12-14T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "Green Bay Packers",
     "homeTeam": "Denver Broncos",
-    "kickoffTime": "2025-12-14T22:00:00.000Z",
+    "kickoffTime": "2025-12-14T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "Carolina Panthers",
     "homeTeam": "New Orleans Saints",
-    "kickoffTime": "2025-12-14T22:00:00.000Z",
+    "kickoffTime": "2025-12-14T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "Detroit Lions",
     "homeTeam": "Los Angeles Rams",
-    "kickoffTime": "2025-12-14T22:00:00.000Z",
+    "kickoffTime": "2025-12-14T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "Indianapolis Colts",
     "homeTeam": "Seattle Seahawks",
-    "kickoffTime": "2025-12-14T22:00:00.000Z",
+    "kickoffTime": "2025-12-14T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "Tennessee Titans",
     "homeTeam": "San Francisco 49ers",
-    "kickoffTime": "2025-12-14T22:00:00.000Z",
+    "kickoffTime": "2025-12-14T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "Minnesota Vikings",
     "homeTeam": "Dallas Cowboys",
-    "kickoffTime": "2025-12-14T22:00:00.000Z",
+    "kickoffTime": "2025-12-14T22:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 15,
     "awayTeam": "Miami Dolphins",
     "homeTeam": "Pittsburgh Steelers",
-    "kickoffTime": "2025-12-15T22:00:00.000Z",
+    "kickoffTime": "2025-12-15T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "Los Angeles Rams",
     "homeTeam": "Seattle Seahawks",
-    "kickoffTime": "2025-12-18T22:00:00.000Z",
+    "kickoffTime": "2025-12-18T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "Green Bay Packers",
     "homeTeam": "Chicago Bears",
-    "kickoffTime": "2025-12-20T22:00:00.000Z",
+    "kickoffTime": "2025-12-20T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "Philadelphia Eagles",
     "homeTeam": "Washington Commanders",
-    "kickoffTime": "2025-12-20T22:00:00.000Z",
+    "kickoffTime": "2025-12-20T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "Tampa Bay Buccaneers",
     "homeTeam": "Carolina Panthers",
-    "kickoffTime": "2025-12-21T22:00:00.000Z",
+    "kickoffTime": "2025-12-21T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "Buffalo Bills",
     "homeTeam": "Cleveland Browns",
-    "kickoffTime": "2025-12-21T22:00:00.000Z",
+    "kickoffTime": "2025-12-21T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "Los Angeles Chargers",
     "homeTeam": "Dallas Cowboys",
-    "kickoffTime": "2025-12-21T22:00:00.000Z",
+    "kickoffTime": "2025-12-21T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "New York Jets",
     "homeTeam": "New Orleans Saints",
-    "kickoffTime": "2025-12-21T22:00:00.000Z",
+    "kickoffTime": "2025-12-21T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "Minnesota Vikings",
     "homeTeam": "New York Giants",
-    "kickoffTime": "2025-12-21T22:00:00.000Z",
+    "kickoffTime": "2025-12-21T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "Kansas City Chiefs",
     "homeTeam": "Tennessee Titans",
-    "kickoffTime": "2025-12-21T22:00:00.000Z",
+    "kickoffTime": "2025-12-21T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "New England Patriots",
     "homeTeam": "Baltimore Ravens",
-    "kickoffTime": "2025-12-21T22:00:00.000Z",
+    "kickoffTime": "2025-12-21T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "Atlanta Falcons",
     "homeTeam": "Arizona Cardinals",
-    "kickoffTime": "2025-12-21T22:00:00.000Z",
+    "kickoffTime": "2025-12-21T18:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "Jacksonville Jaguars",
     "homeTeam": "Denver Broncos",
-    "kickoffTime": "2025-12-21T22:00:00.000Z",
+    "kickoffTime": "2025-12-21T18:05:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "Pittsburgh Steelers",
     "homeTeam": "Detroit Lions",
-    "kickoffTime": "2025-12-21T22:00:00.000Z",
+    "kickoffTime": "2025-12-21T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "Las Vegas Raiders",
     "homeTeam": "Houston Texans",
-    "kickoffTime": "2025-12-21T22:00:00.000Z",
+    "kickoffTime": "2025-12-21T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "Cincinnati Bengals",
     "homeTeam": "Miami Dolphins",
-    "kickoffTime": "2025-12-21T22:00:00.000Z",
+    "kickoffTime": "2025-12-21T22:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 16,
     "awayTeam": "San Francisco 49ers",
     "homeTeam": "Indianapolis Colts",
-    "kickoffTime": "2025-12-22T22:00:00.000Z",
+    "kickoffTime": "2025-12-22T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "Dallas Cowboys",
     "homeTeam": "Washington Commanders",
-    "kickoffTime": "2025-12-25T22:00:00.000Z",
+    "kickoffTime": "2025-12-25T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "Detroit Lions",
     "homeTeam": "Minnesota Vikings",
-    "kickoffTime": "2025-12-25T22:00:00.000Z",
+    "kickoffTime": "2025-12-25T18:30:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "Denver Broncos",
     "homeTeam": "Kansas City Chiefs",
-    "kickoffTime": "2025-12-25T22:00:00.000Z",
+    "kickoffTime": "2025-12-25T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "Seattle Seahawks",
     "homeTeam": "Carolina Panthers",
-    "kickoffTime": "2025-12-28T22:00:00.000Z",
+    "kickoffTime": "2025-12-28T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "Arizona Cardinals",
     "homeTeam": "Cincinnati Bengals",
-    "kickoffTime": "2025-12-28T22:00:00.000Z",
+    "kickoffTime": "2025-12-28T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "Pittsburgh Steelers",
     "homeTeam": "Cleveland Browns",
-    "kickoffTime": "2025-12-28T22:00:00.000Z",
+    "kickoffTime": "2025-12-28T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "Jacksonville Jaguars",
     "homeTeam": "Indianapolis Colts",
-    "kickoffTime": "2025-12-28T22:00:00.000Z",
+    "kickoffTime": "2025-12-28T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "Baltimore Ravens",
     "homeTeam": "Green Bay Packers",
-    "kickoffTime": "2025-12-28T22:00:00.000Z",
+    "kickoffTime": "2025-12-28T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "Tampa Bay Buccaneers",
     "homeTeam": "Miami Dolphins",
-    "kickoffTime": "2025-12-28T22:00:00.000Z",
+    "kickoffTime": "2025-12-28T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "New England Patriots",
     "homeTeam": "New York Jets",
-    "kickoffTime": "2025-12-28T22:00:00.000Z",
+    "kickoffTime": "2025-12-28T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "New Orleans Saints",
     "homeTeam": "Tennessee Titans",
-    "kickoffTime": "2025-12-28T22:00:00.000Z",
+    "kickoffTime": "2025-12-28T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "New York Giants",
     "homeTeam": "Las Vegas Raiders",
-    "kickoffTime": "2025-12-28T22:00:00.000Z",
+    "kickoffTime": "2025-12-28T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "Houston Texans",
     "homeTeam": "Los Angeles Chargers",
-    "kickoffTime": "2025-12-28T22:00:00.000Z",
+    "kickoffTime": "2025-12-28T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "Philadelphia Eagles",
     "homeTeam": "Buffalo Bills",
-    "kickoffTime": "2025-12-28T22:00:00.000Z",
+    "kickoffTime": "2025-12-28T18:25:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "Chicago Bears",
     "homeTeam": "San Francisco 49ers",
-    "kickoffTime": "2025-12-28T22:00:00.000Z",
+    "kickoffTime": "2025-12-28T22:20:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 17,
     "awayTeam": "Los Angeles Rams",
     "homeTeam": "Atlanta Falcons",
-    "kickoffTime": "2025-12-29T22:00:00.000Z",
+    "kickoffTime": "2025-12-29T22:15:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "New Orleans Saints",
     "homeTeam": "Atlanta Falcons",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "New York Jets",
     "homeTeam": "Buffalo Bills",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "Detroit Lions",
     "homeTeam": "Chicago Bears",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "Cleveland Browns",
     "homeTeam": "Cincinnati Bengals",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "Los Angeles Chargers",
     "homeTeam": "Denver Broncos",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "Indianapolis Colts",
     "homeTeam": "Houston Texans",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "Tennessee Titans",
     "homeTeam": "Jacksonville Jaguars",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "Green Bay Packers",
     "homeTeam": "Minnesota Vikings",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "Miami Dolphins",
     "homeTeam": "New England Patriots",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "Dallas Cowboys",
     "homeTeam": "New York Giants",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "Washington Commanders",
     "homeTeam": "Philadelphia Eagles",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "Baltimore Ravens",
     "homeTeam": "Pittsburgh Steelers",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "Kansas City Chiefs",
     "homeTeam": "Las Vegas Raiders",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "Arizona Cardinals",
     "homeTeam": "Los Angeles Rams",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "Seattle Seahawks",
     "homeTeam": "San Francisco 49ers",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   },
   {
-    "week": 1,
+    "week": 18,
     "awayTeam": "Carolina Panthers",
     "homeTeam": "Tampa Bay Buccaneers",
-    "kickoffTime": "2025-01-04T22:00:00.000Z",
+    "kickoffTime": "2025-01-04T15:00:00.000Z",
     "winningTeam": "",
     "scored": false
   }

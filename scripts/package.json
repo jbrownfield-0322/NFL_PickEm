@@ -10,11 +10,13 @@
     "load-sample": "node ../add-sample-games.js",
     "run": "./run-scraper.sh",
     "run:windows": "powershell -ExecutionPolicy Bypass -File run-scraper.ps1",
-    "run:batch": "run-scraper.bat"
+    "run:batch": "run-scraper.bat",
+    "clear-games": "node clear-games.js"
   },
   "dependencies": {
     "jsdom": "^22.1.0",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "pg": "^8.11.3"
   },
   "devDependencies": {},
   "keywords": ["nfl", "pickem", "scraper", "schedule"],

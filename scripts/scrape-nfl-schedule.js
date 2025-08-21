@@ -138,30 +138,53 @@ async function scrapeNFLSchedule() {
     
     for (const row of rows) {
       const cells = row.querySelectorAll('td');
-      if (cells.length < 8) continue;
+      console.log(`Row has ${cells.length} cells, classes: ${row.className}`);
+      
+      if (cells.length < 8) {
+        console.log(`Skipping row with ${cells.length} cells (need at least 8)`);
+        continue;
+      }
       
       // Skip header rows or empty rows
       if (row.classList.contains('thead') || cells[0].textContent.trim() === '') {
+        console.log(`Skipping header/empty row`);
         continue;
       }
       
       try {
-        const weekText = cells[0].textContent.trim();
-        const date = cells[1].textContent.trim();
-        const awayTeam = cells[2].textContent.trim();
-        const homeTeam = cells[5].textContent.trim();
-        
-        // Skip if we don't have valid data
-        if (!weekText || !date || !awayTeam || !homeTeam) {
+        // Check if we have enough cells
+        if (cells.length < 8) {
           continue;
         }
         
-        // Convert week text to number (e.g., "Thu" -> 1, "Fri" -> 1, etc.)
+        // The week is in the <th> element (first column), not in cells[0]
+        const weekText = row.querySelector('th[data-stat="week_num"]')?.textContent.trim();
+        const date = cells[1]?.textContent.trim(); // Date is in cells[1] (boxscore_word)
+        const awayTeam = cells[2]?.textContent.trim(); // Away team is in cells[2] (visitor_team)
+        const homeTeam = cells[5]?.textContent.trim(); // Home team is in cells[5] (home_team)
+        const time = cells[7]?.textContent.trim(); // Time is in cells[7] (gametime)
+        
+        console.log(`Extracted: weekText="${weekText}", date="${date}", awayTeam="${awayTeam}", homeTeam="${homeTeam}", time="${time}"`);
+        
+        // Skip if we don't have valid data
+        if (!weekText || !date || !awayTeam || !homeTeam) {
+          console.log(`Skipping row - weekText: "${weekText}", date: "${date}", awayTeam: "${awayTeam}", homeTeam: "${homeTeam}"`);
+          continue;
+        }
+        
+        // Convert week text to number (skip preseason games)
         let week;
-        if (weekText === 'Thu' || weekText === 'Fri' || weekText === 'Sat' || weekText === 'Sun' || weekText === 'Mon') {
-          week = 1; // Preseason games are typically week 1
-        } else {
+        if (weekText && weekText.startsWith('Pre')) {
+          // Skip all preseason games
+          console.log(`Skipping preseason game: ${weekText} - ${awayTeam} @ ${homeTeam}`);
+          continue;
+        } else if (weekText && weekText.match(/^\d+$/)) {
+          // Regular season games: 1, 2, 3, etc.
           week = parseInt(weekText);
+        } else {
+          // Fallback: skip if we can't determine the week
+          console.log(`Skipping game with unknown week format: "${weekText}" - ${awayTeam} @ ${homeTeam}`);
+          continue;
         }
         
         if (!week) {
@@ -177,8 +200,8 @@ async function scrapeNFLSchedule() {
           continue;
         }
         
-        // Parse kickoff time (no time provided, use default 8:00 PM)
-        const kickoffTime = parseGameDateTime(date, "8:00 PM");
+        // Parse kickoff time using the actual time from the table
+        const kickoffTime = parseGameDateTime(date, time);
         if (!kickoffTime) {
           console.warn(`Skipping game due to date/time parsing error: ${awayTeam} @ ${homeTeam}`);
           continue;
