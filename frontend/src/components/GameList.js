@@ -155,9 +155,11 @@ const GameList = () => {
     
     const date = new Date(kickoffTime);
     
-    // Format the date to show in user's local timezone
+    // Get day of week abbreviation (MON, TUE, WED, etc.)
+    const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+    
+    // Format the date to show in user's local timezone (without comma)
     const options = {
-      year: 'numeric',
       month: 'numeric',
       day: 'numeric',
       hour: 'numeric',
@@ -165,7 +167,10 @@ const GameList = () => {
       hour12: true
     };
     
-    return date.toLocaleString('en-US', options);
+    const timeString = date.toLocaleString('en-US', options);
+    
+    // Return format: "MON 9/4 7:20 PM"
+    return `${dayOfWeek} ${timeString}`;
   };
 
   const isGameLocked = (kickoffTime) => {
@@ -181,9 +186,41 @@ const GameList = () => {
     return weeks;
   };
 
-  // Filter games by selected week
+  // Filter games by selected week and sort by day/time
   const getFilteredGames = () => {
-    return games.filter(game => game.week === parseInt(selectedWeek));
+    const weekGames = games.filter(game => game.week === parseInt(selectedWeek));
+    
+    // Sort games by day of week and time
+    return weekGames.sort((a, b) => {
+      const dateA = new Date(a.kickoffTime);
+      const dateB = new Date(b.kickoffTime);
+      
+      // Get day of week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+      const dayA = dateA.getDay();
+      const dayB = dateB.getDay();
+      
+      // Convert to NFL week order: Thu(4) -> Fri(5) -> Sat(6) -> Sun(0) -> Mon(1) -> Tue(2) -> Wed(3)
+      const nflDayOrder = {
+        0: 4, // Sunday
+        1: 5, // Monday  
+        2: 6, // Tuesday
+        3: 7, // Wednesday
+        4: 1, // Thursday
+        5: 2, // Friday
+        6: 3  // Saturday
+      };
+      
+      const nflDayA = nflDayOrder[dayA];
+      const nflDayB = nflDayOrder[dayB];
+      
+      // First sort by day of week
+      if (nflDayA !== nflDayB) {
+        return nflDayA - nflDayB;
+      }
+      
+      // If same day, sort by time
+      return dateA.getTime() - dateB.getTime();
+    });
   };
 
   const filteredGames = getFilteredGames();
