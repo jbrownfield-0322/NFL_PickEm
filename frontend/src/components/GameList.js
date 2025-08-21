@@ -153,7 +153,7 @@ const GameList = () => {
   const formatKickoffTime = (kickoffTime) => {
     if (!kickoffTime) return 'TBD';
     const date = new Date(kickoffTime);
-    return date.toLocaleString();
+    return date.toLocaleString().replace(',', '');
   };
 
   const isGameLocked = (kickoffTime) => {
@@ -240,7 +240,6 @@ const GameList = () => {
           <thead>
             <tr>
               <th>Week</th>
-              <th>Date</th>
               <th>Away Team</th>
               <th>Home Team</th>
               <th>Kickoff</th>
@@ -262,7 +261,6 @@ const GameList = () => {
               return (
                 <tr key={game.id}>
                   <td data-label="Week">{game.week}</td>
-                  <td data-label="Date">{formatKickoffTime(game.kickoffTime)}</td>
                   <td data-label="Away Team">{game.awayTeam}</td>
                   <td data-label="Home Team">{game.homeTeam}</td>
                   <td data-label="Kickoff">{formatKickoffTime(game.kickoffTime)}</td>
