@@ -15,7 +15,7 @@ import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRou
 import GameManagement from './components/GameManagement'; // Import GameManagement component
 
 function App() {
-  const { isLoggedIn, logout } = useAuth(); // Use isLoggedIn and logout from AuthContext
+  const { isLoggedIn, logout, isLoading } = useAuth(); // Use isLoggedIn and logout from AuthContext
   const navigate = useNavigate(); // Initialize navigate
 
   const handleLogout = () => {
@@ -30,7 +30,7 @@ function App() {
         <nav>
           <ul className="main-nav">
             <li><Link to="/">Home</Link></li>
-            {isLoggedIn && (
+            {!isLoading && isLoggedIn && (
               <>
                 <li><Link to="/games">Games</Link></li>
                 <li><Link to="/leaderboard">Leaderboard</Link></li>
@@ -39,17 +39,17 @@ function App() {
                 <li><Link to="/my-leagues">My Leagues</Link></li>
               </>
             )}
-            {isLoggedIn ? (
+            {!isLoading && isLoggedIn ? (
               <>
                 <li><Link to="/account">Account</Link></li>
                 <li><button onClick={handleLogout} className="nav-button">Logout</button></li>
               </>
-            ) : (
+            ) : !isLoading ? (
               <>
                 <li><Link to="/register">Register</Link></li>
                 <li><Link to="/login">Login</Link></li>
               </>
-            )}
+            ) : null}
           </ul>
         </nav>
       </header>
