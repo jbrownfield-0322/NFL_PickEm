@@ -1,0 +1,2266 @@
+[
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "Baltimore Ravens",
+    "kickoffTime": "2024-09-06T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Green Bay Packers",
+    "kickoffTime": "2024-09-07T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Pittsburgh Steelers",
+    "homeTeam": "Atlanta Falcons",
+    "kickoffTime": "2024-09-08T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Buffalo Bills",
+    "homeTeam": "Arizona Cardinals",
+    "kickoffTime": "2024-09-08T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New Orleans Saints",
+    "homeTeam": "Carolina Panthers",
+    "kickoffTime": "2024-09-08T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Chicago Bears",
+    "homeTeam": "Tennessee Titans",
+    "kickoffTime": "2024-09-08T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New England Patriots",
+    "homeTeam": "Cincinnati Bengals",
+    "kickoffTime": "2024-09-08T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Houston Texans",
+    "homeTeam": "Indianapolis Colts",
+    "kickoffTime": "2024-09-08T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Miami Dolphins",
+    "homeTeam": "Jacksonville Jaguars",
+    "kickoffTime": "2024-09-08T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Minnesota Vikings",
+    "homeTeam": "New York Giants",
+    "kickoffTime": "2024-09-08T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Seattle Seahawks",
+    "homeTeam": "Denver Broncos",
+    "kickoffTime": "2024-09-08T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Chargers",
+    "homeTeam": "Las Vegas Raiders",
+    "kickoffTime": "2024-09-08T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Dallas Cowboys",
+    "homeTeam": "Cleveland Browns",
+    "kickoffTime": "2024-09-08T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Tampa Bay Buccaneers",
+    "homeTeam": "Washington Commanders",
+    "kickoffTime": "2024-09-08T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Detroit Lions",
+    "homeTeam": "Los Angeles Rams",
+    "kickoffTime": "2024-09-09T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "San Francisco 49ers",
+    "homeTeam": "New York Jets",
+    "kickoffTime": "2024-09-10T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Buffalo Bills",
+    "homeTeam": "Miami Dolphins",
+    "kickoffTime": "2024-09-13T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Chargers",
+    "homeTeam": "Carolina Panthers",
+    "kickoffTime": "2024-09-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Cleveland Browns",
+    "homeTeam": "Jacksonville Jaguars",
+    "kickoffTime": "2024-09-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Green Bay Packers",
+    "homeTeam": "Indianapolis Colts",
+    "kickoffTime": "2024-09-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New Orleans Saints",
+    "homeTeam": "Dallas Cowboys",
+    "kickoffTime": "2024-09-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Tampa Bay Buccaneers",
+    "homeTeam": "Detroit Lions",
+    "kickoffTime": "2024-09-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Minnesota Vikings",
+    "homeTeam": "San Francisco 49ers",
+    "kickoffTime": "2024-09-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Seattle Seahawks",
+    "homeTeam": "New England Patriots",
+    "kickoffTime": "2024-09-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Washington Commanders",
+    "homeTeam": "New York Giants",
+    "kickoffTime": "2024-09-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New York Jets",
+    "homeTeam": "Tennessee Titans",
+    "kickoffTime": "2024-09-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Las Vegas Raiders",
+    "homeTeam": "Baltimore Ravens",
+    "kickoffTime": "2024-09-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Arizona Cardinals",
+    "homeTeam": "Los Angeles Rams",
+    "kickoffTime": "2024-09-15T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "Cincinnati Bengals",
+    "kickoffTime": "2024-09-15T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Pittsburgh Steelers",
+    "homeTeam": "Denver Broncos",
+    "kickoffTime": "2024-09-15T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Houston Texans",
+    "homeTeam": "Chicago Bears",
+    "kickoffTime": "2024-09-16T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Atlanta Falcons",
+    "homeTeam": "Philadelphia Eagles",
+    "kickoffTime": "2024-09-17T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New York Jets",
+    "homeTeam": "New England Patriots",
+    "kickoffTime": "2024-09-20T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Indianapolis Colts",
+    "homeTeam": "Chicago Bears",
+    "kickoffTime": "2024-09-22T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New York Giants",
+    "homeTeam": "Cleveland Browns",
+    "kickoffTime": "2024-09-22T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Denver Broncos",
+    "homeTeam": "Tampa Bay Buccaneers",
+    "kickoffTime": "2024-09-22T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Green Bay Packers",
+    "homeTeam": "Tennessee Titans",
+    "kickoffTime": "2024-09-22T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Minnesota Vikings",
+    "homeTeam": "Houston Texans",
+    "kickoffTime": "2024-09-22T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "New Orleans Saints",
+    "kickoffTime": "2024-09-22T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Pittsburgh Steelers",
+    "homeTeam": "Los Angeles Chargers",
+    "kickoffTime": "2024-09-22T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Carolina Panthers",
+    "homeTeam": "Las Vegas Raiders",
+    "kickoffTime": "2024-09-22T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Seattle Seahawks",
+    "homeTeam": "Miami Dolphins",
+    "kickoffTime": "2024-09-22T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Detroit Lions",
+    "homeTeam": "Arizona Cardinals",
+    "kickoffTime": "2024-09-22T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Baltimore Ravens",
+    "homeTeam": "Dallas Cowboys",
+    "kickoffTime": "2024-09-22T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Rams",
+    "homeTeam": "San Francisco 49ers",
+    "kickoffTime": "2024-09-22T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "Atlanta Falcons",
+    "kickoffTime": "2024-09-23T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Buffalo Bills",
+    "homeTeam": "Jacksonville Jaguars",
+    "kickoffTime": "2024-09-23T23:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Washington Commanders",
+    "homeTeam": "Cincinnati Bengals",
+    "kickoffTime": "2024-09-24T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Dallas Cowboys",
+    "homeTeam": "New York Giants",
+    "kickoffTime": "2024-09-27T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Atlanta Falcons",
+    "homeTeam": "New Orleans Saints",
+    "kickoffTime": "2024-09-29T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Cincinnati Bengals",
+    "homeTeam": "Carolina Panthers",
+    "kickoffTime": "2024-09-29T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Chicago Bears",
+    "homeTeam": "Los Angeles Rams",
+    "kickoffTime": "2024-09-29T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Indianapolis Colts",
+    "homeTeam": "Pittsburgh Steelers",
+    "kickoffTime": "2024-09-29T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Denver Broncos",
+    "homeTeam": "New York Jets",
+    "kickoffTime": "2024-09-29T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Minnesota Vikings",
+    "homeTeam": "Green Bay Packers",
+    "kickoffTime": "2024-09-29T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Houston Texans",
+    "homeTeam": "Jacksonville Jaguars",
+    "kickoffTime": "2024-09-29T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Tampa Bay Buccaneers",
+    "homeTeam": "Philadelphia Eagles",
+    "kickoffTime": "2024-09-29T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Washington Commanders",
+    "homeTeam": "Arizona Cardinals",
+    "kickoffTime": "2024-09-29T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "San Francisco 49ers",
+    "homeTeam": "New England Patriots",
+    "kickoffTime": "2024-09-29T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Las Vegas Raiders",
+    "homeTeam": "Cleveland Browns",
+    "kickoffTime": "2024-09-29T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "Los Angeles Chargers",
+    "kickoffTime": "2024-09-29T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Baltimore Ravens",
+    "homeTeam": "Buffalo Bills",
+    "kickoffTime": "2024-09-30T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Tennessee Titans",
+    "homeTeam": "Miami Dolphins",
+    "kickoffTime": "2024-09-30T23:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Detroit Lions",
+    "homeTeam": "Seattle Seahawks",
+    "kickoffTime": "2024-10-01T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Atlanta Falcons",
+    "homeTeam": "Tampa Bay Buccaneers",
+    "kickoffTime": "2024-10-04T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Minnesota Vikings",
+    "homeTeam": "New York Jets",
+    "kickoffTime": "2024-10-06T13:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Houston Texans",
+    "homeTeam": "Buffalo Bills",
+    "kickoffTime": "2024-10-06T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Chicago Bears",
+    "homeTeam": "Carolina Panthers",
+    "kickoffTime": "2024-10-06T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Baltimore Ravens",
+    "homeTeam": "Cincinnati Bengals",
+    "kickoffTime": "2024-10-06T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Washington Commanders",
+    "homeTeam": "Cleveland Browns",
+    "kickoffTime": "2024-10-06T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Jacksonville Jaguars",
+    "homeTeam": "Indianapolis Colts",
+    "kickoffTime": "2024-10-06T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Miami Dolphins",
+    "homeTeam": "New England Patriots",
+    "kickoffTime": "2024-10-06T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Arizona Cardinals",
+    "homeTeam": "San Francisco 49ers",
+    "kickoffTime": "2024-10-06T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Denver Broncos",
+    "homeTeam": "Las Vegas Raiders",
+    "kickoffTime": "2024-10-06T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Green Bay Packers",
+    "homeTeam": "Los Angeles Rams",
+    "kickoffTime": "2024-10-06T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New York Giants",
+    "homeTeam": "Seattle Seahawks",
+    "kickoffTime": "2024-10-06T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Dallas Cowboys",
+    "homeTeam": "Pittsburgh Steelers",
+    "kickoffTime": "2024-10-07T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "New Orleans Saints",
+    "kickoffTime": "2024-10-08T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "San Francisco 49ers",
+    "homeTeam": "Seattle Seahawks",
+    "kickoffTime": "2024-10-11T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Chicago Bears",
+    "homeTeam": "Jacksonville Jaguars",
+    "kickoffTime": "2024-10-13T13:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Cleveland Browns",
+    "kickoffTime": "2024-10-13T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Indianapolis Colts",
+    "homeTeam": "Tennessee Titans",
+    "kickoffTime": "2024-10-13T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Green Bay Packers",
+    "homeTeam": "Arizona Cardinals",
+    "kickoffTime": "2024-10-13T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Houston Texans",
+    "homeTeam": "New England Patriots",
+    "kickoffTime": "2024-10-13T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Tampa Bay Buccaneers",
+    "homeTeam": "New Orleans Saints",
+    "kickoffTime": "2024-10-13T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Baltimore Ravens",
+    "homeTeam": "Washington Commanders",
+    "kickoffTime": "2024-10-13T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Chargers",
+    "homeTeam": "Denver Broncos",
+    "kickoffTime": "2024-10-13T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Pittsburgh Steelers",
+    "homeTeam": "Las Vegas Raiders",
+    "kickoffTime": "2024-10-13T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Atlanta Falcons",
+    "homeTeam": "Carolina Panthers",
+    "kickoffTime": "2024-10-13T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Detroit Lions",
+    "homeTeam": "Dallas Cowboys",
+    "kickoffTime": "2024-10-13T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Cincinnati Bengals",
+    "homeTeam": "New York Giants",
+    "kickoffTime": "2024-10-14T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Buffalo Bills",
+    "homeTeam": "New York Jets",
+    "kickoffTime": "2024-10-15T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Denver Broncos",
+    "homeTeam": "New Orleans Saints",
+    "kickoffTime": "2024-10-18T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Jacksonville Jaguars",
+    "homeTeam": "New England Patriots",
+    "kickoffTime": "2024-10-20T13:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Detroit Lions",
+    "homeTeam": "Minnesota Vikings",
+    "kickoffTime": "2024-10-20T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Seattle Seahawks",
+    "homeTeam": "Atlanta Falcons",
+    "kickoffTime": "2024-10-20T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Buffalo Bills",
+    "homeTeam": "Tennessee Titans",
+    "kickoffTime": "2024-10-20T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Cincinnati Bengals",
+    "homeTeam": "Cleveland Browns",
+    "kickoffTime": "2024-10-20T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Indianapolis Colts",
+    "homeTeam": "Miami Dolphins",
+    "kickoffTime": "2024-10-20T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Green Bay Packers",
+    "homeTeam": "Houston Texans",
+    "kickoffTime": "2024-10-20T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "New York Giants",
+    "kickoffTime": "2024-10-20T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Washington Commanders",
+    "homeTeam": "Carolina Panthers",
+    "kickoffTime": "2024-10-20T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Rams",
+    "homeTeam": "Las Vegas Raiders",
+    "kickoffTime": "2024-10-20T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "San Francisco 49ers",
+    "kickoffTime": "2024-10-20T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Pittsburgh Steelers",
+    "homeTeam": "New York Jets",
+    "kickoffTime": "2024-10-21T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Baltimore Ravens",
+    "homeTeam": "Tampa Bay Buccaneers",
+    "kickoffTime": "2024-10-22T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Arizona Cardinals",
+    "homeTeam": "Los Angeles Chargers",
+    "kickoffTime": "2024-10-22T01:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Rams",
+    "homeTeam": "Minnesota Vikings",
+    "kickoffTime": "2024-10-25T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Detroit Lions",
+    "homeTeam": "Tennessee Titans",
+    "kickoffTime": "2024-10-27T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Atlanta Falcons",
+    "homeTeam": "Tampa Bay Buccaneers",
+    "kickoffTime": "2024-10-27T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Cincinnati Bengals",
+    "kickoffTime": "2024-10-27T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Cleveland Browns",
+    "homeTeam": "Baltimore Ravens",
+    "kickoffTime": "2024-10-27T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Houston Texans",
+    "homeTeam": "Indianapolis Colts",
+    "kickoffTime": "2024-10-27T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Arizona Cardinals",
+    "homeTeam": "Miami Dolphins",
+    "kickoffTime": "2024-10-27T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Green Bay Packers",
+    "homeTeam": "Jacksonville Jaguars",
+    "kickoffTime": "2024-10-27T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New England Patriots",
+    "homeTeam": "New York Jets",
+    "kickoffTime": "2024-10-27T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Buffalo Bills",
+    "homeTeam": "Seattle Seahawks",
+    "kickoffTime": "2024-10-27T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Chargers",
+    "homeTeam": "New Orleans Saints",
+    "kickoffTime": "2024-10-27T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Washington Commanders",
+    "homeTeam": "Chicago Bears",
+    "kickoffTime": "2024-10-27T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "Las Vegas Raiders",
+    "kickoffTime": "2024-10-27T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Denver Broncos",
+    "homeTeam": "Carolina Panthers",
+    "kickoffTime": "2024-10-27T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "San Francisco 49ers",
+    "homeTeam": "Dallas Cowboys",
+    "kickoffTime": "2024-10-28T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Pittsburgh Steelers",
+    "homeTeam": "New York Giants",
+    "kickoffTime": "2024-10-29T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New York Jets",
+    "homeTeam": "Houston Texans",
+    "kickoffTime": "2024-11-01T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Atlanta Falcons",
+    "homeTeam": "Dallas Cowboys",
+    "kickoffTime": "2024-11-03T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Buffalo Bills",
+    "homeTeam": "Miami Dolphins",
+    "kickoffTime": "2024-11-03T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Carolina Panthers",
+    "homeTeam": "New Orleans Saints",
+    "kickoffTime": "2024-11-03T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Cincinnati Bengals",
+    "homeTeam": "Las Vegas Raiders",
+    "kickoffTime": "2024-11-03T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Chargers",
+    "homeTeam": "Cleveland Browns",
+    "kickoffTime": "2024-11-03T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Baltimore Ravens",
+    "homeTeam": "Denver Broncos",
+    "kickoffTime": "2024-11-03T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Tennessee Titans",
+    "homeTeam": "New England Patriots",
+    "kickoffTime": "2024-11-03T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Washington Commanders",
+    "homeTeam": "New York Giants",
+    "kickoffTime": "2024-11-03T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Arizona Cardinals",
+    "homeTeam": "Chicago Bears",
+    "kickoffTime": "2024-11-03T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Jacksonville Jaguars",
+    "kickoffTime": "2024-11-03T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Detroit Lions",
+    "homeTeam": "Green Bay Packers",
+    "kickoffTime": "2024-11-03T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Rams",
+    "homeTeam": "Seattle Seahawks",
+    "kickoffTime": "2024-11-03T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Minnesota Vikings",
+    "homeTeam": "Indianapolis Colts",
+    "kickoffTime": "2024-11-04T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "Tampa Bay Buccaneers",
+    "kickoffTime": "2024-11-05T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Baltimore Ravens",
+    "homeTeam": "Cincinnati Bengals",
+    "kickoffTime": "2024-11-08T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Carolina Panthers",
+    "homeTeam": "New York Giants",
+    "kickoffTime": "2024-11-10T13:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New England Patriots",
+    "homeTeam": "Chicago Bears",
+    "kickoffTime": "2024-11-10T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Pittsburgh Steelers",
+    "homeTeam": "Washington Commanders",
+    "kickoffTime": "2024-11-10T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "San Francisco 49ers",
+    "homeTeam": "Tampa Bay Buccaneers",
+    "kickoffTime": "2024-11-10T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New Orleans Saints",
+    "homeTeam": "Atlanta Falcons",
+    "kickoffTime": "2024-11-10T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Buffalo Bills",
+    "homeTeam": "Indianapolis Colts",
+    "kickoffTime": "2024-11-10T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "Denver Broncos",
+    "kickoffTime": "2024-11-10T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Minnesota Vikings",
+    "homeTeam": "Jacksonville Jaguars",
+    "kickoffTime": "2024-11-10T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Chargers",
+    "homeTeam": "Tennessee Titans",
+    "kickoffTime": "2024-11-10T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Dallas Cowboys",
+    "kickoffTime": "2024-11-10T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Arizona Cardinals",
+    "homeTeam": "New York Jets",
+    "kickoffTime": "2024-11-10T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Detroit Lions",
+    "homeTeam": "Houston Texans",
+    "kickoffTime": "2024-11-11T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Miami Dolphins",
+    "homeTeam": "Los Angeles Rams",
+    "kickoffTime": "2024-11-12T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Washington Commanders",
+    "kickoffTime": "2024-11-15T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Green Bay Packers",
+    "homeTeam": "Chicago Bears",
+    "kickoffTime": "2024-11-17T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New Orleans Saints",
+    "homeTeam": "Cleveland Browns",
+    "kickoffTime": "2024-11-17T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Detroit Lions",
+    "homeTeam": "Jacksonville Jaguars",
+    "kickoffTime": "2024-11-17T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Miami Dolphins",
+    "homeTeam": "Las Vegas Raiders",
+    "kickoffTime": "2024-11-17T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Minnesota Vikings",
+    "homeTeam": "Tennessee Titans",
+    "kickoffTime": "2024-11-17T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Pittsburgh Steelers",
+    "homeTeam": "Baltimore Ravens",
+    "kickoffTime": "2024-11-17T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Indianapolis Colts",
+    "homeTeam": "New York Jets",
+    "kickoffTime": "2024-11-17T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Rams",
+    "homeTeam": "New England Patriots",
+    "kickoffTime": "2024-11-17T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Seattle Seahawks",
+    "homeTeam": "San Francisco 49ers",
+    "kickoffTime": "2024-11-17T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Denver Broncos",
+    "homeTeam": "Atlanta Falcons",
+    "kickoffTime": "2024-11-17T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Buffalo Bills",
+    "homeTeam": "Kansas City Chiefs",
+    "kickoffTime": "2024-11-17T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Chargers",
+    "homeTeam": "Cincinnati Bengals",
+    "kickoffTime": "2024-11-18T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Houston Texans",
+    "homeTeam": "Dallas Cowboys",
+    "kickoffTime": "2024-11-19T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Cleveland Browns",
+    "homeTeam": "Pittsburgh Steelers",
+    "kickoffTime": "2024-11-22T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "Carolina Panthers",
+    "kickoffTime": "2024-11-24T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Minnesota Vikings",
+    "homeTeam": "Chicago Bears",
+    "kickoffTime": "2024-11-24T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Dallas Cowboys",
+    "homeTeam": "Washington Commanders",
+    "kickoffTime": "2024-11-24T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Miami Dolphins",
+    "homeTeam": "New England Patriots",
+    "kickoffTime": "2024-11-24T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Tampa Bay Buccaneers",
+    "homeTeam": "New York Giants",
+    "kickoffTime": "2024-11-24T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Detroit Lions",
+    "homeTeam": "Indianapolis Colts",
+    "kickoffTime": "2024-11-24T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Tennessee Titans",
+    "homeTeam": "Houston Texans",
+    "kickoffTime": "2024-11-24T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Denver Broncos",
+    "homeTeam": "Las Vegas Raiders",
+    "kickoffTime": "2024-11-24T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Seattle Seahawks",
+    "homeTeam": "Arizona Cardinals",
+    "kickoffTime": "2024-11-24T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Green Bay Packers",
+    "homeTeam": "San Francisco 49ers",
+    "kickoffTime": "2024-11-24T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Los Angeles Rams",
+    "kickoffTime": "2024-11-25T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Baltimore Ravens",
+    "homeTeam": "Los Angeles Chargers",
+    "kickoffTime": "2024-11-26T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Detroit Lions",
+    "homeTeam": "Chicago Bears",
+    "kickoffTime": "2024-11-28T16:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Dallas Cowboys",
+    "homeTeam": "New York Giants",
+    "kickoffTime": "2024-11-28T20:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Green Bay Packers",
+    "homeTeam": "Miami Dolphins",
+    "kickoffTime": "2024-11-29T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "Las Vegas Raiders",
+    "kickoffTime": "2024-11-29T19:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Chargers",
+    "homeTeam": "Atlanta Falcons",
+    "kickoffTime": "2024-12-01T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Pittsburgh Steelers",
+    "homeTeam": "Cincinnati Bengals",
+    "kickoffTime": "2024-12-01T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Minnesota Vikings",
+    "homeTeam": "Arizona Cardinals",
+    "kickoffTime": "2024-12-01T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Seattle Seahawks",
+    "homeTeam": "New York Jets",
+    "kickoffTime": "2024-12-01T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Washington Commanders",
+    "homeTeam": "Tennessee Titans",
+    "kickoffTime": "2024-12-01T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Indianapolis Colts",
+    "homeTeam": "New England Patriots",
+    "kickoffTime": "2024-12-01T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Houston Texans",
+    "homeTeam": "Jacksonville Jaguars",
+    "kickoffTime": "2024-12-01T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Tampa Bay Buccaneers",
+    "homeTeam": "Carolina Panthers",
+    "kickoffTime": "2024-12-01T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Rams",
+    "homeTeam": "New Orleans Saints",
+    "kickoffTime": "2024-12-01T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Baltimore Ravens",
+    "kickoffTime": "2024-12-01T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Buffalo Bills",
+    "homeTeam": "San Francisco 49ers",
+    "kickoffTime": "2024-12-02T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Denver Broncos",
+    "homeTeam": "Cleveland Browns",
+    "kickoffTime": "2024-12-03T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Detroit Lions",
+    "homeTeam": "Green Bay Packers",
+    "kickoffTime": "2024-12-06T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Minnesota Vikings",
+    "homeTeam": "Atlanta Falcons",
+    "kickoffTime": "2024-12-08T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Carolina Panthers",
+    "kickoffTime": "2024-12-08T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Pittsburgh Steelers",
+    "homeTeam": "Cleveland Browns",
+    "kickoffTime": "2024-12-08T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Jacksonville Jaguars",
+    "homeTeam": "Tennessee Titans",
+    "kickoffTime": "2024-12-08T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Miami Dolphins",
+    "homeTeam": "New York Jets",
+    "kickoffTime": "2024-12-08T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New Orleans Saints",
+    "homeTeam": "New York Giants",
+    "kickoffTime": "2024-12-08T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Tampa Bay Buccaneers",
+    "homeTeam": "Las Vegas Raiders",
+    "kickoffTime": "2024-12-08T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Seattle Seahawks",
+    "homeTeam": "Arizona Cardinals",
+    "kickoffTime": "2024-12-08T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Rams",
+    "homeTeam": "Buffalo Bills",
+    "kickoffTime": "2024-12-08T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "San Francisco 49ers",
+    "homeTeam": "Chicago Bears",
+    "kickoffTime": "2024-12-08T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "Los Angeles Chargers",
+    "kickoffTime": "2024-12-09T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Cincinnati Bengals",
+    "homeTeam": "Dallas Cowboys",
+    "kickoffTime": "2024-12-10T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Rams",
+    "homeTeam": "San Francisco 49ers",
+    "kickoffTime": "2024-12-13T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Dallas Cowboys",
+    "homeTeam": "Carolina Panthers",
+    "kickoffTime": "2024-12-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Cincinnati Bengals",
+    "homeTeam": "Tennessee Titans",
+    "kickoffTime": "2024-12-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "Cleveland Browns",
+    "kickoffTime": "2024-12-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Houston Texans",
+    "homeTeam": "Miami Dolphins",
+    "kickoffTime": "2024-12-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New York Jets",
+    "homeTeam": "Jacksonville Jaguars",
+    "kickoffTime": "2024-12-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Washington Commanders",
+    "homeTeam": "New Orleans Saints",
+    "kickoffTime": "2024-12-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Baltimore Ravens",
+    "homeTeam": "New York Giants",
+    "kickoffTime": "2024-12-15T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Buffalo Bills",
+    "homeTeam": "Detroit Lions",
+    "kickoffTime": "2024-12-15T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Denver Broncos",
+    "homeTeam": "Indianapolis Colts",
+    "kickoffTime": "2024-12-15T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Arizona Cardinals",
+    "homeTeam": "New England Patriots",
+    "kickoffTime": "2024-12-15T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Pittsburgh Steelers",
+    "kickoffTime": "2024-12-15T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Tampa Bay Buccaneers",
+    "homeTeam": "Los Angeles Chargers",
+    "kickoffTime": "2024-12-15T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Green Bay Packers",
+    "homeTeam": "Seattle Seahawks",
+    "kickoffTime": "2024-12-16T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Minnesota Vikings",
+    "homeTeam": "Chicago Bears",
+    "kickoffTime": "2024-12-17T00:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Atlanta Falcons",
+    "homeTeam": "Las Vegas Raiders",
+    "kickoffTime": "2024-12-17T00:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Chargers",
+    "homeTeam": "Denver Broncos",
+    "kickoffTime": "2024-12-20T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "Houston Texans",
+    "kickoffTime": "2024-12-21T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Baltimore Ravens",
+    "homeTeam": "Pittsburgh Steelers",
+    "kickoffTime": "2024-12-21T20:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Atlanta Falcons",
+    "homeTeam": "New York Giants",
+    "kickoffTime": "2024-12-22T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Carolina Panthers",
+    "homeTeam": "Arizona Cardinals",
+    "kickoffTime": "2024-12-22T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Detroit Lions",
+    "homeTeam": "Chicago Bears",
+    "kickoffTime": "2024-12-22T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Cincinnati Bengals",
+    "homeTeam": "Cleveland Browns",
+    "kickoffTime": "2024-12-22T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Indianapolis Colts",
+    "homeTeam": "Tennessee Titans",
+    "kickoffTime": "2024-12-22T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Rams",
+    "homeTeam": "New York Jets",
+    "kickoffTime": "2024-12-22T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Washington Commanders",
+    "homeTeam": "Philadelphia Eagles",
+    "kickoffTime": "2024-12-22T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Minnesota Vikings",
+    "homeTeam": "Seattle Seahawks",
+    "kickoffTime": "2024-12-22T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Buffalo Bills",
+    "homeTeam": "New England Patriots",
+    "kickoffTime": "2024-12-22T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Las Vegas Raiders",
+    "homeTeam": "Jacksonville Jaguars",
+    "kickoffTime": "2024-12-22T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Miami Dolphins",
+    "homeTeam": "San Francisco 49ers",
+    "kickoffTime": "2024-12-22T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Dallas Cowboys",
+    "homeTeam": "Tampa Bay Buccaneers",
+    "kickoffTime": "2024-12-23T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Green Bay Packers",
+    "homeTeam": "New Orleans Saints",
+    "kickoffTime": "2024-12-24T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Seattle Seahawks",
+    "homeTeam": "Chicago Bears",
+    "kickoffTime": "2024-12-27T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Chargers",
+    "homeTeam": "New England Patriots",
+    "kickoffTime": "2024-12-28T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Cincinnati Bengals",
+    "homeTeam": "Denver Broncos",
+    "kickoffTime": "2024-12-28T20:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Rams",
+    "homeTeam": "Arizona Cardinals",
+    "kickoffTime": "2024-12-29T00:10:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Buffalo Bills",
+    "homeTeam": "New York Jets",
+    "kickoffTime": "2024-12-29T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Tampa Bay Buccaneers",
+    "homeTeam": "Carolina Panthers",
+    "kickoffTime": "2024-12-29T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New York Giants",
+    "homeTeam": "Indianapolis Colts",
+    "kickoffTime": "2024-12-29T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Dallas Cowboys",
+    "kickoffTime": "2024-12-29T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Jacksonville Jaguars",
+    "homeTeam": "Tennessee Titans",
+    "kickoffTime": "2024-12-29T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Las Vegas Raiders",
+    "homeTeam": "New Orleans Saints",
+    "kickoffTime": "2024-12-29T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Miami Dolphins",
+    "homeTeam": "Cleveland Browns",
+    "kickoffTime": "2024-12-29T20:05:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Minnesota Vikings",
+    "homeTeam": "Green Bay Packers",
+    "kickoffTime": "2024-12-29T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Washington Commanders",
+    "homeTeam": "Atlanta Falcons",
+    "kickoffTime": "2024-12-30T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Detroit Lions",
+    "homeTeam": "San Francisco 49ers",
+    "kickoffTime": "2024-12-31T00:15:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Baltimore Ravens",
+    "homeTeam": "Cleveland Browns",
+    "kickoffTime": "2025-01-04T20:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Cincinnati Bengals",
+    "homeTeam": "Pittsburgh Steelers",
+    "kickoffTime": "2025-01-05T00:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Carolina Panthers",
+    "homeTeam": "Atlanta Falcons",
+    "kickoffTime": "2025-01-05T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New England Patriots",
+    "homeTeam": "Buffalo Bills",
+    "kickoffTime": "2025-01-05T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Chicago Bears",
+    "homeTeam": "Green Bay Packers",
+    "kickoffTime": "2025-01-05T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Indianapolis Colts",
+    "homeTeam": "Jacksonville Jaguars",
+    "kickoffTime": "2025-01-05T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Washington Commanders",
+    "homeTeam": "Dallas Cowboys",
+    "kickoffTime": "2025-01-05T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Houston Texans",
+    "homeTeam": "Tennessee Titans",
+    "kickoffTime": "2025-01-05T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Tampa Bay Buccaneers",
+    "homeTeam": "New Orleans Saints",
+    "kickoffTime": "2025-01-05T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "New York Giants",
+    "kickoffTime": "2025-01-05T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Arizona Cardinals",
+    "homeTeam": "San Francisco 49ers",
+    "kickoffTime": "2025-01-05T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Denver Broncos",
+    "homeTeam": "Kansas City Chiefs",
+    "kickoffTime": "2025-01-05T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "New York Jets",
+    "homeTeam": "Miami Dolphins",
+    "kickoffTime": "2025-01-05T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Chargers",
+    "homeTeam": "Las Vegas Raiders",
+    "kickoffTime": "2025-01-05T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Seattle Seahawks",
+    "homeTeam": "Los Angeles Rams",
+    "kickoffTime": "2025-01-05T20:25:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Detroit Lions",
+    "homeTeam": "Minnesota Vikings",
+    "kickoffTime": "2025-01-06T00:20:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Houston Texans",
+    "homeTeam": "Los Angeles Chargers",
+    "kickoffTime": "2025-01-11T20:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Baltimore Ravens",
+    "homeTeam": "Pittsburgh Steelers",
+    "kickoffTime": "2025-01-12T00:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Buffalo Bills",
+    "homeTeam": "Denver Broncos",
+    "kickoffTime": "2025-01-12T17:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Green Bay Packers",
+    "kickoffTime": "2025-01-12T20:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Washington Commanders",
+    "homeTeam": "Tampa Bay Buccaneers",
+    "kickoffTime": "2025-01-13T00:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Los Angeles Rams",
+    "homeTeam": "Minnesota Vikings",
+    "kickoffTime": "2025-01-14T00:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "Houston Texans",
+    "kickoffTime": "2025-01-18T20:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Washington Commanders",
+    "homeTeam": "Detroit Lions",
+    "kickoffTime": "2025-01-19T00:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Los Angeles Rams",
+    "kickoffTime": "2025-01-19T19:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Buffalo Bills",
+    "homeTeam": "Baltimore Ravens",
+    "kickoffTime": "2025-01-19T22:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Washington Commanders",
+    "kickoffTime": "2025-01-26T19:00:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Kansas City Chiefs",
+    "homeTeam": "Buffalo Bills",
+    "kickoffTime": "2025-01-26T22:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  },
+  {
+    "week": 1,
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Kansas City Chiefs",
+    "kickoffTime": "2025-02-09T22:30:00.000Z",
+    "winningTeam": "",
+    "scored": false
+  }
+]

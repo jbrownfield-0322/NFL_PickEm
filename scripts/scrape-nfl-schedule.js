@@ -60,42 +60,62 @@ function parseGameDateTime(dateStr, timeStr) {
     // Handle different date formats
     let dateMatch, timeMatch;
     
-    // Try full format first: "Thu, Sep 5, 2024"
-    dateMatch = dateStr.match(/(\w+), (\w+) (\d+), (\d+)/);
+    // Try ISO format first: "2024-09-05"
+    dateMatch = dateStr.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
     if (!dateMatch) {
-      // Try simple format: "July 31" (for 2025 preseason)
-      dateMatch = dateStr.match(/(\w+) (\d+)/);
-      if (dateMatch) {
-        // For 2025 preseason, assume 2025 year
-        const [, month, day] = dateMatch;
-        dateMatch = [null, null, month, day, '2025'];
+      // Try full format: "Thu, Sep 5, 2024"
+      dateMatch = dateStr.match(/(\w+), (\w+) (\d+), (\d+)/);
+      if (!dateMatch) {
+        // Try simple format: "July 31" (for 2025 preseason)
+        dateMatch = dateStr.match(/(\w+) (\d+)/);
+        if (dateMatch) {
+          // For 2025 preseason, assume 2025 year
+          const [, month, day] = dateMatch;
+          dateMatch = [null, null, month, day, '2025'];
+        }
       }
     }
     
-    // Try time format: "8:20 PM"
-    timeMatch = timeStr.match(/(\d+):(\d+) (AM|PM)/);
+    // Try time format: "8:20PM" (no space)
+    timeMatch = timeStr.match(/(\d+):(\d+)(AM|PM)/);
+    if (!timeMatch) {
+      // Try time format: "8:20 PM" (with space)
+      timeMatch = timeStr.match(/(\d+):(\d+) (AM|PM)/);
+    }
     
     if (!dateMatch || !timeMatch) {
       console.warn(`Could not parse date/time: ${dateStr} ${timeStr}`);
       return null;
     }
     
-    const [, dayName, month, day, year] = dateMatch;
-    const [, hour, minute, ampm] = timeMatch;
+    let year, month, day;
     
-    // Convert month name to number
-    const monthMap = {
-      'Jan': 0, 'January': 0, 'Feb': 1, 'February': 1, 'Mar': 2, 'March': 2, 
-      'Apr': 3, 'April': 3, 'May': 4, 'Jun': 5, 'June': 5,
-      'Jul': 6, 'July': 6, 'Aug': 7, 'August': 7, 'Sep': 8, 'September': 8, 
-      'Oct': 9, 'October': 9, 'Nov': 10, 'November': 10, 'Dec': 11, 'December': 11
-    };
-    
-    const monthNum = monthMap[month];
-    if (monthNum === undefined) {
-      console.warn(`Unknown month: ${month}`);
-      return null;
+    if (dateMatch[1] && dateMatch[1].length === 4) {
+      // ISO format: "2024-09-05"
+      [, year, month, day] = dateMatch;
+      month = parseInt(month) - 1; // Convert to 0-based month
+    } else {
+      // Text format: "Thu, Sep 5, 2024" or "July 31"
+      const [, dayName, monthName, dayStr, yearStr] = dateMatch;
+      year = yearStr || '2025'; // Default to 2025 for preseason
+      day = parseInt(dayStr);
+      
+      // Convert month name to number
+      const monthMap = {
+        'Jan': 0, 'January': 0, 'Feb': 1, 'February': 1, 'Mar': 2, 'March': 2, 
+        'Apr': 3, 'April': 3, 'May': 4, 'Jun': 5, 'June': 5,
+        'Jul': 6, 'July': 6, 'Aug': 7, 'August': 7, 'Sep': 8, 'September': 8, 
+        'Oct': 9, 'October': 9, 'Nov': 10, 'November': 10, 'Dec': 11, 'December': 11
+      };
+      
+      month = monthMap[monthName];
+      if (month === undefined) {
+        console.warn(`Unknown month: ${monthName}`);
+        return null;
+      }
     }
+    
+    const [, hour, minute, ampm] = timeMatch;
     
     // Convert 12-hour to 24-hour format
     let hour24 = parseInt(hour);
@@ -103,12 +123,13 @@ function parseGameDateTime(dateStr, timeStr) {
     if (ampm === 'AM' && hour24 === 12) hour24 = 0;
     
     // Create date in Eastern Time (NFL games are typically in ET)
-    const date = new Date(year, monthNum, parseInt(day), hour24, parseInt(minute));
+    // Use a string format that explicitly specifies Eastern Time
+    const easternTimeString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hour24).padStart(2, '0')}:${String(parseInt(minute)).padStart(2, '0')}:00-04:00`;
     
-    // Convert to UTC (assuming Eastern Time)
-    const utcDate = new Date(date.getTime() - (4 * 60 * 60 * 1000)); // EST is UTC-4
+    // Parse as Eastern Time and convert to UTC
+    const date = new Date(easternTimeString);
     
-    return utcDate.toISOString();
+    return date.toISOString();
   } catch (error) {
     console.error(`Error parsing date/time: ${dateStr} ${timeStr}`, error);
     return null;
@@ -148,7 +169,8 @@ async function scrapeNFLSchedule() {
       try {
         const weekText = cells[0].textContent.trim();
         const date = cells[1].textContent.trim();
-        const awayTeam = cells[2].textContent.trim();
+        const time = cells[2].textContent.trim();
+        const awayTeam = cells[3].textContent.trim();
         const homeTeam = cells[5].textContent.trim();
         
         // Skip if we don't have valid data
@@ -177,8 +199,8 @@ async function scrapeNFLSchedule() {
           continue;
         }
         
-        // Parse kickoff time (no time provided, use default 8:00 PM)
-        const kickoffTime = parseGameDateTime(date, "8:00 PM");
+        // Parse kickoff time using the actual time from the HTML
+        const kickoffTime = parseGameDateTime(date, time);
         if (!kickoffTime) {
           console.warn(`Skipping game due to date/time parsing error: ${awayTeam} @ ${homeTeam}`);
           continue;
