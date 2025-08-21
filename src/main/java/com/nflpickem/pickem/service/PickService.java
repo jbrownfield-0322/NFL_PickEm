@@ -53,25 +53,21 @@ public class PickService {
             throw new RuntimeException("Cannot submit pick after kickoff time");
         }
 
-        // Find existing pick, handling potential duplicates by taking the most recent one
+        // Find existing pick, handling potential duplicates by taking the first one found
         List<Pick> existingPicks = (leagueId != null) ? 
             pickRepository.findAllByUserAndGameAndLeague(user, game, league) : 
             pickRepository.findAllByUserAndGame(user, game);
         
         Pick existingPick = null;
         if (!existingPicks.isEmpty()) {
-            // If there are multiple picks (duplicates), take the most recent one
-            existingPick = existingPicks.stream()
-                .sorted((p1, p2) -> p2.getUpdatedAt().compareTo(p1.getUpdatedAt()))
-                .findFirst()
-                .orElse(null);
+            // If there are multiple picks (duplicates), take the first one and delete the rest
+            existingPick = existingPicks.get(0);
             
-            // Delete any duplicate picks (keep only the most recent)
+            // Delete any duplicate picks (keep only the first one)
             if (existingPicks.size() > 1) {
-                existingPicks.stream()
-                    .sorted((p1, p2) -> p2.getUpdatedAt().compareTo(p1.getUpdatedAt()))
-                    .skip(1) // Skip the first (most recent) one
-                    .forEach(pickRepository::delete);
+                for (int i = 1; i < existingPicks.size(); i++) {
+                    pickRepository.delete(existingPicks.get(i));
+                }
             }
         }
         
@@ -198,25 +194,21 @@ public class PickService {
                     throw new RuntimeException("Invalid team picked for game: " + game.getId());
                 }
                 
-                // Find existing pick, handling potential duplicates by taking the most recent one
+                // Find existing pick, handling potential duplicates by taking the first one found
                 List<Pick> existingPicks = (league != null) ? 
                     pickRepository.findAllByUserAndGameAndLeague(user, game, league) : 
                     pickRepository.findAllByUserAndGame(user, game);
                 
                 Pick existingPick = null;
                 if (!existingPicks.isEmpty()) {
-                    // If there are multiple picks (duplicates), take the most recent one
-                    existingPick = existingPicks.stream()
-                        .sorted((p1, p2) -> p2.getUpdatedAt().compareTo(p1.getUpdatedAt()))
-                        .findFirst()
-                        .orElse(null);
+                    // If there are multiple picks (duplicates), take the first one and delete the rest
+                    existingPick = existingPicks.get(0);
                     
-                    // Delete any duplicate picks (keep only the most recent)
+                    // Delete any duplicate picks (keep only the first one)
                     if (existingPicks.size() > 1) {
-                        existingPicks.stream()
-                            .sorted((p1, p2) -> p2.getUpdatedAt().compareTo(p1.getUpdatedAt()))
-                            .skip(1) // Skip the first (most recent) one
-                            .forEach(pickRepository::delete);
+                        for (int i = 1; i < existingPicks.size(); i++) {
+                            pickRepository.delete(existingPicks.get(i));
+                        }
                     }
                 }
                 
