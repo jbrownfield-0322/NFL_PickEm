@@ -28,6 +28,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .httpBasic(basic -> basic.disable()) // Disable HTTP Basic authentication
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/", "/ping", "/health", "/actuator/health", "/actuator/info").permitAll() // Health checks always accessible
                 .requestMatchers("/static/**", "/static/js/**", "/static/css/**", "/static/media/**").permitAll() // Static assets

@@ -4,7 +4,9 @@ import com.nflpickem.pickem.dto.CreateLeagueRequest;
 import com.nflpickem.pickem.dto.JoinLeagueRequest;
 import com.nflpickem.pickem.dto.LeagueResponse;
 import com.nflpickem.pickem.model.League;
+import com.nflpickem.pickem.model.User;
 import com.nflpickem.pickem.service.LeagueService;
+import com.nflpickem.pickem.util.AuthContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +27,12 @@ public class LeagueController {
     @PostMapping("/create")
     public ResponseEntity<LeagueResponse> createLeague(@RequestBody CreateLeagueRequest request) {
         try {
-            // TODO: Get actual user ID from authentication context
-            Long adminId = 1L; // Hardcoded for now - should be replaced with actual user ID
-            League league = leagueService.createLeague(request.getLeagueName(), adminId);
+            User currentUser = AuthContext.getCurrentUser();
+            if (currentUser == null) {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            
+            League league = leagueService.createLeague(request.getLeagueName(), currentUser.getId());
             LeagueResponse leagueResponse = new LeagueResponse(league);
             return new ResponseEntity<>(leagueResponse, HttpStatus.CREATED);
         } catch (RuntimeException e) {
@@ -38,9 +43,12 @@ public class LeagueController {
     @PostMapping("/join")
     public ResponseEntity<LeagueResponse> joinLeague(@RequestBody JoinLeagueRequest request) {
         try {
-            // TODO: Get actual user ID from authentication context
-            Long userId = 1L; // Hardcoded for now - should be replaced with actual user ID
-            League league = leagueService.joinLeague(request.getJoinCode(), userId);
+            User currentUser = AuthContext.getCurrentUser();
+            if (currentUser == null) {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+            
+            League league = leagueService.joinLeague(request.getJoinCode(), currentUser.getId());
             LeagueResponse leagueResponse = new LeagueResponse(league);
             return new ResponseEntity<>(leagueResponse, HttpStatus.OK);
         } catch (RuntimeException e) {

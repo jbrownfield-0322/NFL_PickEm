@@ -21,6 +21,9 @@ public class GameService {
     
     @Value("${ENABLE_NFL_SCRAPING:false}")
     private boolean enableNflScraping;
+    
+    @Value("${NFL_SEASON_WEEKS:18}")
+    private int nflSeasonWeeks;
 
     public GameService(GameRepository gameRepository, NflScheduleScraper nflScheduleScraper) {
         this.gameRepository = gameRepository;
@@ -33,8 +36,8 @@ public class GameService {
             if (enableNflScraping) {
                 try {
                     int currentYear = LocalDate.now().getYear();
-                    // Scrape all regular season weeks (assuming 18 weeks in total)
-                    for (int week = 1; week <= 18; week++) {
+                    // Scrape all regular season weeks (configurable via NFL_SEASON_WEEKS)
+                    for (int week = 1; week <= nflSeasonWeeks; week++) {
                         List<Game> games = nflScheduleScraper.scrapeGames(currentYear, week);
                         gameRepository.saveAll(games);
                         System.out.println("Scraped and saved " + games.size() + " games for Week " + week + " of " + currentYear + " from Pro-Football-Reference.com");

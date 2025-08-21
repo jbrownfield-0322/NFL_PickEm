@@ -5,6 +5,7 @@ import com.nflpickem.pickem.dto.RegisterRequest;
 import com.nflpickem.pickem.dto.UserResponse;
 import com.nflpickem.pickem.model.User;
 import com.nflpickem.pickem.service.AuthService;
+import com.nflpickem.pickem.util.AuthContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,8 @@ public class AuthController {
     public ResponseEntity<Object> register(@RequestBody RegisterRequest request) {
         try {
             User registeredUser = authService.registerUser(request.getUsername(), request.getPassword());
+            // Set user in session after registration
+            AuthContext.setCurrentUser(registeredUser);
             // Return only safe user information
             UserResponse userResponse = new UserResponse(registeredUser);
             return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
@@ -41,6 +44,8 @@ public class AuthController {
     public ResponseEntity<Object> login(@RequestBody LoginRequest request) {
         try {
             User user = authService.loginUser(request.getUsername(), request.getPassword());
+            // Set user in session
+            AuthContext.setCurrentUser(user);
             // Return only safe user information
             UserResponse userResponse = new UserResponse(user);
             return new ResponseEntity<>(userResponse, HttpStatus.OK);
@@ -48,5 +53,11 @@ public class AuthController {
             ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.UNAUTHORIZED.value(), Instant.now().toEpochMilli());
             return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Object> logout() {
+        AuthContext.clearCurrentUser();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 } 

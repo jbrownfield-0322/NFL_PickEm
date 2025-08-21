@@ -85,6 +85,9 @@ const GameList = () => {
         leagueId: selectedLeagueId || null
       };
 
+      console.log('Submitting pick to:', `${API_BASE}/picks/submit`);
+      console.log('Pick data:', pickData);
+
       const response = await fetch(`${API_BASE}/picks/submit`, {
         method: 'POST',
         headers: {
@@ -92,6 +95,9 @@ const GameList = () => {
         },
         body: JSON.stringify(pickData),
       });
+
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
 
       if (response.ok) {
         const result = await response.json();
@@ -105,10 +111,18 @@ const GameList = () => {
         // Refresh user picks
         fetchUserPicks();
       } else {
-        const errorData = await response.json();
+        console.log('Error response status:', response.status);
+        let errorMessage = 'Failed to submit pick';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+          console.log('Error response body:', errorData);
+        } catch (e) {
+          console.log('Could not parse error response as JSON');
+        }
         setPickMessages(prev => ({
           ...prev,
-          [gameId]: `Error: ${errorData.message || 'Failed to submit pick'}`
+          [gameId]: `Error: ${errorMessage}`
         }));
       }
     } catch (error) {

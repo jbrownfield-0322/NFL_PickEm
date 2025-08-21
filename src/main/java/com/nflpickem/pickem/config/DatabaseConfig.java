@@ -14,6 +14,21 @@ public class DatabaseConfig {
 
     @Value("${DATABASE_URL:}")
     private String databaseUrl;
+    
+    @Value("${DB_HOST:localhost}")
+    private String dbHost;
+    
+    @Value("${DB_PORT:5432}")
+    private String dbPort;
+    
+    @Value("${DB_NAME:nflpickem}")
+    private String dbName;
+    
+    @Value("${DB_USER:postgres}")
+    private String dbUser;
+    
+    @Value("${DB_PASSWORD:}")
+    private String dbPassword;
 
     @Bean
     @Primary
@@ -45,10 +60,11 @@ public class DatabaseConfig {
                 dataSource.setJdbcUrl(jdbcUrl);
             }
         } else {
-            // Fallback for local development
-            dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/nflpickem");
-            dataSource.setUsername("postgres");
-            dataSource.setPassword("password");
+            // Fallback for local development using environment variables
+            String jdbcUrl = String.format("jdbc:postgresql://%s:%s/%s", dbHost, dbPort, dbName);
+            dataSource.setJdbcUrl(jdbcUrl);
+            dataSource.setUsername(dbUser);
+            dataSource.setPassword(dbPassword);
         }
         
         dataSource.setDriverClassName("org.postgresql.Driver");
