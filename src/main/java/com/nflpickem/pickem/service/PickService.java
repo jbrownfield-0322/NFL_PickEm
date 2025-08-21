@@ -104,7 +104,7 @@ public class PickService {
             comparison.setAwayTeam(game.getAwayTeam());
             comparison.setHomeTeam(game.getHomeTeam());
             comparison.setWinningTeam(game.getWinningTeam());
-            comparison.setScored(game.getScored());
+            comparison.setScored(game.isScored());
             
             // Get user's pick for this game
             Pick userPick = null;
