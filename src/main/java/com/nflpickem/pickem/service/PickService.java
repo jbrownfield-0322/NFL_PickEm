@@ -7,11 +7,14 @@ import com.nflpickem.pickem.model.League;
 import com.nflpickem.pickem.repository.PickRepository;
 import com.nflpickem.pickem.repository.UserRepository;
 import com.nflpickem.pickem.repository.LeagueRepository;
+import com.nflpickem.pickem.dto.PickComparisonDto;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant; // Import Instant
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Service
 public class PickService {
@@ -82,5 +85,63 @@ public class PickService {
         } else {
             return pickRepository.findByUser(user);
         }
+    }
+
+    public List<PickComparisonDto> getPickComparison(Long userId, Integer week, Long leagueId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        // Get all games for the specified week
+        List<Game> games = gameService.getGamesByWeek(week);
+        List<PickComparisonDto> comparisonData = new ArrayList<>();
+        
+        for (Game game : games) {
+            PickComparisonDto comparison = new PickComparisonDto();
+            comparison.setGameId(game.getId());
+            comparison.setWeek(game.getWeek());
+            comparison.setAwayTeam(game.getAwayTeam());
+            comparison.setHomeTeam(game.getHomeTeam());
+            comparison.setWinningTeam(game.getWinningTeam());
+            comparison.setScored(game.getScored());
+            
+            // Get user's pick for this game
+            Pick userPick = null;
+            if (leagueId != null) {
+                League league = leagueRepository.findById(leagueId)
+                        .orElseThrow(() -> new RuntimeException("League not found"));
+                userPick = pickRepository.findByUserAndGameAndLeague(user, game, league);
+            } else {
+                userPick = pickRepository.findByUserAndGame(user, game);
+            }
+            
+            comparison.setYourPick(userPick != null ? userPick.getPickedTeam() : null);
+            
+            // Get all other picks for this game in the league
+            List<PickComparisonDto.UserPickDto> otherPicks = new ArrayList<>();
+            List<Pick> allPicksForGame;
+            
+            if (leagueId != null) {
+                League league = leagueRepository.findById(leagueId)
+                        .orElseThrow(() -> new RuntimeException("League not found"));
+                allPicksForGame = pickRepository.findByGameAndLeague(game, league);
+            } else {
+                allPicksForGame = pickRepository.findByGame(game);
+            }
+            
+            for (Pick pick : allPicksForGame) {
+                if (!pick.getUser().getId().equals(userId)) { // Exclude current user
+                    PickComparisonDto.UserPickDto userPickDto = new PickComparisonDto.UserPickDto();
+                    userPickDto.setUsername(pick.getUser().getUsername());
+                    userPickDto.setPickedTeam(pick.getPickedTeam());
+                    userPickDto.setCorrect(pick.isCorrect());
+                    otherPicks.add(userPickDto);
+                }
+            }
+            
+            comparison.setOtherPicks(otherPicks);
+            comparisonData.add(comparison);
+        }
+        
+        return comparisonData;
     }
 } 
