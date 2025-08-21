@@ -126,7 +126,12 @@ public class PickService {
                         .orElseThrow(() -> new RuntimeException("League not found"));
                 userPick = pickRepository.findByUserAndGameAndLeague(user, game, league);
             } else {
-                userPick = pickRepository.findByUserAndGame(user, game);
+                // For non-league picks, filter to get only picks with no league
+                List<Pick> userPicksForGame = pickRepository.findByUserAndGame(user, game);
+                userPick = userPicksForGame.stream()
+                    .filter(pick -> pick.getLeague() == null)
+                    .findFirst()
+                    .orElse(null);
             }
             
             comparison.setYourPick(userPick != null ? userPick.getPickedTeam() : null);
