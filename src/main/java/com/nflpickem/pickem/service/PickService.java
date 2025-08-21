@@ -53,22 +53,14 @@ public class PickService {
             throw new RuntimeException("Cannot submit pick after kickoff time");
         }
 
-        // Find existing pick, handling potential duplicates by taking the first one found
-        List<Pick> existingPicks = (leagueId != null) ? 
-            pickRepository.findAllByUserAndGameAndLeague(user, game, league) : 
-            pickRepository.findAllByUserAndGame(user, game);
-        
+        // Find existing pick for this specific league (or no league)
         Pick existingPick = null;
-        if (!existingPicks.isEmpty()) {
-            // If there are multiple picks (duplicates), take the first one and delete the rest
-            existingPick = existingPicks.get(0);
-            
-            // Delete any duplicate picks (keep only the first one)
-            if (existingPicks.size() > 1) {
-                for (int i = 1; i < existingPicks.size(); i++) {
-                    pickRepository.delete(existingPicks.get(i));
-                }
-            }
+        if (leagueId != null) {
+            // For league picks, only look for picks in the same league
+            existingPick = pickRepository.findByUserAndGameAndLeague(user, game, league);
+        } else {
+            // For non-league picks, only look for picks with no league
+            existingPick = pickRepository.findByUserAndGame(user, game);
         }
         
         if (existingPick != null) {
@@ -194,22 +186,14 @@ public class PickService {
                     throw new RuntimeException("Invalid team picked for game: " + game.getId());
                 }
                 
-                // Find existing pick, handling potential duplicates by taking the first one found
-                List<Pick> existingPicks = (league != null) ? 
-                    pickRepository.findAllByUserAndGameAndLeague(user, game, league) : 
-                    pickRepository.findAllByUserAndGame(user, game);
-                
+                // Find existing pick for this specific league (or no league)
                 Pick existingPick = null;
-                if (!existingPicks.isEmpty()) {
-                    // If there are multiple picks (duplicates), take the first one and delete the rest
-                    existingPick = existingPicks.get(0);
-                    
-                    // Delete any duplicate picks (keep only the first one)
-                    if (existingPicks.size() > 1) {
-                        for (int i = 1; i < existingPicks.size(); i++) {
-                            pickRepository.delete(existingPicks.get(i));
-                        }
-                    }
+                if (league != null) {
+                    // For league picks, only look for picks in the same league
+                    existingPick = pickRepository.findByUserAndGameAndLeague(user, game, league);
+                } else {
+                    // For non-league picks, only look for picks with no league
+                    existingPick = pickRepository.findByUserAndGame(user, game);
                 }
                 
                 Pick pick;
