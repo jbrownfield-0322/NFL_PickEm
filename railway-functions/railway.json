@@ -1,0 +1,22 @@
+{
+  "functions": {
+    "game-loader": {
+      "path": "./game-loader.js",
+      "schedule": "0 0 * * 0", // Run every Sunday at midnight
+      "description": "Loads NFL games for the upcoming week"
+    },
+    "score-updater": {
+      "path": "./score-updater.js",
+      "schedule": "0 2 * * 1", // Run every Monday at 2 AM
+      "description": "Updates game scores after games finish"
+    },
+    "live-score-updater": {
+      "path": "./live-score-updater.js",
+      "schedule": "*/15 * * * 0,1", // Run every 15 minutes on Sunday and Monday
+      "description": "Updates live scores during game days"
+    }
+  },
+  "environment": {
+    "API_BASE": "https://your-app.railway.app/api"
+  }
+}
