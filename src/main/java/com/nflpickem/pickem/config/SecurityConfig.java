@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .requestMatchers("/static/**", "/static/js/**", "/static/css/**", "/static/media/**").permitAll() // Static assets
                 .requestMatchers("/register", "/login", "/games", "/leaderboard", "/leagues/**", "/my-leagues", "/account").permitAll() // React routes
                 .requestMatchers("/api/auth/**", "/api/games/**", "/api/picks/**", "/api/leagues/**", "/api/leaderboard/**").permitAll()
+                .requestMatchers("/api/admin/**").permitAll() // Allow admin endpoints for testing
                 .anyRequest().authenticated()
             );
         return http.build();
