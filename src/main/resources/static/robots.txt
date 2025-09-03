@@ -1,0 +1,5 @@
+# Robots.txt for NFL Pick'em App
+
+# By default, allow all crawlers to access all pages
+User-agent: *
+Allow: /
