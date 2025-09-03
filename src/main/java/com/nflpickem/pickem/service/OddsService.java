@@ -46,17 +46,47 @@ public class OddsService {
                 return;
             }
             
+            // Validate API key
+            if (apiKey == null || apiKey.isEmpty() || "your_api_key_here".equals(apiKey)) {
+                System.err.println("Cannot fetch odds: Invalid or missing API key. Please set THEODDS_API_KEY environment variable.");
+                System.err.println("Visit https://the-odds-api.com/ to get a free API key.");
+                throw new RuntimeException("Invalid or missing API key. Please set THEODDS_API_KEY environment variable.");
+            }
+            
+            System.out.println("Fetching odds for week " + week + " using API key: " + apiKey.substring(0, Math.min(8, apiKey.length())) + "...");
+            
             String url = String.format("/v4/sports/americanfootball_nfl/odds?apiKey=%s&regions=us&markets=spreads,totals&oddsFormat=american", apiKey);
             
             Mono<Object[]> response = webClient.get()
                     .uri(url)
                     .retrieve()
+                    .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
+                            clientResponse -> {
+                                System.err.println("API Error: " + clientResponse.statusCode() + " - " + clientResponse.statusCode().getReasonPhrase());
+                                return clientResponse.bodyToMono(String.class)
+                                        .flatMap(body -> {
+                                            String errorMsg = "API Error: " + clientResponse.statusCode() + " - " + body;
+                                            System.err.println(errorMsg);
+                                            
+                                            // Provide helpful error messages for common issues
+                                            if (clientResponse.statusCode().value() == 403) {
+                                                errorMsg += "\nThis usually means:";
+                                                errorMsg += "\n1. Invalid API key";
+                                                errorMsg += "\n2. API key has expired";
+                                                errorMsg += "\n3. API key has reached its request limit";
+                                                errorMsg += "\nPlease check your API key at https://the-odds-api.com/";
+                                            }
+                                            
+                                            return Mono.error(new RuntimeException(errorMsg));
+                                        });
+                            })
                     .bodyToMono(Object[].class);
             
             Object[] oddsData = response.block();
             if (oddsData != null) {
                 processOddsResponse(oddsData, games);
                 updateStats();
+                System.out.println("Successfully fetched odds for week " + week);
             }
             
             // Rate limiting - The Odds API allows 500 requests per month
@@ -64,7 +94,7 @@ public class OddsService {
             
         } catch (Exception e) {
             System.err.println("Error fetching odds for week " + week + ": " + e.getMessage());
-            throw new RuntimeException("Failed to fetch odds", e);
+            throw new RuntimeException("Failed to fetch odds: " + e.getMessage(), e);
         }
     }
     
@@ -181,5 +211,22 @@ public class OddsService {
     
     public int getTotalUpdates() {
         return totalUpdates;
+    }
+    
+    /**
+     * Check if the odds API is properly configured
+     */
+    public boolean isApiConfigured() {
+        return apiKey != null && !apiKey.isEmpty() && !"your_api_key_here".equals(apiKey);
+    }
+    
+    /**
+     * Get API configuration status for debugging
+     */
+    public String getApiStatus() {
+        if (!isApiConfigured()) {
+            return "NOT_CONFIGURED - Please set THEODDS_API_KEY environment variable";
+        }
+        return "CONFIGURED - API key: " + apiKey.substring(0, Math.min(8, apiKey.length())) + "...";
     }
 }

@@ -95,6 +95,10 @@ public class AdminController {
         status.put("lastUpdateTime", oddsService.getLastUpdateTime());
         status.put("totalUpdates", oddsService.getTotalUpdates());
         
+        // API configuration status
+        status.put("oddsApiConfigured", oddsService.isApiConfigured());
+        status.put("oddsApiStatus", oddsService.getApiStatus());
+        
         // Next scheduled updates
         status.put("nextFourHourUpdate", getNextUpdateTime());
         status.put("nextGameDayUpdate", getNextGameDayUpdateTime());
@@ -124,5 +128,18 @@ public class AdminController {
         Instant now = Instant.now();
         // Next hour on game days
         return now.plusSeconds(60 * 60).toString();
+    }
+    
+    /**
+     * Check odds API configuration status
+     */
+    @GetMapping("/odds-api-status")
+    public ResponseEntity<Map<String, Object>> getOddsApiStatus() {
+        Map<String, Object> status = new HashMap<>();
+        status.put("configured", oddsService.isApiConfigured());
+        status.put("status", oddsService.getApiStatus());
+        status.put("lastUpdateTime", oddsService.getLastUpdateTime());
+        status.put("totalUpdates", oddsService.getTotalUpdates());
+        return ResponseEntity.ok(status);
     }
 }
