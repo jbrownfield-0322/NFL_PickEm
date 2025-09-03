@@ -13,6 +13,17 @@ services:
         value: render
     healthCheckPath: /actuator/health
     autoDeploy: true
+    # Force Java environment
+    env: java
+    # Explicitly specify Java runtime
+    runtime: java
+    # Build environment
+    buildEnvVars:
+      - key: JAVA_VERSION
+        value: 17
+    # Additional Java configuration
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/pickem-0.0.1-SNAPSHOT.jar
     # Explicitly specify this is a Java project
     buildFilter:
       paths:
