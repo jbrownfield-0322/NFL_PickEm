@@ -19,13 +19,13 @@ public class ScheduledOddsService {
     private final GameRepository gameRepository;
     
     @Value("${odds.scheduling.enabled:true}")
-    private boolean schedulingEnabled;
+    private boolean schedulingEnabled = true;
     
     @Value("${odds.scheduling.max-weeks-per-update:2}")
-    private int maxWeeksPerUpdate;
+    private int maxWeeksPerUpdate = 2;
     
     @Value("${odds.scheduling.delay-between-weeks:2000}")
-    private long delayBetweenWeeks;
+    private long delayBetweenWeeks = 2000;
     
     @Autowired
     public ScheduledOddsService(OddsService oddsService, GameRepository gameRepository) {
