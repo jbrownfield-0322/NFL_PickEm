@@ -16,6 +16,9 @@ import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 @Service
 public class GameService {
@@ -111,6 +114,75 @@ public class GameService {
             return gameRepository.save(game);
         }
         return null;
+    }
+
+    public boolean deleteGame(Long gameId) {
+        try {
+            if (gameRepository.existsById(gameId)) {
+                gameRepository.deleteById(gameId);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            System.err.println("Error deleting game " + gameId + ": " + e.getMessage());
+            return false;
+        }
+    }
+
+    public Map<String, Object> cleanupDuplicateGames() {
+        Map<String, Object> result = new HashMap<>();
+        
+        try {
+            List<Game> allGames = gameRepository.findAll();
+            Map<String, List<Game>> gameGroups = new HashMap<>();
+            
+            // Group games by week and team combination
+            for (Game game : allGames) {
+                String key = game.getWeek() + "-" + game.getAwayTeam() + "-" + game.getHomeTeam();
+                gameGroups.computeIfAbsent(key, k -> new ArrayList<>()).add(game);
+            }
+            
+            List<Game> duplicatesToDelete = new ArrayList<>();
+            
+            // Find duplicates (keep first, mark others for deletion)
+            for (List<Game> games : gameGroups.values()) {
+                if (games.size() > 1) {
+                    // Keep the first game, mark the rest as duplicates
+                    duplicatesToDelete.addAll(games.subList(1, games.size()));
+                }
+            }
+            
+            if (duplicatesToDelete.isEmpty()) {
+                result.put("success", true);
+                result.put("message", "No duplicate games found");
+                result.put("deletedCount", 0);
+                result.put("totalGames", allGames.size());
+                return result;
+            }
+            
+            // Delete duplicates
+            int deletedCount = 0;
+            for (Game duplicate : duplicatesToDelete) {
+                try {
+                    gameRepository.deleteById(duplicate.getId());
+                    deletedCount++;
+                } catch (Exception e) {
+                    System.err.println("Error deleting duplicate game " + duplicate.getId() + ": " + e.getMessage());
+                }
+            }
+            
+            result.put("success", true);
+            result.put("message", "Successfully cleaned up duplicate games");
+            result.put("deletedCount", deletedCount);
+            result.put("totalDuplicatesFound", duplicatesToDelete.size());
+            result.put("remainingGames", allGames.size() - deletedCount);
+            
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("error", "Error during cleanup: " + e.getMessage());
+        }
+        
+        return result;
     }
 
     public Integer getCurrentWeek() {

@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/games")
@@ -94,6 +96,33 @@ public class GameController {
             return ResponseEntity.ok(updatedGame);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteGame(@PathVariable Long id) {
+        try {
+            boolean deleted = gameService.deleteGame(id);
+            if (deleted) {
+                return ResponseEntity.ok("Game deleted successfully");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error deleting game: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/cleanup-duplicates")
+    public ResponseEntity<Map<String, Object>> cleanupDuplicateGames() {
+        try {
+            Map<String, Object> result = gameService.cleanupDuplicateGames();
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            Map<String, Object> errorResult = new HashMap<>();
+            errorResult.put("success", false);
+            errorResult.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResult);
         }
     }
 
