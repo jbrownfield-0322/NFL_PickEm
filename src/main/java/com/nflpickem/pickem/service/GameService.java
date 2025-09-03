@@ -1,7 +1,6 @@
 package com.nflpickem.pickem.service;
 
 import com.nflpickem.pickem.dto.GameWithOddsDto;
-import com.nflpickem.pickem.model.BettingOdds;
 import com.nflpickem.pickem.model.Game;
 import com.nflpickem.pickem.repository.BettingOddsRepository;
 import com.nflpickem.pickem.repository.GameRepository;

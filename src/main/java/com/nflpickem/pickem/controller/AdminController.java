@@ -1,118 +1,128 @@
 package com.nflpickem.pickem.controller;
 
+import com.nflpickem.pickem.service.OddsService;
 import com.nflpickem.pickem.service.ScheduledOddsService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/admin")
-@Slf4j
+@RequestMapping("/api/admin/odds")
 public class AdminController {
     
-    private final ScheduledOddsService scheduledOddsService;
+    @Autowired
+    private ScheduledOddsService scheduledOddsService;
     
     @Autowired
-    public AdminController(ScheduledOddsService scheduledOddsService) {
-        this.scheduledOddsService = scheduledOddsService;
-    }
+    private OddsService oddsService;
     
     /**
-     * Manually trigger an immediate odds update
+     * Manually trigger odds update for all current weeks
      */
-    @PostMapping("/odds/update-now")
-    public ResponseEntity<Map<String, Object>> triggerOddsUpdate() {
+    @PostMapping("/update-now")
+    public ResponseEntity<Map<String, String>> updateOddsNow() {
         try {
-            log.info("Admin triggered immediate odds update at {}", Instant.now());
-            scheduledOddsService.triggerImmediateUpdate();
-            
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Odds update triggered successfully");
-            response.put("timestamp", Instant.now());
+            scheduledOddsService.updateOddsNow();
+            Map<String, String> response = new HashMap<>();
             response.put("status", "success");
-            
+            response.put("message", "Odds update initiated successfully");
+            response.put("timestamp", Instant.now().toString());
             return ResponseEntity.ok(response);
-            
         } catch (Exception e) {
-            log.error("Error triggering odds update: {}", e.getMessage(), e);
-            
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Error triggering odds update: " + e.getMessage());
-            response.put("timestamp", Instant.now());
+            Map<String, String> response = new HashMap<>();
             response.put("status", "error");
-            
-            return ResponseEntity.internalServerError().body(response);
+            response.put("message", "Failed to update odds: " + e.getMessage());
+            response.put("timestamp", Instant.now().toString());
+            return ResponseEntity.badRequest().body(response);
         }
     }
     
     /**
-     * Get information about the odds update schedule
+     * Manually trigger odds update for a specific week
      */
-    @GetMapping("/odds/schedule")
-    public ResponseEntity<Map<String, Object>> getOddsSchedule() {
-        Map<String, Object> schedule = new HashMap<>();
-        
-        // Next 4-hour update
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime nextUpdate = now.withMinute(0).withSecond(0).withNano(0);
-        
-        // Find next 4-hour mark (0, 4, 8, 12, 16, 20)
-        int currentHour = now.getHour();
-        int nextHour = ((currentHour / 4) + 1) * 4;
-        if (nextHour >= 24) {
-            nextHour = 0;
-            nextUpdate = nextUpdate.plusDays(1);
+    @PostMapping("/update-week/{weekNum}")
+    public ResponseEntity<Map<String, String>> updateOddsForWeek(@PathVariable Integer weekNum) {
+        try {
+            scheduledOddsService.updateOddsForWeek(weekNum);
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("message", "Odds update initiated for Week " + weekNum);
+            response.put("timestamp", Instant.now().toString());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "Failed to update odds for Week " + weekNum + ": " + e.getMessage());
+            response.put("timestamp", Instant.now().toString());
+            return ResponseEntity.badRequest().body(response);
         }
-        nextUpdate = nextUpdate.withHour(nextHour);
-        
-        schedule.put("currentTime", now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        schedule.put("nextScheduledUpdate", nextUpdate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        schedule.put("updateFrequency", "Every 4 hours (00:00, 04:00, 08:00, 12:00, 16:00, 20:00)");
-        schedule.put("gameDayUpdates", "Every hour on Thursday, Sunday, Monday");
-        schedule.put("timezone", ZoneId.systemDefault().getId());
-        
-        return ResponseEntity.ok(schedule);
     }
     
     /**
-     * Get the current odds update status
+     * Get current scheduling configuration and status
      */
-    @GetMapping("/odds/status")
-    public ResponseEntity<Map<String, Object>> getOddsStatus() {
+    @GetMapping("/schedule")
+    public ResponseEntity<Map<String, Object>> getScheduleInfo() {
+        Map<String, Object> scheduleInfo = new HashMap<>();
+        
+        scheduleInfo.put("schedulingEnabled", scheduledOddsService.isSchedulingEnabled());
+        scheduleInfo.put("updateFrequencyHours", scheduledOddsService.getUpdateFrequencyHours());
+        scheduleInfo.put("gameDayUpdateFrequencyHours", scheduledOddsService.getGameDayUpdateFrequencyHours());
+        scheduleInfo.put("maxWeeksPerUpdate", scheduledOddsService.getMaxWeeksPerUpdate());
+        scheduleInfo.put("delayBetweenWeeksMs", scheduledOddsService.getDelayBetweenWeeksMs());
+        scheduleInfo.put("currentNflWeek", scheduledOddsService.getCurrentNflWeek());
+        scheduleInfo.put("nextUpdateTime", getNextUpdateTime());
+        
+        return ResponseEntity.ok(scheduleInfo);
+    }
+    
+    /**
+     * Get comprehensive status and statistics
+     */
+    @GetMapping("/status")
+    public ResponseEntity<Map<String, Object>> getStatus() {
         Map<String, Object> status = new HashMap<>();
         
+        // Scheduling info
         status.put("schedulingEnabled", scheduledOddsService.isSchedulingEnabled());
-        status.put("lastUpdate", scheduledOddsService.getLastUpdateTime());
-        status.put("nextUpdate", getNextUpdateTime());
-        status.put("autoUpdate", true);
-        status.put("manualUpdateAvailable", true);
-        status.put("totalUpdates", scheduledOddsService.getTotalUpdates());
-        status.put("schedulingInfo", scheduledOddsService.getSchedulingInfo());
-        status.put("updateStats", scheduledOddsService.getUpdateStats());
+        status.put("currentNflWeek", scheduledOddsService.getCurrentNflWeek());
+        
+        // Odds service stats
+        status.put("lastUpdateTime", oddsService.getLastUpdateTime());
+        status.put("totalUpdates", oddsService.getTotalUpdates());
+        
+        // Next scheduled updates
+        status.put("nextFourHourUpdate", getNextUpdateTime());
+        status.put("nextGameDayUpdate", getNextGameDayUpdateTime());
+        
+        // Configuration
+        status.put("updateFrequencyHours", scheduledOddsService.getUpdateFrequencyHours());
+        status.put("gameDayUpdateFrequencyHours", scheduledOddsService.getGameDayUpdateFrequencyHours());
         
         return ResponseEntity.ok(status);
     }
     
+    /**
+     * Calculate next 4-hour update time
+     */
     private String getNextUpdateTime() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime nextUpdate = now.withMinute(0).withSecond(0).withNano(0);
-        
-        int currentHour = now.getHour();
-        int nextHour = ((currentHour / 4) + 1) * 4;
-        if (nextHour >= 24) {
-            nextHour = 0;
-            nextUpdate = nextUpdate.plusDays(1);
-        }
-        nextUpdate = nextUpdate.withHour(nextHour);
-        
-        return nextUpdate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        Instant now = Instant.now();
+        // Simple calculation - next 4-hour boundary
+        long nextUpdate = now.plusSeconds(4 * 60 * 60).getEpochSecond();
+        nextUpdate = (nextUpdate / (4 * 60 * 60)) * (4 * 60 * 60);
+        return Instant.ofEpochSecond(nextUpdate).toString();
+    }
+    
+    /**
+     * Calculate next game day update time
+     */
+    private String getNextGameDayUpdateTime() {
+        Instant now = Instant.now();
+        // Next hour on game days
+        return now.plusSeconds(60 * 60).toString();
     }
 }

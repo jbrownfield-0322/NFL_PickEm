@@ -3,10 +3,15 @@ package com.nflpickem.pickem.dto;
 import com.nflpickem.pickem.model.BettingOdds;
 import com.nflpickem.pickem.model.Game;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 @Data
+@NoArgsConstructor
 public class GameWithOddsDto {
     private Long id;
     private Integer week;
@@ -14,16 +19,8 @@ public class GameWithOddsDto {
     private String awayTeam;
     private Instant kickoffTime;
     private String winningTeam;
-    private boolean scored;
-    
-    // Betting odds information
-    private String sportsbook;
-    private Double homeTeamOdds;
-    private Double awayTeamOdds;
-    private Double spread;
-    private String spreadTeam;
-    private Double total;
-    private Instant oddsLastUpdated;
+    private Boolean scored;
+    private BettingOdds odds;
     
     public GameWithOddsDto(Game game) {
         this.id = game.getId();
@@ -32,72 +29,55 @@ public class GameWithOddsDto {
         this.awayTeam = game.getAwayTeam();
         this.kickoffTime = game.getKickoffTime();
         this.winningTeam = game.getWinningTeam();
-        this.scored = game.isScored();
+        this.scored = game.isScored(); // Use isScored() for boolean primitive
     }
     
     public void setOdds(BettingOdds odds) {
-        if (odds != null) {
-            this.sportsbook = odds.getSportsbook();
-            this.homeTeamOdds = odds.getHomeTeamOdds();
-            this.awayTeamOdds = odds.getAwayTeamOdds();
-            this.spread = odds.getSpread();
-            this.spreadTeam = odds.getSpreadTeam();
-            this.total = odds.getTotal();
-            this.oddsLastUpdated = odds.getLastUpdated();
-        }
+        this.odds = odds;
     }
     
-    /**
-     * Get formatted spread display
-     */
+    // Helper methods for formatting odds display
     public String getFormattedSpread() {
-        if (spread == null || spreadTeam == null) {
+        if (odds == null || odds.getSpread() == null) {
             return "N/A";
         }
-        
-        String teamName = spreadTeam.equals(homeTeam) ? "H" : "A";
-        return String.format("%s %s%.1f", teamName, spread > 0 ? "+" : "-", spread);
+        String team = odds.getSpreadTeam() != null ? odds.getSpreadTeam() : "";
+        return String.format("%.1f %s", odds.getSpread(), team);
     }
     
-    /**
-     * Get formatted total display
-     */
     public String getFormattedTotal() {
-        if (total == null) {
+        if (odds == null || odds.getTotal() == null) {
             return "N/A";
         }
-        return String.format("%.1f", total);
+        return String.format("%.1f", odds.getTotal());
     }
     
-    /**
-     * Get formatted odds display
-     */
     public String getFormattedHomeOdds() {
-        if (homeTeamOdds == null) {
+        if (odds == null || odds.getHomeTeamOdds() == null) {
             return "N/A";
         }
-        return formatAmericanOdds(homeTeamOdds);
+        return formatAmericanOdds(odds.getHomeTeamOdds());
     }
     
     public String getFormattedAwayOdds() {
-        if (awayTeamOdds == null) {
+        if (odds == null || odds.getAwayTeamOdds() == null) {
             return "N/A";
         }
-        return formatAmericanOdds(awayTeamOdds);
+        return formatAmericanOdds(odds.getAwayTeamOdds());
     }
     
-    /**
-     * Format American odds (e.g., +150, -110)
-     */
     private String formatAmericanOdds(Double odds) {
-        if (odds == null) {
-            return "N/A";
-        }
-        
+        if (odds == null) return "N/A";
         if (odds > 0) {
-            return String.format("+%.0f", odds);
+            return "+" + String.valueOf(odds.intValue());
         } else {
-            return String.format("%.0f", odds);
+            return String.valueOf(odds.intValue());
         }
+    }
+    
+    public String getFormattedKickoffTime() {
+        if (kickoffTime == null) return "TBD";
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(kickoffTime, ZoneId.of("America/New_York"));
+        return localDateTime.format(DateTimeFormatter.ofPattern("MMM dd, HH:mm"));
     }
 }

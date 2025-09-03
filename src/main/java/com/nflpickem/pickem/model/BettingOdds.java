@@ -2,14 +2,18 @@ package com.nflpickem.pickem.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.time.Instant;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class BettingOdds {
     @Id
-    @GeneratedValue(strategy =GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @OneToOne
@@ -23,11 +27,9 @@ public class BettingOdds {
     private String spreadTeam;
     private Double total;
     private Instant lastUpdated;
-    private String oddsType; // "american", "decimal", "fractional"
+    private String oddsType;
     
-    // Constructor
-    public BettingOdds() {}
-    
+    // Constructor for creating odds without ID
     public BettingOdds(Game game, String sportsbook, Double homeTeamOdds, Double awayTeamOdds, 
                        Double spread, String spreadTeam, Double total, String oddsType) {
         this.game = game;

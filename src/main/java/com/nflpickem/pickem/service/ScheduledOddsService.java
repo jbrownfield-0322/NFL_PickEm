@@ -1,151 +1,159 @@
 package com.nflpickem.pickem.service;
 
-import com.nflpickem.pickem.repository.GameRepository;
-import com.nflpickem.pickem.service.OddsService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.List;
+import java.time.temporal.TemporalAdjusters;
+import java.util.logging.Logger;
 
 @Service
-@Slf4j
 public class ScheduledOddsService {
     
-    private final OddsService oddsService;
-    private final GameRepository gameRepository;
-    
-    @Value("${odds.scheduling.enabled:true}")
-    private boolean schedulingEnabled = true;
-    
-    @Value("${odds.scheduling.max-weeks-per-update:2}")
-    private int maxWeeksPerUpdate = 2;
-    
-    @Value("${odds.scheduling.delay-between-weeks:2000}")
-    private long delayBetweenWeeks = 2000;
+    private static final Logger logger = Logger.getLogger(ScheduledOddsService.class.getName());
     
     @Autowired
-    public ScheduledOddsService(OddsService oddsService, GameRepository gameRepository) {
-        this.oddsService = oddsService;
-        this.gameRepository = gameRepository;
-    }
+    private OddsService oddsService;
+    
+    @Value("${odds.scheduling.enabled:true}")
+    private boolean schedulingEnabled;
+    
+    @Value("${odds.scheduling.frequency:4}")
+    private int updateFrequencyHours;
+    
+    @Value("${odds.scheduling.game-day-frequency:1}")
+    private int gameDayUpdateFrequencyHours;
+    
+    @Value("${odds.scheduling.max-weeks-per-update:4}")
+    private int maxWeeksPerUpdate;
+    
+    @Value("${odds.scheduling.delay-between-weeks:2000}")
+    private long delayBetweenWeeksMs;
     
     /**
-     * Update odds every 4 hours for all active weeks
-     * Cron: Every 4 hours (0, 4, 8, 12, 16, 20)
+     * Update odds every 4 hours (configurable)
+     * Cron format: every 4 hours at minute 0
      */
-    // @Scheduled(cron = "0 0 */4 * * *")
+    @Scheduled(cron = "0 0 */4 * * *")
     public void updateOddsEveryFourHours() {
         if (!schedulingEnabled) {
-            log.debug("Scheduled odds update skipped - scheduling disabled");
+            logger.info("Scheduled odds updates are disabled");
             return;
         }
         
-        log.info("Starting scheduled odds update at {}", Instant.now());
-        
         try {
-            // Get current NFL week
-            Integer currentWeek = getCurrentNflWeek();
-            
-            // Update odds for current week and next few weeks (configurable)
-            for (int i = 0; i < maxWeeksPerUpdate; i++) {
-                Integer weekToUpdate = currentWeek + i;
-                if (weekToUpdate <= 18) { // NFL regular season is 18 weeks
-                    log.info("Updating odds for Week {}", weekToUpdate);
-                    oddsService.fetchOddsForWeek(weekToUpdate);
-                    
-                    // Add delay between weeks to respect API rate limits
-                    if (i < maxWeeksPerUpdate - 1) {
-                        Thread.sleep(delayBetweenWeeks);
-                    }
-                }
-            }
-            
-            log.info("Completed scheduled odds update at {}", Instant.now());
-            
+            logger.info("Starting scheduled odds update (4-hour interval)");
+            updateOddsForCurrentWeeks();
+            logger.info("Completed scheduled odds update");
         } catch (Exception e) {
-            log.error("Error during scheduled odds update: {}", e.getMessage(), e);
+            logger.severe("Error during scheduled odds update: " + e.getMessage());
         }
     }
     
     /**
-     * Update odds every hour during game days (Thursday, Sunday, Monday)
-     * Cron: Every hour on game days
+     * Update odds more frequently on game days (Thursday, Sunday, Monday)
+     * Cron format: 0 0 * * * THU,SUN,MON (hourly on game days)
      */
-    // @Scheduled(cron = "0 0 * * * THU,SUN,MON")
+    @Scheduled(cron = "0 0 * * * THU,SUN,MON")
     public void updateOddsOnGameDays() {
         if (!schedulingEnabled) {
-            log.debug("Game day odds update skipped - scheduling disabled");
             return;
         }
         
-        log.info("Starting game day odds update at {}", Instant.now());
-        
         try {
-            Integer currentWeek = getCurrentNflWeek();
-            log.info("Updating odds for Week {} on game day", currentWeek);
-            oddsService.fetchOddsForWeek(currentWeek);
-            
-            log.info("Completed game day odds update at {}", Instant.now());
-            
+            logger.info("Starting game day odds update (hourly)");
+            updateOddsForCurrentWeeks();
+            logger.info("Completed game day odds update");
         } catch (Exception e) {
-            log.error("Error during game day odds update: {}", e.getMessage(), e);
+            logger.severe("Error during game day odds update: " + e.getMessage());
         }
     }
     
     /**
-     * Update odds 2 hours before each game starts
-     * This is more complex and would require additional logic
-     * For now, we'll stick with the 4-hour intervals
+     * Update odds for current and upcoming weeks
      */
+    private void updateOddsForCurrentWeeks() {
+        int currentWeek = getCurrentNflWeek();
+        
+        // Update current week and next few weeks
+        for (int week = currentWeek; week <= currentWeek + maxWeeksPerUpdate && week <= 18; week++) {
+            try {
+                logger.info("Updating odds for Week " + week);
+                oddsService.fetchOddsForWeek(week);
+                
+                // Add delay between weeks to respect API rate limits
+                if (week < currentWeek + maxWeeksPerUpdate && week < 18) {
+                    Thread.sleep(delayBetweenWeeksMs);
+                }
+                
+            } catch (Exception e) {
+                logger.warning("Failed to update odds for Week " + week + ": " + e.getMessage());
+            }
+        }
+    }
     
     /**
-     * Get current NFL week based on date
+     * Get current NFL week
      */
-    private Integer getCurrentNflWeek() {
+    public int getCurrentNflWeek() {
         LocalDate today = LocalDate.now();
         LocalDate septemberFirst = LocalDate.of(today.getYear(), 9, 1);
+        LocalDate nflSeasonStart = septemberFirst.with(TemporalAdjusters.firstInMonth(DayOfWeek.THURSDAY));
         
-        // Find first Thursday in September
-        LocalDate nflSeasonStart = septemberFirst;
-        while (nflSeasonStart.getDayOfWeek().getValue() != 4) { // 4 = Thursday
-            nflSeasonStart = nflSeasonStart.plusDays(1);
+        if (septemberFirst.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            nflSeasonStart = septemberFirst;
         }
         
         if (today.isBefore(nflSeasonStart)) {
-            return 1; // Pre-season
+            return 1;
         }
         
         long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(nflSeasonStart, today);
-        return (int) (daysBetween / 7) + 1;
+        return Math.min((int) (daysBetween / 7) + 1, 18);
     }
     
     /**
-     * Manual trigger for immediate odds update (can be called from admin endpoints)
+     * Manually trigger odds update for all current weeks
      */
-    public void triggerImmediateUpdate() {
-        log.info("Manual odds update triggered at {}", Instant.now());
-        updateOddsEveryFourHours();
+    public void updateOddsNow() {
+        logger.info("Manual odds update triggered");
+        updateOddsForCurrentWeeks();
     }
     
     /**
-     * Check if scheduling is enabled
+     * Manually trigger odds update for a specific week
      */
+    public void updateOddsForWeek(int week) {
+        logger.info("Manual odds update triggered for Week " + week);
+        try {
+            oddsService.fetchOddsForWeek(week);
+        } catch (Exception e) {
+            logger.severe("Failed to update odds for Week " + week + ": " + e.getMessage());
+            throw e;
+        }
+    }
+    
+    // Getters for monitoring
     public boolean isSchedulingEnabled() {
         return schedulingEnabled;
     }
     
-    /**
-     * Get scheduling configuration
-     */
-    public String getSchedulingInfo() {
-        return String.format("Scheduling: %s, Max weeks per update: %d, Delay: %dms", 
-                schedulingEnabled ? "Enabled" : "Disabled", 
-                maxWeeksPerUpdate, 
-                delayBetweenWeeks);
+    public int getUpdateFrequencyHours() {
+        return updateFrequencyHours;
+    }
+    
+    public int getGameDayUpdateFrequencyHours() {
+        return gameDayUpdateFrequencyHours;
+    }
+    
+    public int getMaxWeeksPerUpdate() {
+        return maxWeeksPerUpdate;
+    }
+    
+    public long getDelayBetweenWeeksMs() {
+        return delayBetweenWeeksMs;
     }
 }

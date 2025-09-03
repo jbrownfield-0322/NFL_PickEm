@@ -10,7 +10,12 @@ import java.util.Optional;
 
 @Repository
 public interface BettingOddsRepository extends JpaRepository<BettingOdds, Long> {
+    
     Optional<BettingOdds> findByGame(Game game);
+    
     List<BettingOdds> findByGameWeek(Integer week);
+    
     void deleteByGame(Game game);
+    
+    List<BettingOdds> findBySportsbook(String sportsbook);
 }
