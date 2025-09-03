@@ -176,7 +176,7 @@ public class AdminController {
      * Test the exact same request that works in PowerShell
      */
     @GetMapping("/test-powershell-request")
-    public ResponseEntity<Map<String, Object>> testPowerShellRequest() {
+    public ResponseEntity<Map<String, Object>> testPowershellRequest() {
         Map<String, Object> result = new HashMap<>();
         
         try {
@@ -199,6 +199,31 @@ public class AdminController {
         }
         
         return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Debug endpoint to show exact values being used by OddsService
+     */
+    @GetMapping("/debug-odds-service")
+    public ResponseEntity<Map<String, Object>> debugOddsService() {
+        Map<String, Object> debug = new HashMap<>();
+        
+        try {
+            debug.put("apiConfigured", oddsService.isApiConfigured());
+            debug.put("apiStatus", oddsService.getApiStatus());
+            debug.put("apiKeyForTesting", oddsService.getApiKeyForTesting());
+            debug.put("lastUpdateTime", oddsService.getLastUpdateTime());
+            debug.put("totalUpdates", oddsService.getTotalUpdates());
+            
+            // Test basic connectivity
+            String connectivityTest = oddsService.testBasicConnectivity();
+            debug.put("basicConnectivityTest", connectivityTest);
+            
+        } catch (Exception e) {
+            debug.put("error", e.getMessage());
+        }
+        
+        return ResponseEntity.ok(debug);
     }
     
     /**
