@@ -1,0 +1,251 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'NFL Pickem Spring Boot Application - AWS Free Tier'
+
+Parameters:
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+
+Resources:
+  # VPC for the application
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: NFL-Pickem-VPC
+
+  # Internet Gateway
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: NFL-Pickem-IGW
+
+  # Attach Internet Gateway to VPC
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  # Public Subnet
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs '']
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: NFL-Pickem-Public-Subnet
+
+  # Route Table
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: NFL-Pickem-Public-Route-Table
+
+  # Route to Internet Gateway
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  # Associate Route Table with Subnet
+  PublicSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      RouteTableId: !Ref PublicRouteTable
+
+  # Security Group for EC2
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH and HTTP access
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: NFL-Pickem-EC2-SG
+
+  # EC2 Instance (Free Tier eligible)
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0c02fb55956c7d316  # Amazon Linux 2023 AMI (Free Tier)
+      InstanceType: t2.micro  # Free Tier eligible
+      KeyName: !Ref KeyName
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroup
+      SubnetId: !Ref PublicSubnet
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          yum install -y java-17-amazon-corretto
+          yum install -y git
+          
+          # Create application directory
+          mkdir -p /opt/nfl-pickem
+          cd /opt/nfl-pickem
+          
+          # Clone your repository (you'll need to update this URL)
+          git clone https://github.com/jbrownfield-0322/NFL_PickEm.git .
+          
+          # Build the application
+          ./mvnw clean package -DskipTests
+          
+          # Create systemd service
+          cat > /etc/systemd/system/nfl-pickem.service << EOF
+          [Unit]
+          Description=NFL Pickem Spring Boot Application
+          After=network.target
+          
+          [Service]
+          Type=simple
+          User=ec2-user
+          WorkingDirectory=/opt/nfl-pickem
+          ExecStart=/usr/bin/java -jar target/pickem-0.0.1-SNAPSHOT.jar
+          Restart=always
+          Environment="SPRING_PROFILES_ACTIVE=aws"
+          Environment="PORT=8080"
+          
+          [Install]
+          WantedBy=multi-user.target
+          EOF
+          
+          # Enable and start service
+          systemctl enable nfl-pickem
+          systemctl start nfl-pickem
+          
+          # Install and configure nginx for reverse proxy
+          yum install -y nginx
+          
+          # Configure nginx
+          cat > /etc/nginx/conf.d/nfl-pickem.conf << EOF
+          server {
+              listen 80;
+              server_name _;
+              
+              location / {
+                  proxy_pass http://localhost:8080;
+                  proxy_set_header Host \$host;
+                  proxy_set_header X-Real-IP \$remote_addr;
+                  proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto \$scheme;
+              }
+          }
+          EOF
+          
+          # Start nginx
+          systemctl enable nginx
+          systemctl start nginx
+          
+      Tags:
+        - Key: Name
+          Value: NFL-Pickem-EC2
+
+  # RDS Instance (Free Tier eligible)
+  RDSInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceClass: db.t3.micro  # Free Tier eligible
+      Engine: postgres
+      EngineVersion: 15.4
+      DBInstanceIdentifier: nfl-pickem-db
+      MasterUsername: admin
+      MasterUserPassword: !Sub '{{resolve:secretsmanager:${AWS::StackName}/db-password:SecretString:password}}'
+      AllocatedStorage: 20
+      StorageType: gp2
+      VPCSecurityGroups:
+        - !Ref RDSSecurityGroup
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      BackupRetentionPeriod: 7
+      MultiAZ: false
+      PubliclyAccessible: false
+      Tags:
+        - Key: Name
+          Value: NFL-Pickem-RDS
+
+  # Security Group for RDS
+  RDSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable PostgreSQL access from EC2
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          SourceSecurityGroupId: !Ref EC2SecurityGroup
+      Tags:
+        - Key: Name
+          Value: NFL-Pickem-RDS-SG
+
+  # DB Subnet Group
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subnet group for RDS
+      SubnetIds:
+        - !Ref PublicSubnet
+      Tags:
+        - Key: Name
+          Value: NFL-Pickem-DB-Subnet-Group
+
+  # Secrets Manager for database password
+  DBPasswordSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub '${AWS::StackName}/db-password'
+      Description: Database password for NFL Pickem
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "admin"}'
+        GenerateStringKey: password
+        PasswordLength: 16
+        ExcludeCharacters: '"@/\'
+
+Outputs:
+  EC2PublicIP:
+    Description: Public IP address of the EC2 instance
+    Value: !GetAtt EC2Instance.PublicIp
+    Export:
+      Name: !Sub '${AWS::StackName}-EC2-PublicIP'
+
+  RDSEndpoint:
+    Description: RDS instance endpoint
+    Value: !GetAtt RDSInstance.Endpoint.Address
+    Export:
+      Name: !Sub '${AWS::StackName}-RDS-Endpoint'
+
+  VPCId:
+    Description: VPC ID
+    Value: !Ref VPC
+    Export:
+      Name: !Sub '${AWS::StackName}-VPC-ID'
