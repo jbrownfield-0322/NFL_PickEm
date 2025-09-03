@@ -68,17 +68,15 @@ public class OddsService {
             
             System.out.println("Fetching odds for week " + week + " using API key: " + apiKey.substring(0, Math.min(8, apiKey.length())) + "...");
             
-            // Use UriBuilder to properly construct the URL with query parameters
-            String url = UriComponentsBuilder.fromPath("/v4/sports/americanfootball_nfl/odds")
-                    .queryParam("apiKey", apiKey)
-                    .queryParam("regions", "us")
-                    .queryParam("markets", "spreads,totals")
-                    .queryParam("oddsFormat", "american")
-                    .build()
-                    .toUriString();
-            
+            // Use WebClient's built-in URI builder for proper query parameter handling
             Mono<Object[]> response = webClient.get()
-                    .uri(url)
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/v4/sports/americanfootball_nfl/odds")
+                            .queryParam("apiKey", apiKey)
+                            .queryParam("regions", "us")
+                            .queryParam("markets", "spreads,totals")
+                            .queryParam("oddsFormat", "american")
+                            .build())
                     .header("User-Agent", "NFL-Pickem-App/1.0")
                     .header("Accept", "application/json")
                     .retrieve()
@@ -109,7 +107,6 @@ public class OddsService {
                                                 // Log additional debugging info
                                                 System.err.println("=== 403 ERROR DEBUG INFO ===");
                                                 System.err.println("API Key used: " + apiKey.substring(0, Math.min(8, apiKey.length())) + "...");
-                                                System.err.println("Request URL: " + url);
                                                 System.err.println("User-Agent: NFL-Pickem-App/1.0");
                                                 System.err.println("=====================================");
                                             }
@@ -390,17 +387,14 @@ public class OddsService {
             System.out.println("API Key length: " + (apiKey != null ? apiKey.length() : "NULL"));
             System.out.println("API Key starts with: " + (apiKey != null ? apiKey.substring(0, Math.min(8, apiKey.length())) : "NULL"));
             
-            // Test with a simple ping-like request
-            String testUrl = UriComponentsBuilder.fromPath("/v4/sports")
-                    .queryParam("apiKey", apiKey)
-                    .build()
-                    .toUriString();
-            System.out.println("Test URL: " + testUrl);
-            System.out.println("Full URL will be: " + baseUrl + testUrl);
+            // Test with a simple ping-like request using WebClient's URI builder
+            System.out.println("Testing with WebClient URI builder...");
             
-            // Use a timeout to prevent hanging
             Mono<Object[]> response = webClient.get()
-                    .uri(testUrl)
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/v4/sports")
+                            .queryParam("apiKey", apiKey)
+                            .build())
                     .header("User-Agent", "NFL-Pickem-App/1.0")
                     .header("Accept", "application/json")
                     .retrieve()
