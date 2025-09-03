@@ -15,8 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .setCachePeriod(3600)
                 .resourceChain(true);
 
-        // Serve other static assets
-        registry.addResourceHandler("/**")
+        // Serve other static assets (but not static folder content)
+        registry.addResourceHandler("/favicon.ico", "/logo*.png", "/manifest.json", "/robots.txt", "/asset-manifest.json")
                 .addResourceLocations("classpath:/static/")
                 .setCachePeriod(3600)
                 .resourceChain(true);

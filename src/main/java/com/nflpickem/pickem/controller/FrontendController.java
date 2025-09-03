@@ -13,7 +13,7 @@ import java.io.IOException;
 @RestController
 public class FrontendController {
 
-    @GetMapping(value = {"/", "/{path:^(?!api).*}/**"})
+    @GetMapping(value = {"/", "/{path:^(?!api|static).*}/**"})
     public ResponseEntity<Resource> serveFrontend() {
         Resource resource = new ClassPathResource("static/index.html");
         return ResponseEntity.ok()
