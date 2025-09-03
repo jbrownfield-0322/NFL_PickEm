@@ -280,13 +280,12 @@ public class OddsService {
         }
         
         try {
-            // Make a simple test request to /v4/sports (which should work with any valid key)
-            String testUrl = "/v4/sports?apiKey=" + apiKey;
-            System.out.println("Testing API connection with URL: " + testUrl);
-            System.out.println("Full URL: " + baseUrl + testUrl);
+            // Make a simple test request to /v4/sports using absolute URL
+            String fullUrl = baseUrl + "/v4/sports?apiKey=" + apiKey;
+            System.out.println("Testing API connection with absolute URL: " + fullUrl);
             
             Mono<Object[]> response = webClient.get()
-                    .uri(testUrl)
+                    .uri(fullUrl)
                     .header("User-Agent", "NFL-Pickem-App/1.0")
                     .header("Accept", "application/json")
                     .retrieve()
@@ -332,12 +331,12 @@ public class OddsService {
         }
         
         try {
-            // Test the exact same endpoint that works in PowerShell
-            String testUrl = "/v4/sports/americanfootball_nfl/odds?apiKey=" + apiKey + "&regions=us&markets=spreads,totals&oddsFormat=american";
-            System.out.println("Testing exact PowerShell request: " + testUrl);
+            // Test the exact same endpoint that works in PowerShell using absolute URL
+            String fullUrl = baseUrl + "/v4/sports/americanfootball_nfl/odds?apiKey=" + apiKey + "&regions=us&markets=spreads,totals&oddsFormat=american";
+            System.out.println("Testing exact PowerShell request with absolute URL: " + fullUrl);
             
             Mono<Object[]> response = webClient.get()
-                    .uri(testUrl)
+                    .uri(fullUrl)
                     .header("User-Agent", "NFL-Pickem-App/1.0")
                     .header("Accept", "application/json")
                     .retrieve()
