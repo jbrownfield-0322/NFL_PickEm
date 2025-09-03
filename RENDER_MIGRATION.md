@@ -30,9 +30,15 @@
 2. Select **"Web Service"**
 3. Connect your **GitHub repository**
 4. Name: `nfl-pickem`
-5. Environment: **Java**
+5. **Environment: Java** (IMPORTANT: Make sure this says Java, not Node.js)
 6. Build Command: `./mvnw clean package -DskipTests`
 7. Start Command: `java -jar target/pickem-0.0.1-SNAPSHOT.jar`
+
+**⚠️ CRITICAL: If Render shows "Node.js" as the environment:**
+- **Cancel the service creation**
+- **Go back and make sure you select "Java"**
+- **The .renderignore file should help with this**
+- **If it still shows Node.js, manually specify the environment**
 
 ### **Step 4: Configure Environment Variables**
 In your web service settings, add these environment variables:

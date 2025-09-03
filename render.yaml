@@ -13,3 +13,11 @@ services:
         value: render
     healthCheckPath: /actuator/health
     autoDeploy: true
+    # Explicitly specify this is a Java project
+    buildFilter:
+      paths:
+        - src/main/java/**
+        - src/main/resources/**
+        - pom.xml
+        - mvnw
+        - mvnw.cmd
