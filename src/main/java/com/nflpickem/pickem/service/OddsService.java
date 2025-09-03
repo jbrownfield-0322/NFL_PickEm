@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Instant;
 import java.util.List;
@@ -67,7 +68,14 @@ public class OddsService {
             
             System.out.println("Fetching odds for week " + week + " using API key: " + apiKey.substring(0, Math.min(8, apiKey.length())) + "...");
             
-            String url = String.format("/v4/sports/americanfootball_nfl/odds?apiKey=%s&regions=us&markets=spreads,totals&oddsFormat=american", apiKey);
+            // Use UriBuilder to properly construct the URL with query parameters
+            String url = UriComponentsBuilder.fromPath("/v4/sports/americanfootball_nfl/odds")
+                    .queryParam("apiKey", apiKey)
+                    .queryParam("regions", "us")
+                    .queryParam("markets", "spreads,totals")
+                    .queryParam("oddsFormat", "american")
+                    .build()
+                    .toUriString();
             
             Mono<Object[]> response = webClient.get()
                     .uri(url)
@@ -383,7 +391,10 @@ public class OddsService {
             System.out.println("API Key starts with: " + (apiKey != null ? apiKey.substring(0, Math.min(8, apiKey.length())) : "NULL"));
             
             // Test with a simple ping-like request
-            String testUrl = "/v4/sports?apiKey=" + apiKey;
+            String testUrl = UriComponentsBuilder.fromPath("/v4/sports")
+                    .queryParam("apiKey", apiKey)
+                    .build()
+                    .toUriString();
             System.out.println("Test URL: " + testUrl);
             System.out.println("Full URL will be: " + baseUrl + testUrl);
             
