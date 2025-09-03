@@ -33,7 +33,10 @@ public class OddsService {
     public OddsService(WebClient.Builder webClientBuilder, 
                       GameRepository gameRepository, 
                       BettingOddsRepository oddsRepository) {
-        this.webClient = webClientBuilder.baseUrl(baseUrl).build();
+        this.webClient = webClientBuilder
+            .baseUrl(baseUrl)
+            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(2 * 1024 * 1024)) // 2MB max
+            .build();
         this.gameRepository = gameRepository;
         this.oddsRepository = oddsRepository;
     }
@@ -278,6 +281,7 @@ public class OddsService {
             // Make a simple test request to /v4/sports (which should work with any valid key)
             String testUrl = "/v4/sports?apiKey=" + apiKey;
             System.out.println("Testing API connection with URL: " + testUrl);
+            System.out.println("Full URL: " + baseUrl + testUrl);
             
             Mono<Object[]> response = webClient.get()
                     .uri(testUrl)
@@ -288,6 +292,10 @@ public class OddsService {
                             clientResponse -> {
                                 String errorMsg = "Test API Error: " + clientResponse.statusCode() + " - " + clientResponse.statusCode();
                                 System.err.println(errorMsg);
+                                System.err.println("Response Headers:");
+                                clientResponse.headers().asHttpHeaders().forEach((key, values) -> {
+                                    System.err.println("Header: " + key + " = " + values);
+                                });
                                 return clientResponse.bodyToMono(String.class)
                                         .flatMap(body -> {
                                             System.err.println("Error body: " + body);
@@ -296,7 +304,10 @@ public class OddsService {
                             })
                     .bodyToMono(Object[].class);
             
+            System.out.println("Sending request...");
             Object[] result = response.block();
+            System.out.println("Response received: " + (result != null ? "YES" : "NO"));
+            
             if (result != null) {
                 return "API connection successful! Available sports: " + result.length;
             } else {
@@ -304,7 +315,9 @@ public class OddsService {
             }
             
         } catch (Exception e) {
-            return "API connection test failed: " + e.getMessage();
+            System.err.println("Exception during API test: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+            e.printStackTrace();
+            return "API connection test failed: " + e.getClass().getSimpleName() + ": " + e.getMessage();
         }
     }
     
@@ -351,6 +364,47 @@ public class OddsService {
             
         } catch (Exception e) {
             return "PowerShell request test failed: " + e.getMessage();
+        }
+    }
+    
+    /**
+     * Test basic HTTP connectivity to The Odds API
+     */
+    public String testBasicConnectivity() {
+        if (!isApiConfigured()) {
+            return "API not configured";
+        }
+        
+        try {
+            System.out.println("=== BASIC CONNECTIVITY TEST ===");
+            System.out.println("Testing connection to: " + baseUrl);
+            
+            // Test with a simple ping-like request
+            String testUrl = "/v4/sports?apiKey=" + apiKey;
+            System.out.println("Test URL: " + testUrl);
+            
+            // Use a timeout to prevent hanging
+            Mono<Object[]> response = webClient.get()
+                    .uri(testUrl)
+                    .header("User-Agent", "NFL-Pickem-App/1.0")
+                    .header("Accept", "application/json")
+                    .retrieve()
+                    .bodyToMono(Object[].class);
+            
+            System.out.println("Sending request...");
+            Object[] result = response.block();
+            System.out.println("Response received: " + (result != null ? "YES" : "NO"));
+            
+            if (result != null) {
+                return "Basic connectivity successful! Response size: " + result.length;
+            } else {
+                return "Basic connectivity failed - no response";
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Connectivity test exception: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+            e.printStackTrace();
+            return "Connectivity test failed: " + e.getClass().getSimpleName() + ": " + e.getMessage();
         }
     }
 }

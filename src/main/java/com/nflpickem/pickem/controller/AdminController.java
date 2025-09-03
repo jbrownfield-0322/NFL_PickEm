@@ -200,4 +200,33 @@ public class AdminController {
         
         return ResponseEntity.ok(result);
     }
+    
+    /**
+     * Test basic HTTP connectivity to The Odds API
+     */
+    @GetMapping("/test-connectivity")
+    public ResponseEntity<Map<String, Object>> testConnectivity() {
+        Map<String, Object> result = new HashMap<>();
+        
+        try {
+            if (!oddsService.isApiConfigured()) {
+                result.put("success", false);
+                result.put("error", "API not configured");
+                result.put("message", oddsService.getApiStatus());
+                return ResponseEntity.badRequest().body(result);
+            }
+            
+            // Test basic connectivity
+            String testResult = oddsService.testBasicConnectivity();
+            result.put("testResult", testResult);
+            result.put("success", testResult.contains("successful"));
+            result.put("message", testResult);
+            
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("error", e.getMessage());
+        }
+        
+        return ResponseEntity.ok(result);
+    }
 }
