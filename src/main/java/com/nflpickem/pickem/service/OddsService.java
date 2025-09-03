@@ -36,7 +36,6 @@ public class OddsService {
                       GameRepository gameRepository, 
                       BettingOddsRepository oddsRepository) {
         this.webClient = webClientBuilder
-            .baseUrl(baseUrl)
             .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(2 * 1024 * 1024)) // 2MB max
             .build();
         this.gameRepository = gameRepository;
@@ -68,15 +67,12 @@ public class OddsService {
             
             System.out.println("Fetching odds for week " + week + " using API key: " + apiKey.substring(0, Math.min(8, apiKey.length())) + "...");
             
-            // Use WebClient's built-in URI builder for proper query parameter handling
+            // Use absolute URL to avoid baseUrl configuration issues
+            String fullUrl = baseUrl + "/v4/sports/americanfootball_nfl/odds?apiKey=" + apiKey + "&regions=us&markets=spreads,totals&oddsFormat=american";
+            System.out.println("Full request URL: " + fullUrl);
+            
             Mono<Object[]> response = webClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/v4/sports/americanfootball_nfl/odds")
-                            .queryParam("apiKey", apiKey)
-                            .queryParam("regions", "us")
-                            .queryParam("markets", "spreads,totals")
-                            .queryParam("oddsFormat", "american")
-                            .build())
+                    .uri(fullUrl)
                     .header("User-Agent", "NFL-Pickem-App/1.0")
                     .header("Accept", "application/json")
                     .retrieve()
@@ -387,14 +383,12 @@ public class OddsService {
             System.out.println("API Key length: " + (apiKey != null ? apiKey.length() : "NULL"));
             System.out.println("API Key starts with: " + (apiKey != null ? apiKey.substring(0, Math.min(8, apiKey.length())) : "NULL"));
             
-            // Test with a simple ping-like request using WebClient's URI builder
-            System.out.println("Testing with WebClient URI builder...");
+            // Test with a simple ping-like request using absolute URL
+            String fullUrl = baseUrl + "/v4/sports?apiKey=" + apiKey;
+            System.out.println("Testing with absolute URL: " + fullUrl);
             
             Mono<Object[]> response = webClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/v4/sports")
-                            .queryParam("apiKey", apiKey)
-                            .build())
+                    .uri(fullUrl)
                     .header("User-Agent", "NFL-Pickem-App/1.0")
                     .header("Accept", "application/json")
                     .retrieve()
