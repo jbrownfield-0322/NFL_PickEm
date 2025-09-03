@@ -5,12 +5,14 @@ import com.nflpickem.pickem.model.Game;
 import com.nflpickem.pickem.repository.BettingOddsRepository;
 import com.nflpickem.pickem.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -431,5 +433,99 @@ public class OddsService {
         }
         
         return config;
+    }
+    
+    /**
+     * Scheduled task to update odds every 4 hours for the current NFL week
+     * Runs at: 00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UTC
+     */
+    @Scheduled(cron = "0 0 */4 * * *")
+    public void scheduledOddsUpdate() {
+        try {
+            System.out.println("=== SCHEDULED ODDS UPDATE STARTED ===");
+            System.out.println("Timestamp: " + Instant.now());
+            
+            // Get the current NFL week
+            Integer currentWeek = getCurrentNflWeek();
+            if (currentWeek == null) {
+                System.out.println("Could not determine current NFL week - skipping odds update");
+                return;
+            }
+            
+            System.out.println("Updating odds for NFL Week " + currentWeek);
+            
+            // Fetch odds for the current week
+            fetchOddsForWeek(currentWeek);
+            
+            System.out.println("=== SCHEDULED ODDS UPDATE COMPLETED ===");
+            System.out.println("Next update in 4 hours");
+            
+        } catch (Exception e) {
+            System.err.println("Error during scheduled odds update: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Determine the current NFL week based on the current date
+     * This is a simplified calculation - you may want to enhance this
+     * based on your specific NFL schedule requirements
+     */
+    private Integer getCurrentNflWeek() {
+        try {
+            // Get current date
+            java.time.LocalDate today = java.time.LocalDate.now();
+            
+            // NFL season typically starts in early September
+            // This is a simplified calculation - you may need to adjust based on actual NFL calendar
+            int currentYear = today.getYear();
+            int currentMonth = today.getMonthValue();
+            int currentDay = today.getDayOfMonth();
+            
+            // If we're in the offseason (before September), return null
+            if (currentMonth < 9) {
+                System.out.println("NFL season hasn't started yet (current month: " + currentMonth + ")");
+                return null;
+            }
+            
+            // Calculate week based on days since September 1st
+            // NFL Week 1 typically starts around September 5-10
+            java.time.LocalDate seasonStart = java.time.LocalDate.of(currentYear, 9, 5);
+            long daysSinceSeasonStart = java.time.temporal.ChronoUnit.DAYS.between(seasonStart, today);
+            
+            if (daysSinceSeasonStart < 0) {
+                System.out.println("NFL season hasn't started yet");
+                return null;
+            }
+            
+            // Calculate week (7 days per week, starting from week 1)
+            int week = (int) (daysSinceSeasonStart / 7) + 1;
+            
+            // NFL regular season is typically 18 weeks
+            if (week > 18) {
+                System.out.println("NFL regular season is over (calculated week: " + week + ")");
+                return null;
+            }
+            
+            System.out.println("Current NFL Week calculated: " + week);
+            return week;
+            
+        } catch (Exception e) {
+            System.err.println("Error calculating current NFL week: " + e.getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Manual trigger for odds update (useful for testing)
+     */
+    public String triggerManualOddsUpdate() {
+        try {
+            System.out.println("=== MANUAL ODDS UPDATE TRIGGERED ===");
+            scheduledOddsUpdate();
+            return "Manual odds update completed successfully";
+        } catch (Exception e) {
+            return "Manual odds update failed: " + e.getMessage();
+        }
     }
 }

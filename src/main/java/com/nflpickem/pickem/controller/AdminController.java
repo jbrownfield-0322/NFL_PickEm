@@ -81,6 +81,27 @@ public class AdminController {
     }
     
     /**
+     * Manually trigger the scheduled odds update (useful for testing)
+     */
+    @PostMapping("/trigger-update")
+    public ResponseEntity<Map<String, String>> triggerManualUpdate() {
+        try {
+            String result = oddsService.triggerManualOddsUpdate();
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("message", result);
+            response.put("timestamp", Instant.now().toString());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "Failed to trigger manual update: " + e.getMessage());
+            response.put("timestamp", Instant.now().toString());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+    
+    /**
      * Get comprehensive status and statistics
      */
     @GetMapping("/status")
