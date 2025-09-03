@@ -13,7 +13,7 @@ services:
         value: render
     healthCheckPath: /actuator/health
     autoDeploy: true
-    # Force Java environment
+    # Force Java environment - override auto-detection
     env: java
     # Explicitly specify Java runtime
     runtime: java
