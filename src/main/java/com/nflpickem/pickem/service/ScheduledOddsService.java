@@ -37,7 +37,7 @@ public class ScheduledOddsService {
      * Update odds every 4 hours for all active weeks
      * Cron: Every 4 hours (0, 4, 8, 12, 16, 20)
      */
-    @Scheduled(cron = "0 0 */4 * * *")
+    // @Scheduled(cron = "0 0 */4 * * *")
     public void updateOddsEveryFourHours() {
         if (!schedulingEnabled) {
             log.debug("Scheduled odds update skipped - scheduling disabled");
