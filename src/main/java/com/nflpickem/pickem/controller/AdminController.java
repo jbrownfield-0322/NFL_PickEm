@@ -142,4 +142,33 @@ public class AdminController {
         status.put("totalUpdates", oddsService.getTotalUpdates());
         return ResponseEntity.ok(status);
     }
+    
+    /**
+     * Test the odds API connection (without fetching odds)
+     */
+    @GetMapping("/test-connection")
+    public ResponseEntity<Map<String, Object>> testOddsApiConnection() {
+        Map<String, Object> result = new HashMap<>();
+        
+        try {
+            if (!oddsService.isApiConfigured()) {
+                result.put("success", false);
+                result.put("error", "API not configured");
+                result.put("message", oddsService.getApiStatus());
+                return ResponseEntity.badRequest().body(result);
+            }
+            
+            // Test the actual API connection
+            String testResult = oddsService.testApiConnection();
+            result.put("testResult", testResult);
+            result.put("success", testResult.contains("successful"));
+            result.put("message", testResult);
+            
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("error", e.getMessage());
+        }
+        
+        return ResponseEntity.ok(result);
+    }
 }

@@ -53,6 +53,14 @@ public class OddsService {
                 throw new RuntimeException("Invalid or missing API key. Please set THEODDS_API_KEY environment variable.");
             }
             
+            // Enhanced debugging for API key issues
+            System.out.println("=== ODDS API DEBUG INFO ===");
+            System.out.println("API Key length: " + (apiKey != null ? apiKey.length() : "NULL"));
+            System.out.println("API Key starts with: " + (apiKey != null ? apiKey.substring(0, Math.min(8, apiKey.length())) : "NULL"));
+            System.out.println("Base URL: " + baseUrl);
+            System.out.println("Full request URL: " + String.format("/v4/sports/americanfootball_nfl/odds?apiKey=%s&regions=us&markets=spreads,totals&oddsFormat=american", apiKey.substring(0, Math.min(8, apiKey.length())) + "..."));
+            System.out.println("================================");
+            
             System.out.println("Fetching odds for week " + week + " using API key: " + apiKey.substring(0, Math.min(8, apiKey.length())) + "...");
             
             String url = String.format("/v4/sports/americanfootball_nfl/odds?apiKey=%s&regions=us&markets=spreads,totals&oddsFormat=american", apiKey);
@@ -228,5 +236,55 @@ public class OddsService {
             return "NOT_CONFIGURED - Please set THEODDS_API_KEY environment variable";
         }
         return "CONFIGURED - API key: " + apiKey.substring(0, Math.min(8, apiKey.length())) + "...";
+    }
+    
+    /**
+     * Get API key for testing purposes (first 8 characters)
+     */
+    public String getApiKeyForTesting() {
+        if (!isApiConfigured()) {
+            return "NOT_CONFIGURED";
+        }
+        return apiKey.substring(0, Math.min(8, apiKey.length())) + "...";
+    }
+    
+    /**
+     * Test the API connection with a simple request
+     */
+    public String testApiConnection() {
+        if (!isApiConfigured()) {
+            return "API not configured";
+        }
+        
+        try {
+            // Make a simple test request to /v4/sports (which should work with any valid key)
+            String testUrl = "/v4/sports?apiKey=" + apiKey;
+            System.out.println("Testing API connection with URL: " + testUrl);
+            
+            Mono<Object[]> response = webClient.get()
+                    .uri(testUrl)
+                    .retrieve()
+                    .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
+                            clientResponse -> {
+                                String errorMsg = "Test API Error: " + clientResponse.statusCode() + " - " + clientResponse.statusCode();
+                                System.err.println(errorMsg);
+                                return clientResponse.bodyToMono(String.class)
+                                        .flatMap(body -> {
+                                            System.err.println("Error body: " + body);
+                                            return Mono.error(new RuntimeException(errorMsg + " - " + body));
+                                        });
+                            })
+                    .bodyToMono(Object[].class);
+            
+            Object[] result = response.block();
+            if (result != null) {
+                return "API connection successful! Available sports: " + result.length;
+            } else {
+                return "API connection failed - no response";
+            }
+            
+        } catch (Exception e) {
+            return "API connection test failed: " + e.getMessage();
+        }
     }
 }
