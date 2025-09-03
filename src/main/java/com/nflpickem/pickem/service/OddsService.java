@@ -62,7 +62,7 @@ public class OddsService {
                     .retrieve()
                     .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
                             clientResponse -> {
-                                System.err.println("API Error: " + clientResponse.statusCode() + " - " + clientResponse.statusCode().getReasonPhrase());
+                                System.err.println("API Error: " + clientResponse.statusCode() + " - " + clientResponse.statusCode());
                                 return clientResponse.bodyToMono(String.class)
                                         .flatMap(body -> {
                                             String errorMsg = "API Error: " + clientResponse.statusCode() + " - " + body;
