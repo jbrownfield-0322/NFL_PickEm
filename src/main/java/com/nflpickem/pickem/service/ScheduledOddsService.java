@@ -34,10 +34,10 @@ public class ScheduledOddsService {
     private long delayBetweenWeeksMs;
     
     /**
-     * Update odds every 4 hours (configurable)
-     * Cron format: every 4 hours at minute 0
+     * Update odds every N hours (configurable via odds.scheduling.frequency)
+     * Cron format: every N hours at minute 0
      */
-    @Scheduled(cron = "0 0 */4 * * *")
+    @Scheduled(cron = "0 0 */${odds.scheduling.frequency} * * *")
     public void updateOddsEveryFourHours() {
         if (!schedulingEnabled) {
             logger.info("Scheduled odds updates are disabled");
@@ -45,7 +45,7 @@ public class ScheduledOddsService {
         }
         
         try {
-            logger.info("Starting scheduled odds update (4-hour interval)");
+            logger.info("Starting scheduled odds update (" + updateFrequencyHours + "-hour interval)");
             updateOddsForCurrentWeeks();
             logger.info("Completed scheduled odds update");
         } catch (Exception e) {
@@ -55,16 +55,16 @@ public class ScheduledOddsService {
     
     /**
      * Update odds more frequently on game days (Thursday, Sunday, Monday)
-     * Cron format: 0 0 * * * THU,SUN,MON (hourly on game days)
+     * Cron format: every N hours on game days (configurable via odds.scheduling.game-day-frequency)
      */
-    @Scheduled(cron = "0 0 * * * THU,SUN,MON")
+    @Scheduled(cron = "0 0 */${odds.scheduling.game-day-frequency} * * THU,SUN,MON")
     public void updateOddsOnGameDays() {
         if (!schedulingEnabled) {
             return;
         }
         
         try {
-            logger.info("Starting game day odds update (hourly)");
+            logger.info("Starting game day odds update (every " + gameDayUpdateFrequencyHours + " hours)");
             updateOddsForCurrentWeeks();
             logger.info("Completed game day odds update");
         } catch (Exception e) {
