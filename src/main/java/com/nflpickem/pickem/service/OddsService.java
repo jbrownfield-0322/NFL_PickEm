@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.HashMap;
 
 @Service
 public class OddsService {
@@ -378,10 +379,13 @@ public class OddsService {
         try {
             System.out.println("=== BASIC CONNECTIVITY TEST ===");
             System.out.println("Testing connection to: " + baseUrl);
+            System.out.println("API Key length: " + (apiKey != null ? apiKey.length() : "NULL"));
+            System.out.println("API Key starts with: " + (apiKey != null ? apiKey.substring(0, Math.min(8, apiKey.length())) : "NULL"));
             
             // Test with a simple ping-like request
             String testUrl = "/v4/sports?apiKey=" + apiKey;
             System.out.println("Test URL: " + testUrl);
+            System.out.println("Full URL will be: " + baseUrl + testUrl);
             
             // Use a timeout to prevent hanging
             Mono<Object[]> response = webClient.get()
@@ -406,5 +410,28 @@ public class OddsService {
             e.printStackTrace();
             return "Connectivity test failed: " + e.getClass().getSimpleName() + ": " + e.getMessage();
         }
+    }
+    
+    /**
+     * Get detailed configuration information for debugging
+     */
+    public Map<String, Object> getDetailedConfiguration() {
+        Map<String, Object> config = new HashMap<>();
+        config.put("apiKeyConfigured", apiKey != null && !apiKey.isEmpty());
+        config.put("apiKeyLength", apiKey != null ? apiKey.length() : 0);
+        config.put("apiKeyStartsWith", apiKey != null ? apiKey.substring(0, Math.min(8, apiKey.length())) : "NULL");
+        config.put("baseUrl", baseUrl);
+        config.put("webClientConfigured", webClient != null);
+        
+        // Check environment variables directly
+        try {
+            String envApiKey = System.getenv("THEODDS_API_KEY");
+            config.put("envApiKey", envApiKey != null ? envApiKey.substring(0, Math.min(8, envApiKey.length())) + "..." : "NULL");
+            config.put("envApiKeyLength", envApiKey != null ? envApiKey.length() : 0);
+        } catch (Exception e) {
+            config.put("envApiKeyError", e.getMessage());
+        }
+        
+        return config;
     }
 }

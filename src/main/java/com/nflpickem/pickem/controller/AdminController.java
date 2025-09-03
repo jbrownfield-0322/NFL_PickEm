@@ -215,6 +215,10 @@ public class AdminController {
             debug.put("lastUpdateTime", oddsService.getLastUpdateTime());
             debug.put("totalUpdates", oddsService.getTotalUpdates());
             
+            // Add detailed configuration
+            Map<String, Object> detailedConfig = oddsService.getDetailedConfiguration();
+            debug.put("detailedConfiguration", detailedConfig);
+            
             // Test basic connectivity
             String connectivityTest = oddsService.testBasicConnectivity();
             debug.put("basicConnectivityTest", connectivityTest);
@@ -224,6 +228,31 @@ public class AdminController {
         }
         
         return ResponseEntity.ok(debug);
+    }
+    
+    /**
+     * Direct environment variable check for debugging
+     */
+    @GetMapping("/debug-environment")
+    public ResponseEntity<Map<String, Object>> debugEnvironment() {
+        Map<String, Object> env = new HashMap<>();
+        
+        try {
+            // Check environment variables directly
+            env.put("THEODDS_API_KEY", System.getenv("THEODDS_API_KEY") != null ? 
+                System.getenv("THEODDS_API_KEY").substring(0, Math.min(8, System.getenv("THEODDS_API_KEY").length())) + "..." : "NULL");
+            env.put("SPRING_PROFILES_ACTIVE", System.getenv("SPRING_PROFILES_ACTIVE"));
+            env.put("DATABASE_URL", System.getenv("DATABASE_URL") != null ? "SET" : "NULL");
+            env.put("PORT", System.getenv("PORT"));
+            
+            // Check if we're in the right profile
+            env.put("currentProfile", "heroku"); // This should match your active profile
+            
+        } catch (Exception e) {
+            env.put("error", e.getMessage());
+        }
+        
+        return ResponseEntity.ok(env);
     }
     
     /**
