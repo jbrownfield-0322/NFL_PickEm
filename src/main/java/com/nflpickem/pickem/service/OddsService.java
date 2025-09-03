@@ -74,6 +74,10 @@ public class OddsService {
                             clientResponse -> {
                                 System.err.println("API Error: " + clientResponse.statusCode() + " - " + clientResponse.statusCode());
                                 System.err.println("Response Headers: " + clientResponse.headers());
+                                // Log individual headers for better debugging
+                                clientResponse.headers().asHttpHeaders().forEach((key, values) -> {
+                                    System.err.println("Header: " + key + " = " + values);
+                                });
                                 
                                 return clientResponse.bodyToMono(String.class)
                                         .flatMap(body -> {
@@ -301,6 +305,52 @@ public class OddsService {
             
         } catch (Exception e) {
             return "API connection test failed: " + e.getMessage();
+        }
+    }
+    
+    /**
+     * Test the exact same request that works in PowerShell
+     */
+    public String testExactPowerShellRequest() {
+        if (!isApiConfigured()) {
+            return "API not configured";
+        }
+        
+        try {
+            // Test the exact same endpoint that works in PowerShell
+            String testUrl = "/v4/sports/americanfootball_nfl/odds?apiKey=" + apiKey + "&regions=us&markets=spreads,totals&oddsFormat=american";
+            System.out.println("Testing exact PowerShell request: " + testUrl);
+            
+            Mono<Object[]> response = webClient.get()
+                    .uri(testUrl)
+                    .header("User-Agent", "NFL-Pickem-App/1.0")
+                    .header("Accept", "application/json")
+                    .retrieve()
+                    .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
+                            clientResponse -> {
+                                String errorMsg = "PowerShell Test Error: " + clientResponse.statusCode() + " - " + clientResponse.statusCode();
+                                System.err.println(errorMsg);
+                                System.err.println("Response Headers:");
+                                clientResponse.headers().asHttpHeaders().forEach((key, values) -> {
+                                    System.err.println("Header: " + key + " = " + values);
+                                });
+                                return clientResponse.bodyToMono(String.class)
+                                        .flatMap(body -> {
+                                            System.err.println("Error body: " + body);
+                                            return Mono.error(new RuntimeException(errorMsg + " - " + body));
+                                        });
+                            })
+                    .bodyToMono(Object[].class);
+            
+            Object[] result = response.block();
+            if (result != null) {
+                return "PowerShell request successful! Odds data received: " + result.length + " games";
+            } else {
+                return "PowerShell request failed - no response";
+            }
+            
+        } catch (Exception e) {
+            return "PowerShell request test failed: " + e.getMessage();
         }
     }
 }

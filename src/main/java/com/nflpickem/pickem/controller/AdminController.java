@@ -171,4 +171,33 @@ public class AdminController {
         
         return ResponseEntity.ok(result);
     }
+    
+    /**
+     * Test the exact same request that works in PowerShell
+     */
+    @GetMapping("/test-powershell-request")
+    public ResponseEntity<Map<String, Object>> testPowerShellRequest() {
+        Map<String, Object> result = new HashMap<>();
+        
+        try {
+            if (!oddsService.isApiConfigured()) {
+                result.put("success", false);
+                result.put("error", "API not configured");
+                result.put("message", oddsService.getApiStatus());
+                return ResponseEntity.badRequest().body(result);
+            }
+            
+            // Test the exact same request that works in PowerShell
+            String testResult = oddsService.testExactPowerShellRequest();
+            result.put("testResult", testResult);
+            result.put("success", testResult.contains("successful"));
+            result.put("message", testResult);
+            
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("error", e.getMessage());
+        }
+        
+        return ResponseEntity.ok(result);
+    }
 }
