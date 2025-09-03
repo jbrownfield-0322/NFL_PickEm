@@ -67,10 +67,14 @@ public class OddsService {
             
             Mono<Object[]> response = webClient.get()
                     .uri(url)
+                    .header("User-Agent", "NFL-Pickem-App/1.0")
+                    .header("Accept", "application/json")
                     .retrieve()
                     .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
                             clientResponse -> {
                                 System.err.println("API Error: " + clientResponse.statusCode() + " - " + clientResponse.statusCode());
+                                System.err.println("Response Headers: " + clientResponse.headers());
+                                
                                 return clientResponse.bodyToMono(String.class)
                                         .flatMap(body -> {
                                             String errorMsg = "API Error: " + clientResponse.statusCode() + " - " + body;
@@ -82,7 +86,16 @@ public class OddsService {
                                                 errorMsg += "\n1. Invalid API key";
                                                 errorMsg += "\n2. API key has expired";
                                                 errorMsg += "\n3. API key has reached its request limit";
+                                                errorMsg += "\n4. Request headers are being rejected";
+                                                errorMsg += "\n5. IP address restrictions";
                                                 errorMsg += "\nPlease check your API key at https://the-odds-api.com/";
+                                                
+                                                // Log additional debugging info
+                                                System.err.println("=== 403 ERROR DEBUG INFO ===");
+                                                System.err.println("API Key used: " + apiKey.substring(0, Math.min(8, apiKey.length())) + "...");
+                                                System.err.println("Request URL: " + url);
+                                                System.err.println("User-Agent: NFL-Pickem-App/1.0");
+                                                System.err.println("=====================================");
                                             }
                                             
                                             return Mono.error(new RuntimeException(errorMsg));
@@ -98,7 +111,8 @@ public class OddsService {
             }
             
             // Rate limiting - The Odds API allows 500 requests per month
-            Thread.sleep(1000); // 1 second delay between requests
+            // Add a longer delay to avoid triggering rate limiting
+            Thread.sleep(2000); // 2 second delay between requests
             
         } catch (Exception e) {
             System.err.println("Error fetching odds for week " + week + ": " + e.getMessage());
@@ -263,6 +277,8 @@ public class OddsService {
             
             Mono<Object[]> response = webClient.get()
                     .uri(testUrl)
+                    .header("User-Agent", "NFL-Pickem-App/1.0")
+                    .header("Accept", "application/json")
                     .retrieve()
                     .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
                             clientResponse -> {
