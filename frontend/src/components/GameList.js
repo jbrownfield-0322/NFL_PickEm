@@ -11,6 +11,8 @@ const GameList = () => {
   const [selectedGamePicks, setSelectedGamePicks] = useState({});
   const [bulkSubmitMessage, setBulkSubmitMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showOdds, setShowOdds] = useState(false);
+  const [isFetchingOdds, setIsFetchingOdds] = useState(false);
   const { user } = useAuth();
 
   // API base URL - will work for both development and Railway production
@@ -28,15 +30,42 @@ const GameList = () => {
     }
   }, [selectedLeagueId, user]);
 
+  useEffect(() => {
+    fetchGames();
+  }, [showOdds]);
+
   const fetchGames = async () => {
     try {
-      const response = await fetch(`${API_BASE}/games`);
+      const endpoint = showOdds ? '/games/with-odds' : '/games';
+      const response = await fetch(`${API_BASE}${endpoint}`);
       if (response.ok) {
         const data = await response.json();
         setGames(data);
       }
     } catch (error) {
       console.error('Error fetching games:', error);
+    }
+  };
+
+  const fetchOddsForWeek = async () => {
+    setIsFetchingOdds(true);
+    try {
+      const response = await fetch(`${API_BASE}/games/week/${selectedWeek}/fetch-odds`, {
+        method: 'POST'
+      });
+      if (response.ok) {
+        // Wait a bit for odds to be fetched, then refresh games
+        setTimeout(() => {
+          fetchGames();
+          setIsFetchingOdds(false);
+        }, 5000);
+      } else {
+        setIsFetchingOdds(false);
+        console.error('Error fetching odds');
+      }
+    } catch (error) {
+      console.error('Error fetching odds:', error);
+      setIsFetchingOdds(false);
     }
   };
 
@@ -270,6 +299,26 @@ const GameList = () => {
               ))}
             </select>
           </div>
+          
+          <div className="odds-controls">
+            <label>
+              <input
+                type="checkbox"
+                checked={showOdds}
+                onChange={(e) => setShowOdds(e.target.checked)}
+              />
+              Show Betting Odds
+            </label>
+            {showOdds && (
+              <button 
+                onClick={fetchOddsForWeek}
+                disabled={isFetchingOdds}
+                className="fetch-odds-button"
+              >
+                {isFetchingOdds ? 'Fetching...' : 'Fetch Latest Odds'}
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -296,6 +345,13 @@ const GameList = () => {
               <th>Away Team</th>
               <th>Home Team</th>
               <th>Kickoff</th>
+              {showOdds && (
+                <>
+                  <th>Spread</th>
+                  <th>Total</th>
+                  <th>Odds</th>
+                </>
+              )}
               <th>Current Pick</th>
               <th>Your Pick</th>
               <th>Status</th>
@@ -315,6 +371,36 @@ const GameList = () => {
                   <td data-label="Away Team">{game.awayTeam}</td>
                   <td data-label="Home Team">{game.homeTeam}</td>
                   <td data-label="Kickoff">{formatKickoffTime(game.kickoffTime)}</td>
+                  {showOdds && (
+                    <>
+                      <td data-label="Spread">
+                        {game.spread ? (
+                          <span className="spread-info">
+                            {game.spreadTeam === game.homeTeam ? 'H' : 'A'} {game.spread > 0 ? '+' : ''}{game.spread}
+                          </span>
+                        ) : (
+                          <span className="no-odds">N/A</span>
+                        )}
+                      </td>
+                      <td data-label="Total">
+                        {game.total ? (
+                          <span className="total-info">{game.total}</span>
+                        ) : (
+                          <span className="no-odds">N/A</span>
+                        )}
+                      </td>
+                      <td data-label="Odds">
+                        {game.homeTeamOdds && game.awayTeamOdds ? (
+                          <div className="odds-info">
+                            <div>H: {game.homeTeamOdds > 0 ? '+' : ''}{game.homeTeamOdds}</div>
+                            <div>A: {game.awayTeamOdds > 0 ? '+' : ''}{game.awayTeamOdds}</div>
+                          </div>
+                        ) : (
+                          <span className="no-odds">N/A</span>
+                        )}
+                      </td>
+                    </>
+                  )}
                   <td data-label="Current Pick">
                     {userPickForGame ? (
                       <span className="current-pick">{userPickForGame.pickedTeam}</span>

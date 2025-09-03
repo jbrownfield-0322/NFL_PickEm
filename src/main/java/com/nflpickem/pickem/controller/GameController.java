@@ -1,7 +1,9 @@
 package com.nflpickem.pickem.controller;
 
+import com.nflpickem.pickem.dto.GameWithOddsDto;
 import com.nflpickem.pickem.model.Game;
 import com.nflpickem.pickem.service.GameService;
+import com.nflpickem.pickem.service.OddsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,19 +17,41 @@ import java.util.List;
 @RequestMapping("/api/games")
 public class GameController {
     private final GameService gameService;
+    private final OddsService oddsService;
 
-    public GameController(GameService gameService) {
+    public GameController(GameService gameService, OddsService oddsService) {
         this.gameService = gameService;
+        this.oddsService = oddsService;
     }
 
     @GetMapping
     public ResponseEntity<List<Game>> getAllGames() {
         return ResponseEntity.ok(gameService.getAllGames());
     }
+    
+    @GetMapping("/with-odds")
+    public ResponseEntity<List<GameWithOddsDto>> getAllGamesWithOdds() {
+        return ResponseEntity.ok(gameService.getAllGamesWithOdds());
+    }
 
     @GetMapping("/week/{weekNum}")
     public ResponseEntity<List<Game>> getGamesByWeek(@PathVariable Integer weekNum) {
         return ResponseEntity.ok(gameService.getGamesByWeek(weekNum));
+    }
+    
+    @GetMapping("/week/{weekNum}/with-odds")
+    public ResponseEntity<List<GameWithOddsDto>> getGamesByWeekWithOdds(@PathVariable Integer weekNum) {
+        return ResponseEntity.ok(gameService.getGamesByWeekWithOdds(weekNum));
+    }
+    
+    @PostMapping("/week/{weekNum}/fetch-odds")
+    public ResponseEntity<String> fetchOddsForWeek(@PathVariable Integer weekNum) {
+        try {
+            oddsService.fetchOddsForWeek(weekNum);
+            return ResponseEntity.ok("Odds fetching initiated for week " + weekNum);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error fetching odds: " + e.getMessage());
+        }
     }
 
     @GetMapping("/currentWeek")

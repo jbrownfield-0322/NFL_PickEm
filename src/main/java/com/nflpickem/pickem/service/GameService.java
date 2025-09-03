@@ -1,6 +1,9 @@
 package com.nflpickem.pickem.service;
 
+import com.nflpickem.pickem.dto.GameWithOddsDto;
+import com.nflpickem.pickem.model.BettingOdds;
 import com.nflpickem.pickem.model.Game;
+import com.nflpickem.pickem.repository.BettingOddsRepository;
 import com.nflpickem.pickem.repository.GameRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,10 +16,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService {
     private final GameRepository gameRepository;
+    private final BettingOddsRepository oddsRepository;
     private final NflScheduleScraper nflScheduleScraper;
     
     @Value("${ENABLE_NFL_SCRAPING:false}")
@@ -25,8 +30,9 @@ public class GameService {
     @Value("${NFL_SEASON_WEEKS:18}")
     private int nflSeasonWeeks;
 
-    public GameService(GameRepository gameRepository, NflScheduleScraper nflScheduleScraper) {
+    public GameService(GameRepository gameRepository, BettingOddsRepository oddsRepository, NflScheduleScraper nflScheduleScraper) {
         this.gameRepository = gameRepository;
+        this.oddsRepository = oddsRepository;
         this.nflScheduleScraper = nflScheduleScraper;
     }
 
@@ -59,6 +65,35 @@ public class GameService {
 
     public List<Game> getGamesByWeek(Integer week) {
         return gameRepository.findByWeek(week);
+    }
+    
+    /**
+     * Get all games with odds information
+     */
+    public List<GameWithOddsDto> getAllGamesWithOdds() {
+        List<Game> games = gameRepository.findAll();
+        return games.stream()
+                .map(this::convertToGameWithOdds)
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * Get games for a specific week with odds information
+     */
+    public List<GameWithOddsDto> getGamesByWeekWithOdds(Integer week) {
+        List<Game> games = gameRepository.findByWeek(week);
+        return games.stream()
+                .map(this::convertToGameWithOdds)
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * Convert Game entity to GameWithOddsDto
+     */
+    private GameWithOddsDto convertToGameWithOdds(Game game) {
+        GameWithOddsDto dto = new GameWithOddsDto(game);
+        oddsRepository.findByGame(game).ifPresent(dto::setOdds);
+        return dto;
     }
 
     public Game getGameById(Long id) {
