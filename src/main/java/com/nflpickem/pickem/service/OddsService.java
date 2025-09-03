@@ -445,13 +445,8 @@ public class OddsService {
             System.out.println("=== SCHEDULED ODDS UPDATE STARTED ===");
             System.out.println("Timestamp: " + Instant.now());
             
-            // Get the current NFL week
+            // Get the current NFL week (will always return a valid week now)
             Integer currentWeek = getCurrentNflWeek();
-            if (currentWeek == null) {
-                System.out.println("Could not determine current NFL week - skipping odds update");
-                return;
-            }
-            
             System.out.println("Updating odds for NFL Week " + currentWeek);
             
             // Fetch odds for the current week
@@ -482,10 +477,10 @@ public class OddsService {
             int currentMonth = today.getMonthValue();
             int currentDay = today.getDayOfMonth();
             
-            // If we're in the offseason (before September), return null
+            // If we're in the offseason (before September), return Week 1 for preseason odds
             if (currentMonth < 9) {
-                System.out.println("NFL season hasn't started yet (current month: " + currentMonth + ")");
-                return null;
+                System.out.println("NFL season hasn't started yet (current month: " + currentMonth + ") - returning Week 1 for preseason odds");
+                return 1;
             }
             
             // Calculate week based on days since September 1st
@@ -494,8 +489,8 @@ public class OddsService {
             long daysSinceSeasonStart = java.time.temporal.ChronoUnit.DAYS.between(seasonStart, today);
             
             if (daysSinceSeasonStart < 0) {
-                System.out.println("NFL season hasn't started yet");
-                return null;
+                System.out.println("NFL season hasn't started yet - returning Week 1 for preseason odds");
+                return 1;
             }
             
             // Calculate week (7 days per week, starting from week 1)
@@ -503,8 +498,8 @@ public class OddsService {
             
             // NFL regular season is typically 18 weeks
             if (week > 18) {
-                System.out.println("NFL regular season is over (calculated week: " + week + ")");
-                return null;
+                System.out.println("NFL regular season is over (calculated week: " + week + ") - returning Week 1 for next season");
+                return 1;
             }
             
             System.out.println("Current NFL Week calculated: " + week);
@@ -512,7 +507,7 @@ public class OddsService {
             
         } catch (Exception e) {
             System.err.println("Error calculating current NFL week: " + e.getMessage());
-            return null;
+            return 1; // Fallback to Week 1
         }
     }
     
