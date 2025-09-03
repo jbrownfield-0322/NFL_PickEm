@@ -1,6 +1,7 @@
 package com.nflpickem.pickem.service;
 
 import com.nflpickem.pickem.repository.GameRepository;
+import com.nflpickem.pickem.service.OddsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -75,7 +76,7 @@ public class ScheduledOddsService {
      * Update odds every hour during game days (Thursday, Sunday, Monday)
      * Cron: Every hour on game days
      */
-    @Scheduled(cron = "0 0 * * * THU,SUN,MON")
+    // @Scheduled(cron = "0 0 * * * THU,SUN,MON")
     public void updateOddsOnGameDays() {
         if (!schedulingEnabled) {
             log.debug("Game day odds update skipped - scheduling disabled");
