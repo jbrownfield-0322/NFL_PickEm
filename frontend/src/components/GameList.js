@@ -197,17 +197,24 @@ const GameList = () => {
     
     const spread = game.primaryOdds.spread;
     const spreadTeam = game.primaryOdds.spreadTeam;
+    const homeTeam = game.homeTeam;
     
-    // Format the spread with proper sign
-    const spreadText = spread > 0 ? `+${spread}` : spread.toString();
+    // Convert spread to home team perspective
+    let homeTeamSpread;
+    if (spreadTeam === homeTeam) {
+      // If the spread team is the home team, keep the spread as is
+      homeTeamSpread = spread;
+    } else {
+      // If the spread team is the away team, flip the sign for home team perspective
+      homeTeamSpread = -spread;
+    }
     
-    // Determine if this team is favorite (negative spread) or underdog (positive spread)
-    const isFavorite = spread < 0;
-    const spreadClass = isFavorite ? 'spread-favorite' : 'spread-underdog';
+    // Format the spread (always show negative for favorites, positive for underdogs)
+    const spreadText = homeTeamSpread > 0 ? `+${homeTeamSpread}` : homeTeamSpread.toString();
     
     return (
-      <span className={`spread-cell ${spreadClass}`}>
-        {spreadTeam} {spreadText}
+      <span className="spread-cell">
+        {spreadText}
       </span>
     );
   };
