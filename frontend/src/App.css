@@ -1269,10 +1269,6 @@ table tbody tr:hover {
     min-width: 100px;
   }
 }
-  background-color: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffeaa7;
-}
 
 /* Responsive design for mobile */
 @media (max-width: 768px) {
