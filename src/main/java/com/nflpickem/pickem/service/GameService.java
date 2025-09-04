@@ -2,12 +2,15 @@ package com.nflpickem.pickem.service;
 
 import com.nflpickem.pickem.dto.GameWithOddsDto;
 import com.nflpickem.pickem.model.Game;
+import com.nflpickem.pickem.model.BettingOdds;
 import com.nflpickem.pickem.repository.BettingOddsRepository;
 import com.nflpickem.pickem.repository.GameRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.nflpickem.pickem.util.NflScheduleScraper;
+
+import java.util.Optional;
 
 import java.io.IOException;
 import java.time.DayOfWeek;
@@ -94,7 +97,18 @@ public class GameService {
      */
     private GameWithOddsDto convertToGameWithOdds(Game game) {
         GameWithOddsDto dto = new GameWithOddsDto(game);
-        oddsRepository.findByGame(game).ifPresent(dto::setOdds);
+        
+        // Debug logging
+        System.out.println("Converting game: " + game.getId() + " - " + game.getAwayTeam() + " @ " + game.getHomeTeam());
+        
+        Optional<BettingOdds> odds = oddsRepository.findByGame(game);
+        if (odds.isPresent()) {
+            System.out.println("Found odds for game " + game.getId() + ": " + odds.get());
+            dto.setOdds(odds.get());
+        } else {
+            System.out.println("No odds found for game " + game.getId());
+        }
+        
         return dto;
     }
 

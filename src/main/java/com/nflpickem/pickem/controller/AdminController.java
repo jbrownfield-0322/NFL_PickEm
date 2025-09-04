@@ -2,6 +2,8 @@ package com.nflpickem.pickem.controller;
 
 import com.nflpickem.pickem.service.OddsService;
 import com.nflpickem.pickem.service.ScheduledOddsService;
+import com.nflpickem.pickem.service.GameService;
+import com.nflpickem.pickem.dto.GameWithOddsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/admin/odds")
@@ -19,6 +23,9 @@ public class AdminController {
     
     @Autowired
     private OddsService oddsService;
+    
+    @Autowired
+    private GameService gameService;
     
     /**
      * Manually trigger odds update for all current weeks
@@ -300,6 +307,56 @@ public class AdminController {
         } catch (Exception e) {
             result.put("success", false);
             result.put("error", e.getMessage());
+        }
+        
+        return ResponseEntity.ok(result);
+    }
+    
+    /**
+     * Debug endpoint to check games with odds data
+     */
+    @GetMapping("/debug-games-with-odds")
+    public ResponseEntity<Map<String, Object>> debugGamesWithOdds() {
+        Map<String, Object> result = new HashMap<>();
+        
+        try {
+            // Get games with odds
+            List<GameWithOddsDto> gamesWithOdds = gameService.getAllGamesWithOdds();
+            
+            result.put("totalGames", gamesWithOdds.size());
+            result.put("gamesWithOdds", gamesWithOdds.size());
+            result.put("gamesWithoutOdds", 0);
+            
+            // Count games with and without odds
+            int withOdds = 0;
+            int withoutOdds = 0;
+            List<Map<String, Object>> gameDetails = new ArrayList<>();
+            
+            for (GameWithOddsDto game : gamesWithOdds) {
+                Map<String, Object> gameInfo = new HashMap<>();
+                gameInfo.put("id", game.getId());
+                gameInfo.put("week", game.getWeek());
+                gameInfo.put("homeTeam", game.getHomeTeam());
+                gameInfo.put("awayTeam", game.getAwayTeam());
+                gameInfo.put("hasOdds", game.getOdds() != null);
+                
+                if (game.getOdds() != null) {
+                    withOdds++;
+                    gameInfo.put("odds", game.getOdds());
+                } else {
+                    withoutOdds++;
+                }
+                
+                gameDetails.add(gameInfo);
+            }
+            
+            result.put("gamesWithOdds", withOdds);
+            result.put("gamesWithoutOdds", withoutOdds);
+            result.put("gameDetails", gameDetails);
+            
+        } catch (Exception e) {
+            result.put("error", e.getMessage());
+            e.printStackTrace();
         }
         
         return ResponseEntity.ok(result);
