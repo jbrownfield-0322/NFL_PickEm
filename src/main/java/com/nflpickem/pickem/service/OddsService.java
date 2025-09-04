@@ -36,7 +36,7 @@ public class OddsService {
     @Value("${ODDS_UPDATE_INTERVAL_HOURS}")
     private int updateIntervalHours;
     
-    @Value("${NFL_SEASON_START_DATE:}")
+    @Value("${NFL_SEASON_START_DATE}")
     private String nflSeasonStartDate;
     
     public OddsService(BettingOddsRepository bettingOddsRepository, GameRepository gameRepository) {
