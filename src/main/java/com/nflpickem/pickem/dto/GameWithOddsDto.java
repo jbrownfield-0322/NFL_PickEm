@@ -25,7 +25,7 @@ public class GameWithOddsDto {
         this.awayTeam = game.getAwayTeam();
         this.kickoffTime = game.getKickoffTime() != null ? game.getKickoffTime().toString() : null;
         this.winningTeam = game.getWinningTeam();
-        this.scored = game.getScored();
+        this.scored = game.isScored();
         this.odds = odds;
         
         // Set primary odds (first available odds, which should be FanDuel)
