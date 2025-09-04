@@ -8,13 +8,12 @@ function Leaderboard() {
   const [selectedLeagueId, setSelectedLeagueId] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentWeek, setCurrentWeek] = useState(1); // Default, will be fetched
-  const [selectedWeek, setSelectedWeek] = useState(1); // New state for selected week, initialize with 1
+  const [currentWeek, setCurrentWeek] = useState(1);
+  const [selectedWeek, setSelectedWeek] = useState(1);
   const [pickComparison, setPickComparison] = useState([]);
   const [showPickComparison, setShowPickComparison] = useState(false);
   const { user } = useAuth();
 
-  // API base URL - will work for both development and Railway production
   const API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8080');
 
   useEffect(() => {
@@ -25,90 +24,57 @@ function Leaderboard() {
       }
 
       try {
-        // Fetch current week from backend
-        console.log('Fetching current week...');
+        // Fetch current week
         const weekResponse = await fetch(`${API_BASE}/games/currentWeek`);
-        console.log('Week response status:', weekResponse.status);
-        if (!weekResponse.ok) {
-          const errorText = await weekResponse.text();
-          console.error('Week response error:', errorText);
-          throw new Error(`Failed to fetch current week: HTTP ${weekResponse.status} - ${errorText}`);
-        }
-        const weekData = await weekResponse.text();
-        console.log('Week data:', weekData);
-        const fetchedWeek = parseInt(weekData, 10);
-        setCurrentWeek(fetchedWeek);
-        // Set selectedWeek to fetchedWeek only if it's the initial load or selectedWeek is not yet set by user
-        if (selectedWeek === 1) {
-          setSelectedWeek(fetchedWeek);
+        if (weekResponse.ok) {
+          const weekData = await weekResponse.text();
+          const fetchedWeek = parseInt(weekData, 10);
+          setCurrentWeek(fetchedWeek);
+          if (selectedWeek === 1) {
+            setSelectedWeek(fetchedWeek);
+          }
         }
 
         // Fetch user's leagues
-        console.log('Fetching user leagues...');
         const leaguesResponse = await fetch(`${API_BASE}/leagues/user/${user.id}`);
-        console.log('Leagues response status:', leaguesResponse.status);
-        if (!leaguesResponse.ok) {
-          const errorText = await leaguesResponse.text();
-          console.error('Leagues response error:', errorText);
-          throw new Error(`Failed to fetch leagues: HTTP ${leaguesResponse.status} - ${errorText}`);
+        if (leaguesResponse.ok) {
+          const leaguesData = await leaguesResponse.json();
+          setLeagues(leaguesData);
         }
-        const leaguesData = await leaguesResponse.json();
-        console.log('Leagues data:', leaguesData);
-        setLeagues(leaguesData);
 
-        // Fetch weekly leaderboard
-        console.log('Fetching weekly leaderboard...');
-        if (!selectedLeagueId) {
-          console.log('No league selected, skipping weekly leaderboard fetch');
+        // Fetch weekly leaderboard only if league is selected
+        if (selectedLeagueId) {
+          const weeklyResponse = await fetch(`${API_BASE}/leaderboard/weekly/${selectedWeek}?leagueId=${parseInt(selectedLeagueId, 10)}`);
+          if (weeklyResponse.ok) {
+            const weeklyData = await weeklyResponse.json();
+            setWeeklyLeaderboard(weeklyData);
+          }
+        } else {
           setWeeklyLeaderboard([]);
-        } else {
-          const weeklyLeaderboardUrl = `${API_BASE}/leaderboard/weekly/${selectedWeek}?leagueId=${parseInt(selectedLeagueId, 10)}`;
-        console.log('Weekly leaderboard URL:', weeklyLeaderboardUrl);
-        const weeklyResponse = await fetch(weeklyLeaderboardUrl);
-        console.log('Weekly response status:', weeklyResponse.status);
-        if (!weeklyResponse.ok) {
-          const errorText = await weeklyResponse.text();
-          console.error('Weekly response error:', errorText);
-          throw new Error(`Failed to fetch weekly leaderboard: HTTP ${weeklyResponse.status} - ${errorText}`);
         }
-        const weeklyData = await weeklyResponse.json();
-        console.log('Weekly data:', weeklyData);
-        setWeeklyLeaderboard(weeklyData);
 
-        // Fetch season leaderboard
-        console.log('Fetching season leaderboard...');
-        if (!selectedLeagueId) {
-          console.log('No league selected, skipping season leaderboard fetch');
+        // Fetch season leaderboard only if league is selected
+        if (selectedLeagueId) {
+          const seasonResponse = await fetch(`${API_BASE}/leaderboard/season?leagueId=${parseInt(selectedLeagueId, 10)}`);
+          if (seasonResponse.ok) {
+            const seasonData = await seasonResponse.json();
+            setSeasonLeaderboard(seasonData);
+          }
+        } else {
           setSeasonLeaderboard([]);
-        } else {
-          const seasonLeaderboardUrl = `${API_BASE}/leaderboard/season?leagueId=${parseInt(selectedLeagueId, 10)}`;
-        console.log('Season leaderboard URL:', seasonLeaderboardUrl);
-        const seasonResponse = await fetch(seasonLeaderboardUrl);
-        console.log('Season response status:', seasonResponse.status);
-        if (!seasonResponse.ok) {
-          const errorText = await seasonResponse.text();
-          console.error('Season response error:', errorText);
-          throw new Error(`Failed to fetch season leaderboard: HTTP ${seasonResponse.status} - ${errorText}`);
         }
-        const seasonData = await seasonResponse.json();
-        console.log('Season data:', seasonData);
-        setSeasonLeaderboard(seasonData);
 
-        // Fetch pick comparison data
+        // Fetch pick comparison only if league is selected
         if (user && selectedLeagueId) {
-          console.log('Fetching pick comparison...');
-          const comparisonUrl = `${API_BASE}/picks/comparison/${user.id}/${selectedWeek}?leagueId=${parseInt(selectedLeagueId, 10)}`;
-          console.log('Comparison URL:', comparisonUrl);
-          const comparisonResponse = await fetch(comparisonUrl);
-          console.log('Comparison response status:', comparisonResponse.status);
+          const comparisonResponse = await fetch(`${API_BASE}/picks/comparison/${user.id}/${selectedWeek}?leagueId=${parseInt(selectedLeagueId, 10)}`);
           if (comparisonResponse.ok) {
             const comparisonData = await comparisonResponse.json();
-            console.log('Comparison data:', comparisonData);
             setPickComparison(comparisonData);
           } else {
-            console.error('Failed to fetch pick comparison data');
             setPickComparison([]);
           }
+        } else {
+          setPickComparison([]);
         }
 
       } catch (error) {
@@ -140,7 +106,6 @@ function Leaderboard() {
     );
   }
 
-  // Assuming a max of 18 regular season weeks
   const totalWeeks = 18;
 
   const renderTable = (title, data) => (
