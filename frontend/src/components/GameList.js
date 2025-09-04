@@ -40,6 +40,11 @@ const GameList = () => {
       const response = await fetch(`${API_BASE}${endpoint}`);
       if (response.ok) {
         const data = await response.json();
+        console.log('Fetched games data:', data);
+        if (showOdds && data.length > 0) {
+          console.log('First game with odds:', data[0]);
+          console.log('Odds data structure:', data[0].odds);
+        }
         setGames(data);
       }
     } catch (error) {
@@ -374,26 +379,26 @@ const GameList = () => {
                   {showOdds && (
                     <>
                       <td data-label="Spread">
-                        {game.spread ? (
+                        {game.odds && game.odds.spread ? (
                           <span className="spread-info">
-                            {game.spreadTeam === game.homeTeam ? 'H' : 'A'} {game.spread > 0 ? '+' : ''}{game.spread}
+                            {game.odds.spreadTeam === game.homeTeam ? 'H' : 'A'} {game.odds.spread > 0 ? '+' : ''}{game.odds.spread}
                           </span>
                         ) : (
                           <span className="no-odds">N/A</span>
                         )}
                       </td>
                       <td data-label="Total">
-                        {game.total ? (
-                          <span className="total-info">{game.total}</span>
+                        {game.odds && game.odds.total ? (
+                          <span className="total-info">{game.odds.total}</span>
                         ) : (
                           <span className="no-odds">N/A</span>
                         )}
                       </td>
                       <td data-label="Odds">
-                        {game.homeTeamOdds && game.awayTeamOdds ? (
+                        {game.odds && game.odds.homeTeamOdds && game.odds.awayTeamOdds ? (
                           <div className="odds-info">
-                            <div>H: {game.homeTeamOdds > 0 ? '+' : ''}{game.homeTeamOdds}</div>
-                            <div>A: {game.awayTeamOdds > 0 ? '+' : ''}{game.awayTeamOdds}</div>
+                            <div>H: {game.odds.homeTeamOdds > 0 ? '+' : ''}{game.odds.homeTeamOdds}</div>
+                            <div>A: {game.odds.awayTeamOdds > 0 ? '+' : ''}{game.odds.awayTeamOdds}</div>
                           </div>
                         ) : (
                           <span className="no-odds">N/A</span>
