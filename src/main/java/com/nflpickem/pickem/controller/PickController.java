@@ -41,7 +41,7 @@ public class PickController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Pick>> getPicksByUser(@PathVariable Long userId, @RequestParam(required = false) Long leagueId) {
+    public ResponseEntity<List<Pick>> getPicksByUser(@PathVariable Long userId, @RequestParam Long leagueId) {
         return ResponseEntity.ok(pickService.getPicksByUser(userId, leagueId));
     }
 
@@ -49,7 +49,7 @@ public class PickController {
     public ResponseEntity<List<PickComparisonDto>> getPickComparison(
             @PathVariable Long userId, 
             @PathVariable Integer week,
-            @RequestParam(required = false) Long leagueId) {
+            @RequestParam Long leagueId) {
         try {
             List<PickComparisonDto> comparison = pickService.getPickComparison(userId, week, leagueId);
             return ResponseEntity.ok(comparison);

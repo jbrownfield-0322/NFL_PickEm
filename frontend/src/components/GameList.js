@@ -261,8 +261,9 @@ const GameList = () => {
               id="league-select"
               value={selectedLeagueId} 
               onChange={(e) => setSelectedLeagueId(e.target.value)}
+              required
             >
-              <option value="">Global Picks (No League)</option>
+              <option value="">Select a League</option>
               {leagues.map(league => (
                 <option key={league.id} value={league.id}>
                   {league.name}
