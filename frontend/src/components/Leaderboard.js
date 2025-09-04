@@ -136,80 +136,109 @@ function Leaderboard() {
     </div>
   );
 
-  const renderPickComparisonTable = () => (
-    <div className="table-container">
-      <h3>Pick Comparison - Week {selectedWeek}</h3>
-      <button 
-        onClick={() => setShowPickComparison(!showPickComparison)}
-        className="toggle-button"
-        style={{ marginBottom: '10px' }}
-      >
-        {showPickComparison ? 'Hide Pick Comparison' : 'Show Pick Comparison'}
-      </button>
-      
-      {showPickComparison && (
-        pickComparison.length === 0 ? (
-          <p>No pick comparison data available for this week.</p>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Game</th>
-                <th>Your Pick</th>
-                <th>Other Picks</th>
-                <th>Result</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pickComparison.map((game) => (
-                <tr key={game.gameId}>
-                  <td data-label="Game">
-                    <strong>{game.awayTeam} @ {game.homeTeam}</strong>
-                  </td>
-                  <td data-label="Your Pick">
-                    {game.yourPick ? (
-                      <span className={game.scored && game.yourPick === game.winningTeam ? 'correct-pick' : 
-                                      game.scored && game.yourPick !== game.winningTeam ? 'incorrect-pick' : 'pending-pick'}>
-                        {game.yourPick}
-                      </span>
-                    ) : (
-                      <span className="no-pick">No pick</span>
-                    )}
-                  </td>
-                  <td data-label="Other Picks">
-                    {game.otherPicks.length > 0 ? (
-                      <div className="other-picks">
-                        {game.otherPicks.map((pick, index) => (
-                          <div key={index} className="pick-item">
-                            <span className="username">{pick.username}:</span>
-                            <span className={game.scored && pick.pickedTeam === game.winningTeam ? 'correct-pick' : 
-                                            game.scored && pick.pickedTeam !== game.winningTeam ? 'incorrect-pick' : 'pending-pick'}>
-                              {pick.pickedTeam}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="no-picks">No other picks</span>
-                    )}
-                  </td>
-                  <td data-label="Result">
-                    {game.scored ? (
-                      <span className="game-result">
-                        <strong>{game.winningTeam} wins</strong>
-                      </span>
-                    ) : (
-                      <span className="pending">Not played</span>
-                    )}
-                  </td>
+  const renderPickComparisonTable = () => {
+    if (pickComparison.length === 0) {
+      return null;
+    }
+
+    // Get all unique usernames (including current user)
+    const allUsernames = new Set();
+    allUsernames.add(user.username); // Add current user
+    
+    pickComparison.forEach(game => {
+      game.otherPicks.forEach(pick => {
+        allUsernames.add(pick.username);
+      });
+    });
+    
+    const usernameList = Array.from(allUsernames).sort();
+
+    return (
+      <div className="table-container">
+        <h3>Pick Comparison - Week {selectedWeek}</h3>
+        <button 
+          onClick={() => setShowPickComparison(!showPickComparison)}
+          className="toggle-button"
+          style={{ marginBottom: '10px' }}
+        >
+          {showPickComparison ? 'Hide Pick Comparison' : 'Show Pick Comparison'}
+        </button>
+        
+        {showPickComparison && (
+          <div className="pick-comparison-container">
+            <table className="pick-comparison-table">
+              <thead>
+                <tr>
+                  <th className="game-header">Game</th>
+                  {usernameList.map(username => (
+                    <th key={username} className={`player-header ${username === user.username ? 'current-user' : ''}`}>
+                      {username === user.username ? `${username} (You)` : username}
+                    </th>
+                  ))}
+                  <th className="result-header">Result</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )
-      )}
-    </div>
-  );
+              </thead>
+              <tbody>
+                {pickComparison.map((game) => (
+                  <tr key={game.gameId} className="game-row">
+                    <td className="game-info">
+                      <div className="game-teams">
+                        <strong>{game.awayTeam} @ {game.homeTeam}</strong>
+                      </div>
+                      <div className="game-time">
+                        {game.scored ? 'Final' : 'Not played'}
+                      </div>
+                    </td>
+                    
+                    {usernameList.map(username => {
+                      let pickData = null;
+                      let isCurrentUser = username === user.username;
+                      
+                      if (isCurrentUser) {
+                        pickData = game.yourPick;
+                      } else {
+                        const otherPick = game.otherPicks.find(p => p.username === username);
+                        pickData = otherPick ? otherPick.pickedTeam : null;
+                      }
+                      
+                      const isCorrect = game.scored && pickData === game.winningTeam;
+                      const isIncorrect = game.scored && pickData && pickData !== game.winningTeam;
+                      
+                      return (
+                        <td key={username} className={`pick-cell ${isCurrentUser ? 'current-user-pick' : ''}`}>
+                          {pickData ? (
+                            <span className={`pick-display ${
+                              game.scored 
+                                ? (isCorrect ? 'correct-pick' : 'incorrect-pick')
+                                : 'pending-pick'
+                            }`}>
+                              {pickData}
+                            </span>
+                          ) : (
+                            <span className="no-pick">-</span>
+                          )}
+                        </td>
+                      );
+                    })}
+                    
+                    <td className="result-cell">
+                      {game.scored ? (
+                        <span className="game-result">
+                          <strong>{game.winningTeam} wins</strong>
+                        </span>
+                      ) : (
+                        <span className="pending">Not played</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="main-content">
