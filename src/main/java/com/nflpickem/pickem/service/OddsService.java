@@ -289,7 +289,7 @@ public class OddsService {
     private Integer determinePreseasonOrPreviousSeasonWeek(LocalDate gameDate, int year) {
         // Check if it's preseason of the current year
         LocalDate preseasonStart = LocalDate.of(year, 8, 1); // August 1st
-        if (gameDate.isAfter(presumeasonStart)) {
+        if (gameDate.isAfter(preseasonStart)) {
             return 0; // Preseason
         }
         
