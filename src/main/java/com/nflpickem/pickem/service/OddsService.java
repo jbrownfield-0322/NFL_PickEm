@@ -154,7 +154,7 @@ public class OddsService {
                 // Determine the week from the game time
                 Integer week = determineWeekFromGameTime(response.commence_time);
                 if (week == null) {
-                    System.err.println("Could not determine week for game: " + response.awayTeam + " @ " + response.homeTeam);
+                    System.err.println("Could not determine week for game: " + response.getAwayTeam() + " @ " + response.getHomeTeam());
                     continue;
                 }
                 
@@ -170,7 +170,7 @@ public class OddsService {
                     }
                 }
             } catch (Exception e) {
-                System.err.println("Error processing odds response for " + response.awayTeam + " @ " + response.homeTeam + ": " + e.getMessage());
+                System.err.println("Error processing odds response for " + response.getAwayTeam() + " @ " + response.getHomeTeam() + ": " + e.getMessage());
             }
         }
         
@@ -308,8 +308,8 @@ public class OddsService {
      * Find a game that matches the odds response or create a new one
      */
     private Game findOrCreateGame(OddsApiResponse response, List<Game> weekGames, Integer week) {
-        String homeTeam = normalizeTeamName(response.homeTeam);
-        String awayTeam = normalizeTeamName(response.awayTeam);
+        String homeTeam = normalizeTeamName(response.getHomeTeam());
+        String awayTeam = normalizeTeamName(response.getAwayTeam());
         
         // First, try to find an existing game using multiple matching strategies
         Game existingGame = findExistingGame(response, weekGames, homeTeam, awayTeam);
@@ -334,26 +334,26 @@ public class OddsService {
         }
         
         // Strategy 1: Database-level exact match check
-        Optional<Game> exactMatch = gameRepository.findByWeekAndHomeTeamAndAwayTeam(week, response.homeTeam, response.awayTeam);
+        Optional<Game> exactMatch = gameRepository.findByWeekAndHomeTeamAndAwayTeam(week, response.getHomeTeam(), response.getAwayTeam());
         if (exactMatch.isPresent()) {
-            System.out.println("Found exact database match for " + response.awayTeam + " @ " + response.homeTeam);
+            System.out.println("Found exact database match for " + response.getAwayTeam() + " @ " + response.getHomeTeam());
             return exactMatch.get();
         }
         
         // Strategy 2: Database-level reverse match check
-        Optional<Game> reverseMatch = gameRepository.findByWeekAndHomeTeamAndAwayTeam(week, response.awayTeam, response.homeTeam);
+        Optional<Game> reverseMatch = gameRepository.findByWeekAndHomeTeamAndAwayTeam(week, response.getAwayTeam(), response.getHomeTeam());
         if (reverseMatch.isPresent()) {
-            System.out.println("Found reverse database match for " + response.awayTeam + " @ " + response.homeTeam);
+            System.out.println("Found reverse database match for " + response.getAwayTeam() + " @ " + response.getHomeTeam());
             return reverseMatch.get();
         }
         
         // Strategy 3: Time-based match using database query
         try {
             Instant apiGameTime = Instant.parse(response.commence_time);
-            List<Game> similarGames = gameRepository.findSimilarGames(week, response.homeTeam, response.awayTeam, apiGameTime);
+            List<Game> similarGames = gameRepository.findSimilarGames(week, response.getHomeTeam(), response.getAwayTeam(), apiGameTime);
             if (!similarGames.isEmpty()) {
                 Game timeMatch = similarGames.get(0);
-                System.out.println("Found time-based database match for " + response.awayTeam + " @ " + response.homeTeam + 
+                System.out.println("Found time-based database match for " + response.getAwayTeam() + " @ " + response.getHomeTeam() + 
                     " (time difference: " + Math.abs(java.time.Duration.between(timeMatch.getKickoffTime(), apiGameTime).toHours()) + " hours)");
                 return timeMatch;
             }
@@ -364,7 +364,7 @@ public class OddsService {
         // Strategy 4: In-memory fuzzy team name matching for common variations
         Game fuzzyMatch = findFuzzyTeamMatch(weekGames, normalizedHomeTeam, normalizedAwayTeam);
         if (fuzzyMatch != null) {
-            System.out.println("Found fuzzy team name match for " + response.awayTeam + " @ " + response.homeTeam);
+            System.out.println("Found fuzzy team name match for " + response.getAwayTeam() + " @ " + response.getHomeTeam());
             return fuzzyMatch;
         }
         
@@ -449,23 +449,23 @@ public class OddsService {
     private Game createNewGameFromResponse(OddsApiResponse response, Integer week) {
         try {
             // Double-check for duplicates before creating
-            Optional<Game> existingGame = gameRepository.findByWeekAndHomeTeamAndAwayTeam(week, response.homeTeam, response.awayTeam);
+            Optional<Game> existingGame = gameRepository.findByWeekAndHomeTeamAndAwayTeam(week, response.getHomeTeam(), response.getAwayTeam());
             if (existingGame.isPresent()) {
-                System.out.println("Game already exists, skipping creation: " + response.awayTeam + " @ " + response.homeTeam);
+                System.out.println("Game already exists, skipping creation: " + response.getAwayTeam() + " @ " + response.getHomeTeam());
                 return existingGame.get();
             }
             
             // Check reverse order too
-            existingGame = gameRepository.findByWeekAndHomeTeamAndAwayTeam(week, response.awayTeam, response.homeTeam);
+            existingGame = gameRepository.findByWeekAndHomeTeamAndAwayTeam(week, response.getAwayTeam(), response.getHomeTeam());
             if (existingGame.isPresent()) {
-                System.out.println("Game already exists (reverse order), skipping creation: " + response.awayTeam + " @ " + response.homeTeam);
+                System.out.println("Game already exists (reverse order), skipping creation: " + response.getAwayTeam() + " @ " + response.getHomeTeam());
                 return existingGame.get();
             }
             
             Game newGame = new Game();
             newGame.setWeek(week);
-            newGame.setHomeTeam(response.homeTeam);
-            newGame.setAwayTeam(response.awayTeam);
+            newGame.setHomeTeam(response.getHomeTeam());
+            newGame.setAwayTeam(response.getAwayTeam());
             newGame.setKickoffTime(Instant.parse(response.commence_time));
             newGame.setScored(false);
             newGame.setWinningTeam("");
@@ -476,16 +476,16 @@ public class OddsService {
             
             return savedGame;
         } catch (org.springframework.dao.DataIntegrityViolationException e) {
-            System.err.println("Duplicate game detected by database constraint: " + response.awayTeam + " @ " + response.homeTeam + 
+            System.err.println("Duplicate game detected by database constraint: " + response.getAwayTeam() + " @ " + response.getHomeTeam() + 
                 " for Week " + week + ". Attempting to find existing game.");
             
             // Try to find the existing game that caused the constraint violation
-            Optional<Game> existingGame = gameRepository.findByWeekAndHomeTeamAndAwayTeam(week, response.homeTeam, response.awayTeam);
+            Optional<Game> existingGame = gameRepository.findByWeekAndHomeTeamAndAwayTeam(week, response.getHomeTeam(), response.getAwayTeam());
             if (existingGame.isPresent()) {
                 return existingGame.get();
             }
             
-            existingGame = gameRepository.findByWeekAndHomeTeamAndAwayTeam(week, response.awayTeam, response.homeTeam);
+            existingGame = gameRepository.findByWeekAndHomeTeamAndAwayTeam(week, response.getAwayTeam(), response.getHomeTeam());
             if (existingGame.isPresent()) {
                 return existingGame.get();
             }
