@@ -152,6 +152,7 @@ public class PickService {
                 if (!pick.getUser().getId().equals(userId)) { // Exclude current user
                     PickComparisonDto.UserPickDto userPickDto = new PickComparisonDto.UserPickDto();
                     userPickDto.setUsername(pick.getUser().getUsername());
+                    userPickDto.setName(pick.getUser().getName());
                     userPickDto.setPickedTeam(pick.getPickedTeam());
                     userPickDto.setCorrect(pick.isCorrect());
                     otherPicks.add(userPickDto);

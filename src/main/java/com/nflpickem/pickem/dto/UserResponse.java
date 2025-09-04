@@ -7,9 +7,11 @@ import lombok.Data;
 public class UserResponse {
     private Long id;
     private String username;
+    private String name;
 
     public UserResponse(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
+        this.name = user.getName();
     }
 }

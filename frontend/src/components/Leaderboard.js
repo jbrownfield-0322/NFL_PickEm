@@ -118,7 +118,7 @@ function Leaderboard() {
           <thead>
             <tr>
               <th>Rank</th>
-              <th>Username</th>
+                              <th>Name</th>
               <th>Score</th>
             </tr>
           </thead>
@@ -126,7 +126,7 @@ function Leaderboard() {
             {data.map((player, index) => (
               <tr key={player.username}>
                 <td data-label="Rank">{index + 1}</td>
-                <td data-label="Username">{player.username}</td>
+                <td data-label="Name">{player.name || player.username}</td>
                 <td data-label="Score">{player.score}</td>
               </tr>
             ))}
@@ -141,13 +141,18 @@ function Leaderboard() {
       return null;
     }
 
-    // Get all unique usernames (including current user)
+    // Get all unique usernames (including current user) and create a name mapping
     const allUsernames = new Set();
+    const usernameToNameMap = new Map();
+    
     allUsernames.add(user.username); // Add current user
+    usernameToNameMap.set(user.username, user.name || user.username);
     
     pickComparison.forEach(game => {
       game.otherPicks.forEach(pick => {
         allUsernames.add(pick.username);
+        // Use the name from the backend if available, otherwise fall back to username
+        usernameToNameMap.set(pick.username, pick.name || pick.username);
       });
     });
     
@@ -172,7 +177,7 @@ function Leaderboard() {
                   <th className="game-header">Game</th>
                   {usernameList.map(username => (
                     <th key={username} className={`player-header ${username === user.username ? 'current-user' : ''}`}>
-                      {username === user.username ? `${username} (You)` : username}
+                      {username === user.username ? `${user.name || username} (You)` : usernameToNameMap.get(username) || username}
                     </th>
                   ))}
                   <th className="result-header">Result</th>

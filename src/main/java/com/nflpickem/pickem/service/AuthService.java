@@ -20,16 +20,20 @@ public class AuthService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public User registerUser(String username, String password) {
+    public User registerUser(String username, String password, String name) {
         if (!isValidEmail(username)) {
             throw new IllegalArgumentException("Invalid email format for username");
         }
         if (userRepository.findByUsername(username) != null) {
             throw new IllegalArgumentException("Email already registered");
         }
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name is required");
+        }
         User user = new User();
         user.setUsername(username);
         user.setPassword(bCryptPasswordEncoder.encode(password));
+        user.setName(name.trim());
         return userRepository.save(user);
     }
 
