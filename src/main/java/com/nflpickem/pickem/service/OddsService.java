@@ -436,7 +436,7 @@ public class OddsService {
     }
     
     /**
-     * Scheduled task to update odds every 4 hours for the current NFL week
+     * Scheduled task to update odds every 4 hours for the CURRENT NFL week only
      * Runs at: 00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UTC
      */
     @Scheduled(cron = "0 0 */4 * * *")
@@ -444,19 +444,23 @@ public class OddsService {
         try {
             System.out.println("=== SCHEDULED ODDS UPDATE STARTED ===");
             System.out.println("Timestamp: " + Instant.now());
+            System.out.println("Cron job triggered automatically - updating odds for current NFL week");
             
-            // Get the current NFL week (will always return a valid week now)
+            // Only fetch odds for the current NFL week (more efficient)
             Integer currentWeek = getCurrentNflWeek();
-            System.out.println("Updating odds for NFL Week " + currentWeek);
+            System.out.println("Current NFL Week calculated: " + currentWeek);
+            System.out.println("Fetching odds for Week " + currentWeek + " from The Odds API...");
             
-            // Fetch odds for the current week
             fetchOddsForWeek(currentWeek);
             
             System.out.println("=== SCHEDULED ODDS UPDATE COMPLETED ===");
-            System.out.println("Next update in 4 hours");
+            System.out.println("Successfully updated odds for Week " + currentWeek);
+            System.out.println("Next automatic update in 4 hours (cron job)");
+            System.out.println("Odds can also be manually updated via admin API endpoints");
             
         } catch (Exception e) {
-            System.err.println("Error during scheduled odds update: " + e.getMessage());
+            System.err.println("ERROR during scheduled odds update: " + e.getMessage());
+            System.err.println("Cron job failed - odds will be retried in 4 hours");
             e.printStackTrace();
         }
     }
@@ -523,4 +527,6 @@ public class OddsService {
             return "Manual odds update failed: " + e.getMessage();
         }
     }
+    
+
 }
