@@ -535,10 +535,10 @@ public class OddsService {
         
         if (spreadMarket.isPresent() && !spreadMarket.get().outcomes.isEmpty()) {
             Market.Outcome spreadOutcome = spreadMarket.get().outcomes.get(0);
-            odds.setSpread(Math.abs(spreadOutcome.point));
+            odds.setSpread(spreadOutcome.point); // Keep the original sign (+ or -)
             odds.setSpreadTeam(spreadOutcome.name);
             System.out.println("Created FanDuel spread odds for " + game.getAwayTeam() + " @ " + game.getHomeTeam() + 
-                ": " + spreadOutcome.name + " " + Math.abs(spreadOutcome.point));
+                ": " + spreadOutcome.name + " " + spreadOutcome.point);
         } else {
             // No spreads found, return null
             System.out.println("No FanDuel spreads found for " + game.getAwayTeam() + " @ " + game.getHomeTeam());
