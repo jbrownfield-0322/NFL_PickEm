@@ -186,14 +186,19 @@ public class OddsService {
             Instant gameTime = Instant.parse(commenceTime);
             LocalDate gameDate = gameTime.atZone(java.time.ZoneId.of("America/New_York")).toLocalDate();
             
-            int year = gameDate.getYear();
+            // For NFL games, the season year is typically the year the season starts (September)
+            // Even if games are in January of the next year, they belong to the previous season
+            int seasonYear = gameDate.getYear();
+            if (gameDate.getMonthValue() <= 2) { // January/February games belong to previous season
+                seasonYear = gameDate.getYear() - 1;
+            }
             
             // NFL season typically starts the first Thursday after Labor Day (first Monday of September)
-            LocalDate nflSeasonStart = calculateNflSeasonStart(year);
+            LocalDate nflSeasonStart = calculateNflSeasonStart(seasonYear);
             
             if (gameDate.isBefore(nflSeasonStart)) {
                 // Before season start - could be preseason or previous season
-                Integer week = determinePreseasonOrPreviousSeasonWeek(gameDate, year);
+                Integer week = determinePreseasonOrPreviousSeasonWeek(gameDate, seasonYear);
                 System.out.println("Game date " + gameDate + " is before season start " + nflSeasonStart + ", determined week: " + week);
                 return week;
             }
@@ -248,39 +253,25 @@ public class OddsService {
      * Calculate NFL week number based on game date and season start
      */
     private Integer calculateNflWeek(LocalDate gameDate, LocalDate seasonStart) {
-        // NFL weeks are complex - they don't always follow a 7-day pattern
-        // Some weeks have Thursday games, some don't
-        // We'll use a more sophisticated approach
-        
         long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(seasonStart, gameDate);
         
         if (daysBetween < 0) {
             return null; // Before season
         }
         
-        // NFL regular season is typically 18 weeks
-        // Each week generally runs Tuesday to Monday (with games Thu-Sun)
-        // We'll calculate based on which "week block" the game falls into
+        // NFL regular season is 18 weeks
+        // Calculate week based on days since season start
+        // Each week is approximately 7 days, but we'll be more flexible
         
-        int week = 1;
-        LocalDate currentWeekStart = seasonStart;
+        int week = (int) (daysBetween / 7) + 1;
         
-        // Iterate through weeks to find the correct one
-        for (int i = 1; i <= 18; i++) {
-            LocalDate weekEnd = currentWeekStart.plusDays(6); // End of week (Monday)
-            
-            if (gameDate.isEqual(currentWeekStart) || 
-                (gameDate.isAfter(currentWeekStart) && gameDate.isBefore(weekEnd)) ||
-                gameDate.isEqual(weekEnd)) {
-                return i;
-            }
-            
-            // Move to next week (Tuesday)
-            currentWeekStart = currentWeekStart.plusDays(7);
+        // Cap at 18 weeks for regular season
+        if (week > 18) {
+            return 18; // Week 18 or playoffs
         }
         
-        // If we get here, it's beyond week 18 (playoffs)
-        return 18; // Cap at regular season
+        // Ensure we don't return week 0 or negative
+        return Math.max(1, week);
     }
     
     /**
