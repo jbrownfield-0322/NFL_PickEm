@@ -1270,6 +1270,24 @@ table tbody tr:hover {
   }
 }
 
+/* Spread column styling */
+.spread-cell {
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: center;
+  min-width: 120px;
+}
+
+.spread-favorite {
+  color: #e74c3c;
+  font-weight: 700;
+}
+
+.spread-underdog {
+  color: #27ae60;
+  font-weight: 700;
+}
+
 /* Responsive design for mobile */
 @media (max-width: 768px) {
   .pick-comparison-table {

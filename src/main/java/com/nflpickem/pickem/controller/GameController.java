@@ -1,5 +1,6 @@
 package com.nflpickem.pickem.controller;
 
+import com.nflpickem.pickem.dto.GameWithOddsDto;
 import com.nflpickem.pickem.model.Game;
 import com.nflpickem.pickem.service.GameService;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/games")
@@ -21,13 +23,27 @@ public class GameController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Game>> getAllGames() {
-        return ResponseEntity.ok(gameService.getAllGames());
+    public ResponseEntity<List<GameWithOddsDto>> getAllGames() {
+        List<Game> games = gameService.getAllGames();
+        List<GameWithOddsDto> gamesWithOdds = games.stream()
+            .map(game -> {
+                var odds = gameService.getOddsForGame(game.getId());
+                return new GameWithOddsDto(game, odds);
+            })
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(gamesWithOdds);
     }
 
     @GetMapping("/week/{weekNum}")
-    public ResponseEntity<List<Game>> getGamesByWeek(@PathVariable Integer weekNum) {
-        return ResponseEntity.ok(gameService.getGamesByWeek(weekNum));
+    public ResponseEntity<List<GameWithOddsDto>> getGamesByWeek(@PathVariable Integer weekNum) {
+        List<Game> games = gameService.getGamesByWeek(weekNum);
+        List<GameWithOddsDto> gamesWithOdds = games.stream()
+            .map(game -> {
+                var odds = gameService.getOddsForGame(game.getId());
+                return new GameWithOddsDto(game, odds);
+            })
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(gamesWithOdds);
     }
 
     @GetMapping("/currentWeek")

@@ -190,6 +190,28 @@ const GameList = () => {
     return now >= gameTime;
   };
 
+  const formatSpread = (game) => {
+    if (!game.primaryOdds || game.primaryOdds.spread === null) {
+      return <span className="spread-cell">N/A</span>;
+    }
+    
+    const spread = game.primaryOdds.spread;
+    const spreadTeam = game.primaryOdds.spreadTeam;
+    
+    // Format the spread with proper sign
+    const spreadText = spread > 0 ? `+${spread}` : spread.toString();
+    
+    // Determine if this team is favorite (negative spread) or underdog (positive spread)
+    const isFavorite = spread < 0;
+    const spreadClass = isFavorite ? 'spread-favorite' : 'spread-underdog';
+    
+    return (
+      <span className={`spread-cell ${spreadClass}`}>
+        {spreadTeam} {spreadText}
+      </span>
+    );
+  };
+
   // Get unique weeks from games
   const getAvailableWeeks = () => {
     const weeks = [...new Set(games.map(game => game.week))].sort((a, b) => a - b);
@@ -296,6 +318,7 @@ const GameList = () => {
               <th>Week</th>
               <th>Away Team</th>
               <th>Home Team</th>
+              <th>Spread</th>
               <th>Kickoff</th>
               <th>Current Pick</th>
               <th>Your Pick</th>
@@ -315,6 +338,7 @@ const GameList = () => {
                   <td data-label="Week">{game.week}</td>
                   <td data-label="Away Team">{game.awayTeam}</td>
                   <td data-label="Home Team">{game.homeTeam}</td>
+                  <td data-label="Spread">{formatSpread(game)}</td>
                   <td data-label="Kickoff">{formatKickoffTime(game.kickoffTime)}</td>
                   <td data-label="Current Pick">
                     {userPickForGame ? (
