@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .requestMatchers("/", "/ping", "/health", "/actuator/health", "/actuator/info").permitAll() // Health checks always accessible
                 .requestMatchers("/static/**", "/static/js/**", "/static/css/**", "/static/media/**").permitAll() // Static assets
                 .requestMatchers("/register", "/login", "/games", "/leaderboard", "/leagues/**", "/my-leagues", "/account").permitAll() // React routes
-                .requestMatchers("/api/auth/**", "/api/games/**", "/api/picks/**", "/api/leagues/**", "/api/leaderboard/**", "/api/user/**").permitAll()
+                .requestMatchers("/api/auth/**", "/api/games/**", "/api/picks/**", "/api/leagues/**", "/api/leaderboard/**", "/api/user/**", "/api/admin/**", "/api/odds/**").permitAll()
                 .anyRequest().authenticated()
             );
         return http.build();
