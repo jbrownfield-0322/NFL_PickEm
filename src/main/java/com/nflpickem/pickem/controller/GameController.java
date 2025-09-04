@@ -34,6 +34,26 @@ public class GameController {
     public ResponseEntity<Integer> getCurrentWeek() {
         return ResponseEntity.ok(gameService.getCurrentWeek());
     }
+    
+    @GetMapping("/{gameId}/odds")
+    public ResponseEntity<?> getOddsForGame(@PathVariable Long gameId) {
+        try {
+            var odds = gameService.getOddsForGame(gameId);
+            return ResponseEntity.ok(odds);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    
+    @GetMapping("/week/{weekNum}/odds")
+    public ResponseEntity<?> getOddsForWeek(@PathVariable Integer weekNum) {
+        try {
+            var odds = gameService.getOddsForWeek(weekNum);
+            return ResponseEntity.ok(odds);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 
     @PostMapping
     public ResponseEntity<Game> createGame(@RequestBody CreateGameRequest request) {
