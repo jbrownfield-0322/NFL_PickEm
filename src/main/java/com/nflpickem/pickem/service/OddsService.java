@@ -350,7 +350,11 @@ public class OddsService {
         // Strategy 3: Time-based match using database query
         try {
             Instant apiGameTime = Instant.parse(response.commence_time);
-            List<Game> similarGames = gameRepository.findSimilarGames(week, response.getHomeTeam(), response.getAwayTeam(), apiGameTime);
+            // Create a 2-hour window around the API game time
+            Instant startTime = apiGameTime.minus(java.time.Duration.ofHours(2));
+            Instant endTime = apiGameTime.plus(java.time.Duration.ofHours(2));
+            
+            List<Game> similarGames = gameRepository.findSimilarGames(week, response.getHomeTeam(), response.getAwayTeam(), startTime, endTime);
             if (!similarGames.isEmpty()) {
                 Game timeMatch = similarGames.get(0);
                 System.out.println("Found time-based database match for " + response.getAwayTeam() + " @ " + response.getHomeTeam() + 

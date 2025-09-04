@@ -22,9 +22,10 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     @Query("SELECT g FROM Game g WHERE g.week = :week AND " +
            "((g.homeTeam = :homeTeam AND g.awayTeam = :awayTeam) OR " +
            "(g.homeTeam = :awayTeam AND g.awayTeam = :homeTeam)) AND " +
-           "ABS(EXTRACT(EPOCH FROM (g.kickoffTime - :kickoffTime))) <= 7200")
+           "g.kickoffTime BETWEEN :startTime AND :endTime")
     List<Game> findSimilarGames(@Param("week") Integer week, 
                                @Param("homeTeam") String homeTeam, 
                                @Param("awayTeam") String awayTeam, 
-                               @Param("kickoffTime") Instant kickoffTime);
+                               @Param("startTime") Instant startTime,
+                               @Param("endTime") Instant endTime);
 } 
