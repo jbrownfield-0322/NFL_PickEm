@@ -30,10 +30,10 @@ public class OddsService {
     @Value("${ODDS_API_KEY:}")
     private String oddsApiKey;
     
-    @Value("${ODDS_API_BASE_URL:https://api.the-odds-api.com/v4}")
+    @Value("${ODDS_API_BASE_URL}")
     private String oddsApiBaseUrl;
     
-    @Value("${ODDS_UPDATE_INTERVAL_HOURS:6}")
+    @Value("${ODDS_UPDATE_INTERVAL_HOURS}")
     private int updateIntervalHours;
     
     @Value("${NFL_SEASON_START_DATE:}")
