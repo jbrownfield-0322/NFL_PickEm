@@ -58,9 +58,11 @@ function Leaderboard() {
 
         // Fetch weekly leaderboard
         console.log('Fetching weekly leaderboard...');
-        const weeklyLeaderboardUrl = selectedLeagueId ? 
-          `${API_BASE}/leaderboard/weekly/${selectedWeek}?leagueId=${parseInt(selectedLeagueId, 10)}` : 
-          `${API_BASE}/leaderboard/weekly/${selectedWeek}`;
+        if (!selectedLeagueId) {
+          console.log('No league selected, skipping weekly leaderboard fetch');
+          setWeeklyLeaderboard([]);
+        } else {
+          const weeklyLeaderboardUrl = `${API_BASE}/leaderboard/weekly/${selectedWeek}?leagueId=${parseInt(selectedLeagueId, 10)}`;
         console.log('Weekly leaderboard URL:', weeklyLeaderboardUrl);
         const weeklyResponse = await fetch(weeklyLeaderboardUrl);
         console.log('Weekly response status:', weeklyResponse.status);
@@ -75,9 +77,11 @@ function Leaderboard() {
 
         // Fetch season leaderboard
         console.log('Fetching season leaderboard...');
-        const seasonLeaderboardUrl = selectedLeagueId ? 
-          `${API_BASE}/leaderboard/season?leagueId=${parseInt(selectedLeagueId, 10)}` : 
-          `${API_BASE}/leaderboard/season`;
+        if (!selectedLeagueId) {
+          console.log('No league selected, skipping season leaderboard fetch');
+          setSeasonLeaderboard([]);
+        } else {
+          const seasonLeaderboardUrl = `${API_BASE}/leaderboard/season?leagueId=${parseInt(selectedLeagueId, 10)}`;
         console.log('Season leaderboard URL:', seasonLeaderboardUrl);
         const seasonResponse = await fetch(seasonLeaderboardUrl);
         console.log('Season response status:', seasonResponse.status);
@@ -91,11 +95,9 @@ function Leaderboard() {
         setSeasonLeaderboard(seasonData);
 
         // Fetch pick comparison data
-        if (user) {
+        if (user && selectedLeagueId) {
           console.log('Fetching pick comparison...');
-          const comparisonUrl = selectedLeagueId ? 
-            `${API_BASE}/picks/comparison/${user.id}/${selectedWeek}?leagueId=${parseInt(selectedLeagueId, 10)}` : 
-            `${API_BASE}/picks/comparison/${user.id}/${selectedWeek}`;
+          const comparisonUrl = `${API_BASE}/picks/comparison/${user.id}/${selectedWeek}?leagueId=${parseInt(selectedLeagueId, 10)}`;
           console.log('Comparison URL:', comparisonUrl);
           const comparisonResponse = await fetch(comparisonUrl);
           console.log('Comparison response status:', comparisonResponse.status);
@@ -261,9 +263,9 @@ function Leaderboard() {
         </div>
 
         <div>
-          <label htmlFor="league-select">View Leaderboard For:</label>
-          <select id="league-select" value={selectedLeagueId} onChange={(e) => setSelectedLeagueId(e.target.value)}>
-            <option value="">Global Leaderboard</option>
+          <label htmlFor="league-select">Select League:</label>
+          <select id="league-select" value={selectedLeagueId} onChange={(e) => setSelectedLeagueId(e.target.value)} required>
+            <option value="">Select a League</option>
             {leagues.map(league => (
               <option key={league.id} value={league.id}>{league.name}</option>
             ))}
