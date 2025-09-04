@@ -5,6 +5,7 @@ import { useAuth } from '../AuthContext'; // Import useAuth
 function Register() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const { login } = useAuth(); // Use the login function from AuthContext
   const navigate = useNavigate(); // For redirection
@@ -20,7 +21,7 @@ function Register() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, name }),
       });
       const data = await response.json(); // Expect JSON response with user data
       if (response.ok) {
@@ -39,6 +40,16 @@ function Register() {
     <section className="form-container">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
+        <div>
+          <label>Name:</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            placeholder="Enter your full name"
+          />
+        </div>
         <div>
           <label>Email:</label>
           <input

@@ -17,6 +17,7 @@ public class PickComparisonDto {
     @Data
     public static class UserPickDto {
         private String username;
+        private String name;
         private String pickedTeam;
         private boolean correct;
     }

@@ -4,6 +4,7 @@ import { useAuth } from '../AuthContext';
 function Account() {
   const { user, login } = useAuth(); // Assuming 'login' can also update user data
   const [currentUsername, setCurrentUsername] = useState(user ? user.username : '');
+  const [currentName, setCurrentName] = useState(user ? user.name : '');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -14,6 +15,7 @@ function Account() {
   useEffect(() => {
     if (user) {
       setCurrentUsername(user.username);
+      setCurrentName(user.name || '');
     }
   }, [user]);
 
@@ -43,6 +45,38 @@ function Account() {
         login({ ...user, username: currentUsername }); // Update user in context
       } else {
         setMessage(`Failed to update username: ${data.message || response.statusText}`);
+      }
+    } catch (error) {
+      setMessage(`Error: ${error.message}`);
+    }
+  };
+
+  const handleUpdateName = async (e) => {
+    e.preventDefault();
+    setMessage('');
+
+    if (!currentName) {
+      setMessage('Name cannot be empty.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/user/${user.id}/updateName`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          // Add authorization header if your API requires it
+          // 'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ name: currentName }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setMessage('Name updated successfully!');
+        login({ ...user, name: currentName }); // Update user in context
+      } else {
+        setMessage(`Failed to update name: ${data.message || response.statusText}`);
       }
     } catch (error) {
       setMessage(`Error: ${error.message}`);
@@ -95,19 +129,41 @@ function Account() {
       <h2>Account Information</h2>
       {message && <p className="message">{message}</p>}
 
+      <div className="account-info">
+        <h3>Current Information</h3>
+        <p><strong>Email:</strong> {user.username}</p>
+        <p><strong>Name:</strong> {user.name || 'Not set'}</p>
+      </div>
+
+      <h3>Update Name</h3>
+      <form onSubmit={handleUpdateName}>
+        <div>
+          <label htmlFor="name">Display Name:</label>
+          <input
+            type="text"
+            id="name"
+            value={currentName}
+            onChange={(e) => setCurrentName(e.target.value)}
+            required
+            placeholder="Enter your display name"
+          />
+        </div>
+        <button type="submit">Update Name</button>
+      </form>
+
       <h3>Update Username</h3>
       <form onSubmit={handleUpdateUsername}>
         <div>
-          <label htmlFor="username">Username:</label>
+          <label htmlFor="username">Email:</label>
           <input
-            type="text"
+            type="email"
             id="username"
             value={currentUsername}
             onChange={(e) => setCurrentUsername(e.target.value)}
             required
           />
         </div>
-        <button type="submit">Update Username</button>
+        <button type="submit">Update Email</button>
       </form>
 
       <h3>Update Password</h3>

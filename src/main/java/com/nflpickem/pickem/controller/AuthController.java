@@ -28,7 +28,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody RegisterRequest request) {
         try {
-            User registeredUser = authService.registerUser(request.getUsername(), request.getPassword());
+            User registeredUser = authService.registerUser(request.getUsername(), request.getPassword(), request.getName());
             // Set user in session after registration
             AuthContext.setCurrentUser(registeredUser);
             // Return only safe user information

@@ -83,7 +83,7 @@ function LeagueDetails() {
           <thead>
             <tr>
               <th>Rank</th>
-              <th>Username</th>
+                              <th>Name</th>
               <th>Score</th>
             </tr>
           </thead>
@@ -91,7 +91,7 @@ function LeagueDetails() {
             {data.map((player, index) => (
               <tr key={player.username}>
                 <td data-label="Rank">{index + 1}</td>
-                <td data-label="Username">{player.username}</td>
+                <td data-label="Name">{player.name || player.username}</td>
                 <td data-label="Score">{player.score}</td>
               </tr>
             ))}
@@ -105,12 +105,12 @@ function LeagueDetails() {
     <div className="main-content">
       <h2>League: {league.name}</h2>
       <p>Join Code: <strong>{league.joinCode}</strong></p>
-      <p>Admin: {league.admin.username}</p>
+      <p>Admin: {league.admin.name || league.admin.username}</p>
 
       <h3>Members:</h3>
       <ul className="member-list">
         {league.members.map(member => (
-          <li key={member.id}>{member.username}</li>
+          <li key={member.id}>{member.name || member.username}</li>
         ))}
       </ul>
 

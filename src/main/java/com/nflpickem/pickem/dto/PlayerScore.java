@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PlayerScore {
     private String username;
+    private String name;
     private Long score;
 } 

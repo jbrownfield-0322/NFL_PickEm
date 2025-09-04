@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.HashMap;
 
 @Service
 public class LeaderboardService {
@@ -96,12 +97,22 @@ public class LeaderboardService {
     }
 
     private List<PlayerScore> calculateLeaderboard(List<Pick> picks) {
-        Map<String, Long> userScores = picks.stream()
-                .filter(Pick::isCorrect)
-                .collect(Collectors.groupingBy(pick -> pick.getUser().getUsername(), Collectors.counting()));
+        Map<String, PlayerScore> userScores = new HashMap<>();
+        
+        for (Pick pick : picks) {
+            if (pick.isCorrect()) {
+                String username = pick.getUser().getUsername();
+                String name = pick.getUser().getName();
+                
+                if (userScores.containsKey(username)) {
+                    userScores.get(username).setScore(userScores.get(username).getScore() + 1);
+                } else {
+                    userScores.put(username, new PlayerScore(username, name, 1L));
+                }
+            }
+        }
 
-        return userScores.entrySet().stream()
-                .map(entry -> new PlayerScore(entry.getKey(), entry.getValue()))
+        return userScores.values().stream()
                 .sorted(Comparator.comparing(PlayerScore::getScore).reversed())
                 .collect(Collectors.toList());
     }
