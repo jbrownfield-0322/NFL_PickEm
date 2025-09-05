@@ -136,7 +136,9 @@ public class GameScoreService {
                 Integer homeScore = response.getHomeScore();
                 
                 // Only process games that are completed AND have scores
-                if (!"true".equals(response.completed) && !Boolean.TRUE.equals(response.completed)) {
+                // Handle both boolean true and string "true"
+                boolean isCompleted = Boolean.TRUE.equals(response.completed) || "true".equals(response.completed);
+                if (!isCompleted) {
                     continue; // Skip incomplete games
                 }
                 
