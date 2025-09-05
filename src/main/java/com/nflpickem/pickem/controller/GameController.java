@@ -4,6 +4,7 @@ import com.nflpickem.pickem.dto.GameWithOddsDto;
 import com.nflpickem.pickem.model.Game;
 import com.nflpickem.pickem.service.GameService;
 import com.nflpickem.pickem.service.ScoringService;
+import com.nflpickem.pickem.service.GameScoreService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +20,12 @@ import java.util.stream.Collectors;
 public class GameController {
     private final GameService gameService;
     private final ScoringService scoringService;
+    private final GameScoreService gameScoreService;
 
-    public GameController(GameService gameService, ScoringService scoringService) {
+    public GameController(GameService gameService, ScoringService scoringService, GameScoreService gameScoreService) {
         this.gameService = gameService;
         this.scoringService = scoringService;
+        this.gameScoreService = gameScoreService;
     }
 
     @GetMapping
@@ -120,6 +123,21 @@ public class GameController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                 .body("Error updating scores: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/test-api")
+    public ResponseEntity<String> testApiConnection() {
+        try {
+            if (!gameScoreService.isApiConfigured()) {
+                return ResponseEntity.ok("API not configured - check ODDS_API_KEY environment variable");
+            }
+            
+            var results = gameScoreService.fetchLiveScores();
+            return ResponseEntity.ok("API test successful. Found " + results.size() + " game results. Check server logs for details.");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body("API test failed: " + e.getMessage());
         }
     }
 

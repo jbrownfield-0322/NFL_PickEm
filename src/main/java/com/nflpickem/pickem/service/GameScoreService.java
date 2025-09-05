@@ -43,8 +43,8 @@ public class GameScoreService {
         }
         
         try {
-            // Fetch scores from The Odds API
-            String url = String.format("%s/sports/americanfootball_nfl/scores/?apiKey=%s&daysFrom=1&dateFormat=iso", 
+            // Fetch scores from The Odds API - look back 7 days to catch any missed games
+            String url = String.format("%s/sports/americanfootball_nfl/scores/?apiKey=%s&daysFrom=7&dateFormat=iso", 
                 oddsApiBaseUrl, oddsApiKey);
             
             System.out.println("Fetching live NFL scores from: " + url);
@@ -57,6 +57,13 @@ public class GameScoreService {
                 url, HttpMethod.GET, entity, ScoreApiResponse[].class);
             
             if (response.getBody() != null) {
+                System.out.println("API returned " + response.getBody().length + " games");
+                // Log first few games for debugging
+                for (int i = 0; i < Math.min(3, response.getBody().length); i++) {
+                    ScoreApiResponse game = response.getBody()[i];
+                    System.out.println("Sample game " + (i+1) + ": " + game.away_team + " @ " + game.home_team + 
+                        " (Status: " + game.completed + ", Scores: " + game.away_score + "-" + game.home_score + ")");
+                }
                 return processScoreResponse(response.getBody());
             }
             
@@ -82,8 +89,18 @@ public class GameScoreService {
         
         for (ScoreApiResponse response : responses) {
             try {
-                // Only process completed games
-                if (!"final".equals(response.completed)) {
+                System.out.println("Processing game: " + response.away_team + " @ " + response.home_team + 
+                    " (Status: " + response.completed + ", Scores: " + response.away_score + "-" + response.home_score + ")");
+                
+                // Process games that are final OR have scores (some APIs don't mark as final immediately)
+                if (!"final".equals(response.completed) && (response.away_score == null || response.home_score == null)) {
+                    System.out.println("Skipping game - not final and no scores available");
+                    continue;
+                }
+                
+                // Skip if no scores available
+                if (response.away_score == null || response.home_score == null) {
+                    System.out.println("Skipping game - no scores available");
                     continue;
                 }
                 
@@ -92,6 +109,9 @@ public class GameScoreService {
                 if (game != null) {
                     String winningTeam = determineWinner(response);
                     results.add(new GameScoreResult(game, winningTeam, response.away_score, response.home_score));
+                    System.out.println("Added game result: " + game.getAwayTeam() + " @ " + game.getHomeTeam() + " - Winner: " + winningTeam);
+                } else {
+                    System.out.println("No matching game found in database for: " + response.away_team + " @ " + response.home_team);
                 }
                 
             } catch (Exception e) {
