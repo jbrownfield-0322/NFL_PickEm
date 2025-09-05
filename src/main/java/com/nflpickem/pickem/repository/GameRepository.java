@@ -18,6 +18,12 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     // Check for exact duplicate
     Optional<Game> findByWeekAndHomeTeamAndAwayTeam(Integer week, String homeTeam, String awayTeam);
     
+    // Find games by team names (for score matching)
+    Optional<Game> findByHomeTeamAndAwayTeam(String homeTeam, String awayTeam);
+    
+    // Find games within a time range (for game day detection)
+    List<Game> findByKickoffTimeBetween(Instant startTime, Instant endTime);
+    
     // Find games with similar teams and time (within 2 hours)
     @Query("SELECT g FROM Game g WHERE g.week = :week AND " +
            "((g.homeTeam = :homeTeam AND g.awayTeam = :awayTeam) OR " +

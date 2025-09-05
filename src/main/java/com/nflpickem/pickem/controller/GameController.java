@@ -3,6 +3,7 @@ package com.nflpickem.pickem.controller;
 import com.nflpickem.pickem.dto.GameWithOddsDto;
 import com.nflpickem.pickem.model.Game;
 import com.nflpickem.pickem.service.GameService;
+import com.nflpickem.pickem.service.ScoringService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +18,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/games")
 public class GameController {
     private final GameService gameService;
+    private final ScoringService scoringService;
 
-    public GameController(GameService gameService) {
+    public GameController(GameService gameService, ScoringService scoringService) {
         this.gameService = gameService;
+        this.scoringService = scoringService;
     }
 
     @GetMapping
@@ -106,6 +109,17 @@ public class GameController {
             return ResponseEntity.ok(updatedGame);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/update-scores")
+    public ResponseEntity<String> updateScoresFromApi() {
+        try {
+            scoringService.scoreGamesWithRealData();
+            return ResponseEntity.ok("Scores updated successfully from API");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body("Error updating scores: " + e.getMessage());
         }
     }
 
