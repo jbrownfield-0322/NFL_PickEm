@@ -58,17 +58,14 @@ public class ScoringService {
             
             for (GameScoreService.GameScoreResult result : scoreResults) {
                 Game game = result.getGame();
-                System.out.println("Processing result for game: " + game.getAwayTeam() + " @ " + game.getHomeTeam() + 
-                    " (ID: " + game.getId() + ", Already scored: " + game.isScored() + ")");
-                
-                // Allow re-scoring games with real data (overwrite previous random results)
                 String winningTeam = result.getWinningTeam();
                 String previousWinner = game.getWinningTeam();
                 
                 if (!game.isScored()) {
-                    System.out.println("Updating unscored game " + game.getId() + " with winner: " + winningTeam);
+                    System.out.println("Scoring game: " + game.getAwayTeam() + " @ " + game.getHomeTeam() + " - Winner: " + winningTeam);
                 } else {
-                    System.out.println("Re-scoring game " + game.getId() + " - Previous winner: " + previousWinner + ", New winner: " + winningTeam);
+                    System.out.println("Re-scoring game: " + game.getAwayTeam() + " @ " + game.getHomeTeam() + 
+                        " - Previous: " + previousWinner + ", New: " + winningTeam);
                 }
                 
                 game.setWinningTeam(winningTeam);
@@ -77,18 +74,14 @@ public class ScoringService {
 
                 // Score all picks for this game
                 List<Pick> picksForGame = pickRepository.findByGame(game);
-                System.out.println("Found " + picksForGame.size() + " picks for this game");
-                
                 for (Pick pick : picksForGame) {
                     boolean isCorrect = pick.getPickedTeam().equals(winningTeam);
                     pick.setCorrect(isCorrect);
                     pick.setScoredAt(LocalDateTime.now());
                     pickRepository.save(pick);
-                    System.out.println("Updated pick " + pick.getId() + " - Picked: " + pick.getPickedTeam() + 
-                        ", Winner: " + winningTeam + ", Correct: " + isCorrect);
                 }
                 
-                System.out.println("✅ Game " + game.getId() + " scored with real data. " + 
+                System.out.println("✅ Updated " + picksForGame.size() + " picks for " + 
                     game.getAwayTeam() + " " + result.getAwayScore() + " @ " + 
                     game.getHomeTeam() + " " + result.getHomeScore() + " - Winner: " + winningTeam);
             }

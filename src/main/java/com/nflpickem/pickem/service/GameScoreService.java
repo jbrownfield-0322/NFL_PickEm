@@ -67,15 +67,8 @@ public class GameScoreService {
                         continue; // Try next daysFrom value
                     }
                     
-                    // Log ALL games for debugging (not just first 3)
-                    System.out.println("=== ALL GAMES FROM API ===");
-                                    for (int i = 0; i < response.getBody().length; i++) {
-                    ScoreApiResponse game = response.getBody()[i];
-                    System.out.println("Game " + (i+1) + ": " + game.away_team + " @ " + game.home_team + 
-                        " (Status: " + game.completed + ", Scores: " + game.getAwayScore() + "-" + game.getHomeScore() + 
-                        ", Time: " + game.commence_time + ")");
-                }
-                    System.out.println("=== END API GAMES ===");
+                    // Log summary of API results
+                    System.out.println("API returned " + response.getBody().length + " games (daysFrom=" + daysFrom + ")");
                     
                     return processScoreResponse(response.getBody());
                 }
@@ -146,17 +139,13 @@ public class GameScoreService {
                     continue; // Skip games without scores
                 }
                 
-                System.out.println("🎯 PROCESSING: " + response.away_team + " @ " + response.home_team + 
-                    " (Status: " + response.completed + ", Scores: " + awayScore + "-" + homeScore + ")");
-                
                 // Find matching game in our database
                 Game game = findMatchingGame(response);
                 if (game != null) {
                     String winningTeam = determineWinner(response);
                     results.add(new GameScoreResult(game, winningTeam, awayScore, homeScore));
-                    System.out.println("✅ Added game result: " + game.getAwayTeam() + " @ " + game.getHomeTeam() + " - Winner: " + winningTeam);
-                } else {
-                    System.out.println("❌ No matching game found in database for: " + response.away_team + " @ " + response.home_team);
+                    System.out.println("✅ Found completed game: " + response.away_team + " @ " + response.home_team + 
+                        " (" + awayScore + "-" + homeScore + ") - Winner: " + winningTeam);
                 }
                 
             } catch (Exception e) {
@@ -189,22 +178,17 @@ public class GameScoreService {
         
         // Try fuzzy matching for team name variations
         List<Game> allGames = gameRepository.findAll();
-        System.out.println("Checking " + allGames.size() + " games in database for fuzzy match...");
         
         for (Game game : allGames) {
             if (fuzzyTeamMatch(game.getHomeTeam(), response.home_team) && 
                 fuzzyTeamMatch(game.getAwayTeam(), response.away_team)) {
-                System.out.println("Found fuzzy match: " + game.getAwayTeam() + " @ " + game.getHomeTeam());
                 return game;
             }
             if (fuzzyTeamMatch(game.getHomeTeam(), response.away_team) && 
                 fuzzyTeamMatch(game.getAwayTeam(), response.home_team)) {
-                System.out.println("Found reverse fuzzy match: " + game.getAwayTeam() + " @ " + game.getHomeTeam());
                 return game;
             }
         }
-        
-        System.out.println("No match found for: " + response.away_team + " @ " + response.home_team);
         return null;
     }
     
