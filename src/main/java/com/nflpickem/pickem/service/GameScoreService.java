@@ -138,6 +138,10 @@ public class GameScoreService {
                 System.out.println("Processing game: " + response.away_team + " @ " + response.home_team + 
                     " (Status: " + response.completed + ", Scores: " + awayScore + "-" + homeScore + ")");
                 
+                // Debug the completed field
+                System.out.println("DEBUG: completed field = '" + response.completed + "' (type: " + (response.completed != null ? response.completed.getClass().getSimpleName() : "null") + ")");
+                System.out.println("DEBUG: awayScore = " + awayScore + ", homeScore = " + homeScore);
+                
                 // Process games that are completed AND have scores
                 if (!"true".equals(response.completed) && !Boolean.TRUE.equals(response.completed)) {
                     System.out.println("❌ Skipping game - not completed (status: " + response.completed + ")");
@@ -156,10 +160,10 @@ public class GameScoreService {
                 Game game = findMatchingGame(response);
                 if (game != null) {
                     String winningTeam = determineWinner(response);
-                    results.add(new GameScoreResult(game, winningTeam, response.away_score, response.home_score));
-                    System.out.println("Added game result: " + game.getAwayTeam() + " @ " + game.getHomeTeam() + " - Winner: " + winningTeam);
+                    results.add(new GameScoreResult(game, winningTeam, awayScore, homeScore));
+                    System.out.println("✅ Added game result: " + game.getAwayTeam() + " @ " + game.getHomeTeam() + " - Winner: " + winningTeam);
                 } else {
-                    System.out.println("No matching game found in database for: " + response.away_team + " @ " + response.home_team);
+                    System.out.println("❌ No matching game found in database for: " + response.away_team + " @ " + response.home_team);
                 }
                 
             } catch (Exception e) {
