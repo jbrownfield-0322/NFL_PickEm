@@ -146,9 +146,11 @@ public class GameScoreService {
                 
                 // Skip if no scores available
                 if (awayScore == null || homeScore == null) {
-                    System.out.println("Skipping game - no scores available");
+                    System.out.println("Skipping game - no scores available (awayScore=" + awayScore + ", homeScore=" + homeScore + ")");
                     continue;
                 }
+                
+                System.out.println("✅ Processing completed game with scores: " + response.away_team + " @ " + response.home_team + " (" + awayScore + "-" + homeScore + ")");
                 
                 // Find matching game in our database
                 Game game = findMatchingGame(response);
