@@ -133,11 +133,34 @@ public class GameController {
                 return ResponseEntity.ok("API not configured - check ODDS_API_KEY environment variable");
             }
             
+            // Show database games first
+            var allGames = gameService.getAllGames();
+            var dbInfo = "Database has " + allGames.size() + " games. ";
+            if (allGames.size() > 0) {
+                dbInfo += "Sample: " + allGames.get(0).getAwayTeam() + " @ " + allGames.get(0).getHomeTeam();
+            }
+            
             var results = gameScoreService.fetchLiveScores();
-            return ResponseEntity.ok("API test successful. Found " + results.size() + " game results. Check server logs for details.");
+            return ResponseEntity.ok(dbInfo + " API test successful. Found " + results.size() + " game results. Check server logs for details.");
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                 .body("API test failed: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/debug-api")
+    public ResponseEntity<String> debugApiResponse() {
+        try {
+            if (!gameScoreService.isApiConfigured()) {
+                return ResponseEntity.ok("API not configured - check ODDS_API_KEY environment variable");
+            }
+            
+            // Get raw API response for debugging
+            var rawResponse = gameScoreService.getRawApiResponse();
+            return ResponseEntity.ok("Raw API Response:\n" + rawResponse);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body("Debug failed: " + e.getMessage());
         }
     }
 

@@ -61,12 +61,22 @@ public class GameScoreService {
                 
                 if (response.getBody() != null) {
                     System.out.println("API returned " + response.getBody().length + " games (daysFrom=" + daysFrom + ")");
-                    // Log first few games for debugging
-                    for (int i = 0; i < Math.min(3, response.getBody().length); i++) {
-                        ScoreApiResponse game = response.getBody()[i];
-                        System.out.println("Sample game " + (i+1) + ": " + game.away_team + " @ " + game.home_team + 
-                            " (Status: " + game.completed + ", Scores: " + game.away_score + "-" + game.home_score + ")");
+                    
+                    if (response.getBody().length == 0) {
+                        System.out.println("No games returned from API with daysFrom=" + daysFrom);
+                        continue; // Try next daysFrom value
                     }
+                    
+                    // Log ALL games for debugging (not just first 3)
+                    System.out.println("=== ALL GAMES FROM API ===");
+                    for (int i = 0; i < response.getBody().length; i++) {
+                        ScoreApiResponse game = response.getBody()[i];
+                        System.out.println("Game " + (i+1) + ": " + game.away_team + " @ " + game.home_team + 
+                            " (Status: " + game.completed + ", Scores: " + game.away_score + "-" + game.home_score + 
+                            ", Time: " + game.commence_time + ")");
+                    }
+                    System.out.println("=== END API GAMES ===");
+                    
                     return processScoreResponse(response.getBody());
                 }
                 
@@ -159,31 +169,40 @@ public class GameScoreService {
      * Find matching game in database
      */
     private Game findMatchingGame(ScoreApiResponse response) {
+        System.out.println("Looking for match: " + response.away_team + " @ " + response.home_team);
+        
         // Try exact match first
         Optional<Game> exactMatch = gameRepository.findByHomeTeamAndAwayTeam(response.home_team, response.away_team);
         if (exactMatch.isPresent()) {
+            System.out.println("Found exact match: " + exactMatch.get().getAwayTeam() + " @ " + exactMatch.get().getHomeTeam());
             return exactMatch.get();
         }
         
         // Try reverse match
         Optional<Game> reverseMatch = gameRepository.findByHomeTeamAndAwayTeam(response.away_team, response.home_team);
         if (reverseMatch.isPresent()) {
+            System.out.println("Found reverse match: " + reverseMatch.get().getAwayTeam() + " @ " + reverseMatch.get().getHomeTeam());
             return reverseMatch.get();
         }
         
         // Try fuzzy matching for team name variations
         List<Game> allGames = gameRepository.findAll();
+        System.out.println("Checking " + allGames.size() + " games in database for fuzzy match...");
+        
         for (Game game : allGames) {
             if (fuzzyTeamMatch(game.getHomeTeam(), response.home_team) && 
                 fuzzyTeamMatch(game.getAwayTeam(), response.away_team)) {
+                System.out.println("Found fuzzy match: " + game.getAwayTeam() + " @ " + game.getHomeTeam());
                 return game;
             }
             if (fuzzyTeamMatch(game.getHomeTeam(), response.away_team) && 
                 fuzzyTeamMatch(game.getAwayTeam(), response.home_team)) {
+                System.out.println("Found reverse fuzzy match: " + game.getAwayTeam() + " @ " + game.getHomeTeam());
                 return game;
             }
         }
         
+        System.out.println("No match found for: " + response.away_team + " @ " + response.home_team);
         return null;
     }
     
@@ -246,6 +265,108 @@ public class GameScoreService {
      */
     public boolean isApiConfigured() {
         return oddsApiKey != null && !oddsApiKey.trim().isEmpty();
+    }
+    
+    /**
+     * Get raw API response for debugging
+     */
+    public String getRawApiResponse() {
+        if (oddsApiKey == null || oddsApiKey.trim().isEmpty()) {
+            return "API not configured";
+        }
+        
+        StringBuilder response = new StringBuilder();
+        
+        // Try different daysFrom values
+        int[] daysToTry = {3, 2, 1};
+        
+        for (int daysFrom : daysToTry) {
+            try {
+                String url = String.format("%s/sports/americanfootball_nfl/scores/?apiKey=%s&daysFrom=%d&dateFormat=iso", 
+                    oddsApiBaseUrl, oddsApiKey, daysFrom);
+                
+                response.append("=== TRYING daysFrom=").append(daysFrom).append(" ===\n");
+                response.append("URL: ").append(url).append("\n");
+                
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("User-Agent", "NFL-Pickem-App/1.0");
+                HttpEntity<String> entity = new HttpEntity<>(headers);
+                
+                ResponseEntity<ScoreApiResponse[]> apiResponse = restTemplate.exchange(
+                    url, HttpMethod.GET, entity, ScoreApiResponse[].class);
+                
+                if (apiResponse.getBody() != null) {
+                    response.append("SUCCESS! Found ").append(apiResponse.getBody().length).append(" games\n");
+                    
+                    for (int i = 0; i < apiResponse.getBody().length; i++) {
+                        ScoreApiResponse game = apiResponse.getBody()[i];
+                        response.append("Game ").append(i + 1).append(": ")
+                            .append(game.away_team).append(" @ ").append(game.home_team)
+                            .append(" (Status: ").append(game.completed)
+                            .append(", Scores: ").append(game.away_score).append("-").append(game.home_score)
+                            .append(", Time: ").append(game.commence_time).append(")\n");
+                    }
+                    
+                    // Also show database games for comparison
+                    response.append("\n=== DATABASE GAMES ===\n");
+                    List<Game> dbGames = gameRepository.findAll();
+                    response.append("Database has ").append(dbGames.size()).append(" games:\n");
+                    for (int i = 0; i < Math.min(10, dbGames.size()); i++) {
+                        Game game = dbGames.get(i);
+                        response.append("DB Game ").append(i + 1).append(": ")
+                            .append(game.getAwayTeam()).append(" @ ").append(game.getHomeTeam())
+                            .append(" (Week: ").append(game.getWeek())
+                            .append(", Scored: ").append(game.isScored()).append(")\n");
+                    }
+                    
+                    return response.toString();
+                } else {
+                    response.append("No response body\n");
+                }
+                
+            } catch (HttpClientErrorException e) {
+                if (e.getStatusCode().value() == 422) {
+                    response.append("daysFrom=").append(daysFrom).append(" not allowed\n");
+                } else {
+                    response.append("Error: ").append(e.getStatusCode()).append(" - ").append(e.getResponseBodyAsString()).append("\n");
+                }
+            } catch (Exception e) {
+                response.append("Exception: ").append(e.getMessage()).append("\n");
+            }
+        }
+        
+        // Try without daysFrom parameter
+        try {
+            String url = String.format("%s/sports/americanfootball_nfl/scores/?apiKey=%s&dateFormat=iso", 
+                oddsApiBaseUrl, oddsApiKey);
+            
+            response.append("=== TRYING WITHOUT daysFrom ===\n");
+            response.append("URL: ").append(url).append("\n");
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("User-Agent", "NFL-Pickem-App/1.0");
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            
+            ResponseEntity<ScoreApiResponse[]> apiResponse = restTemplate.exchange(
+                url, HttpMethod.GET, entity, ScoreApiResponse[].class);
+            
+            if (apiResponse.getBody() != null) {
+                response.append("SUCCESS! Found ").append(apiResponse.getBody().length).append(" games (live/upcoming)\n");
+                
+                for (int i = 0; i < apiResponse.getBody().length; i++) {
+                    ScoreApiResponse game = apiResponse.getBody()[i];
+                    response.append("Game ").append(i + 1).append(": ")
+                        .append(game.away_team).append(" @ ").append(game.home_team)
+                        .append(" (Status: ").append(game.completed)
+                        .append(", Scores: ").append(game.away_score).append("-").append(game.home_score)
+                        .append(", Time: ").append(game.commence_time).append(")\n");
+                }
+            }
+        } catch (Exception e) {
+            response.append("Final attempt failed: ").append(e.getMessage()).append("\n");
+        }
+        
+        return response.toString();
     }
     
     /**
