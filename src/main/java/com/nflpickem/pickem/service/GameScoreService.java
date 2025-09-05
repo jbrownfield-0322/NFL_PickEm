@@ -496,30 +496,46 @@ public class GameScoreService {
         // Helper method to get scores from the scores array
         public Integer getAwayScore() {
             if (scores != null) {
+                System.out.println("DEBUG: Looking for away team '" + away_team + "' in scores array:");
                 for (ScoreEntry score : scores) {
+                    System.out.println("  - Found score entry: name='" + score.name + "', score='" + score.score + "'");
                     if (score.name.equals(away_team)) {
                         try {
-                            return Integer.parseInt(score.score);
+                            Integer parsedScore = Integer.parseInt(score.score);
+                            System.out.println("  - MATCH! Parsed away score: " + parsedScore);
+                            return parsedScore;
                         } catch (NumberFormatException e) {
+                            System.out.println("  - MATCH but failed to parse score: " + score.score);
                             return null;
                         }
                     }
                 }
+                System.out.println("  - No match found for away team '" + away_team + "'");
+            } else {
+                System.out.println("DEBUG: scores array is null, using fallback away_score: " + away_score);
             }
             return away_score; // Fallback to old format
         }
         
         public Integer getHomeScore() {
             if (scores != null) {
+                System.out.println("DEBUG: Looking for home team '" + home_team + "' in scores array:");
                 for (ScoreEntry score : scores) {
+                    System.out.println("  - Found score entry: name='" + score.name + "', score='" + score.score + "'");
                     if (score.name.equals(home_team)) {
                         try {
-                            return Integer.parseInt(score.score);
+                            Integer parsedScore = Integer.parseInt(score.score);
+                            System.out.println("  - MATCH! Parsed home score: " + parsedScore);
+                            return parsedScore;
                         } catch (NumberFormatException e) {
+                            System.out.println("  - MATCH but failed to parse score: " + score.score);
                             return null;
                         }
                     }
                 }
+                System.out.println("  - No match found for home team '" + home_team + "'");
+            } else {
+                System.out.println("DEBUG: scores array is null, using fallback home_score: " + home_score);
             }
             return home_score; // Fallback to old format
         }
