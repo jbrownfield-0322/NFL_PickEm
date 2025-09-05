@@ -42,12 +42,57 @@ public class GameScoreService {
             throw new IllegalStateException("ODDS_API_KEY is not configured");
         }
         
+        // Try different daysFrom values (3, 2, 1) in case of API restrictions
+        int[] daysToTry = {3, 2, 1};
+        
+        for (int daysFrom : daysToTry) {
+            try {
+                String url = String.format("%s/sports/americanfootball_nfl/scores/?apiKey=%s&daysFrom=%d&dateFormat=iso", 
+                    oddsApiBaseUrl, oddsApiKey, daysFrom);
+                
+                System.out.println("Fetching live NFL scores from: " + url);
+                
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("User-Agent", "NFL-Pickem-App/1.0");
+                HttpEntity<String> entity = new HttpEntity<>(headers);
+                
+                ResponseEntity<ScoreApiResponse[]> response = restTemplate.exchange(
+                    url, HttpMethod.GET, entity, ScoreApiResponse[].class);
+                
+                if (response.getBody() != null) {
+                    System.out.println("API returned " + response.getBody().length + " games (daysFrom=" + daysFrom + ")");
+                    // Log first few games for debugging
+                    for (int i = 0; i < Math.min(3, response.getBody().length); i++) {
+                        ScoreApiResponse game = response.getBody()[i];
+                        System.out.println("Sample game " + (i+1) + ": " + game.away_team + " @ " + game.home_team + 
+                            " (Status: " + game.completed + ", Scores: " + game.away_score + "-" + game.home_score + ")");
+                    }
+                    return processScoreResponse(response.getBody());
+                }
+                
+            } catch (HttpClientErrorException e) {
+                if (e.getStatusCode().value() == 422) {
+                    System.err.println("daysFrom=" + daysFrom + " not allowed, trying next value...");
+                    continue; // Try next daysFrom value
+                } else {
+                    System.err.println("Error fetching scores from API: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+                    throw new RuntimeException("Failed to fetch scores from API: " + e.getMessage());
+                }
+            } catch (ResourceAccessException e) {
+                System.err.println("Network error fetching scores: " + e.getMessage());
+                throw new RuntimeException("Network error fetching scores: " + e.getMessage());
+            } catch (Exception e) {
+                System.err.println("Unexpected error fetching scores: " + e.getMessage());
+                throw new RuntimeException("Unexpected error fetching scores: " + e.getMessage());
+            }
+        }
+        
+        // If all daysFrom values failed, try without the parameter (live/upcoming only)
         try {
-            // Fetch scores from The Odds API - look back 7 days to catch any missed games
-            String url = String.format("%s/sports/americanfootball_nfl/scores/?apiKey=%s&daysFrom=7&dateFormat=iso", 
+            String url = String.format("%s/sports/americanfootball_nfl/scores/?apiKey=%s&dateFormat=iso", 
                 oddsApiBaseUrl, oddsApiKey);
             
-            System.out.println("Fetching live NFL scores from: " + url);
+            System.out.println("Trying without daysFrom parameter: " + url);
             
             HttpHeaders headers = new HttpHeaders();
             headers.set("User-Agent", "NFL-Pickem-App/1.0");
@@ -57,25 +102,13 @@ public class GameScoreService {
                 url, HttpMethod.GET, entity, ScoreApiResponse[].class);
             
             if (response.getBody() != null) {
-                System.out.println("API returned " + response.getBody().length + " games");
-                // Log first few games for debugging
-                for (int i = 0; i < Math.min(3, response.getBody().length); i++) {
-                    ScoreApiResponse game = response.getBody()[i];
-                    System.out.println("Sample game " + (i+1) + ": " + game.away_team + " @ " + game.home_team + 
-                        " (Status: " + game.completed + ", Scores: " + game.away_score + "-" + game.home_score + ")");
-                }
+                System.out.println("API returned " + response.getBody().length + " games (live/upcoming only)");
                 return processScoreResponse(response.getBody());
             }
             
-        } catch (HttpClientErrorException e) {
-            System.err.println("Error fetching scores from API: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
-            throw new RuntimeException("Failed to fetch scores from API: " + e.getMessage());
-        } catch (ResourceAccessException e) {
-            System.err.println("Network error fetching scores: " + e.getMessage());
-            throw new RuntimeException("Network error fetching scores: " + e.getMessage());
         } catch (Exception e) {
-            System.err.println("Unexpected error fetching scores: " + e.getMessage());
-            throw new RuntimeException("Unexpected error fetching scores: " + e.getMessage());
+            System.err.println("Final attempt failed: " + e.getMessage());
+            throw new RuntimeException("Failed to fetch scores from API after all attempts: " + e.getMessage());
         }
         
         return new ArrayList<>();
