@@ -135,26 +135,17 @@ public class GameScoreService {
                 Integer awayScore = response.getAwayScore();
                 Integer homeScore = response.getHomeScore();
                 
-                System.out.println("Processing game: " + response.away_team + " @ " + response.home_team + 
-                    " (Status: " + response.completed + ", Scores: " + awayScore + "-" + homeScore + ")");
-                
-                // Debug the completed field
-                System.out.println("DEBUG: completed field = '" + response.completed + "' (type: " + (response.completed != null ? response.completed.getClass().getSimpleName() : "null") + ")");
-                System.out.println("DEBUG: awayScore = " + awayScore + ", homeScore = " + homeScore);
-                
-                // Process games that are completed AND have scores
+                // Only process games that are completed AND have scores
                 if (!"true".equals(response.completed) && !Boolean.TRUE.equals(response.completed)) {
-                    System.out.println("❌ Skipping game - not completed (status: " + response.completed + ")");
-                    continue;
+                    continue; // Skip incomplete games
                 }
                 
-                // Skip if no scores available
                 if (awayScore == null || homeScore == null) {
-                    System.out.println("❌ Skipping game - no scores available (awayScore=" + awayScore + ", homeScore=" + homeScore + ")");
-                    continue;
+                    continue; // Skip games without scores
                 }
                 
-                System.out.println("✅ Processing completed game with scores: " + response.away_team + " @ " + response.home_team + " (" + awayScore + "-" + homeScore + ")");
+                System.out.println("🎯 PROCESSING: " + response.away_team + " @ " + response.home_team + 
+                    " (Status: " + response.completed + ", Scores: " + awayScore + "-" + homeScore + ")");
                 
                 // Find matching game in our database
                 Game game = findMatchingGame(response);
@@ -502,46 +493,30 @@ public class GameScoreService {
         // Helper method to get scores from the scores array
         public Integer getAwayScore() {
             if (scores != null) {
-                System.out.println("DEBUG: Looking for away team '" + away_team + "' in scores array:");
                 for (ScoreEntry score : scores) {
-                    System.out.println("  - Found score entry: name='" + score.name + "', score='" + score.score + "'");
                     if (score.name.equals(away_team)) {
                         try {
-                            Integer parsedScore = Integer.parseInt(score.score);
-                            System.out.println("  - MATCH! Parsed away score: " + parsedScore);
-                            return parsedScore;
+                            return Integer.parseInt(score.score);
                         } catch (NumberFormatException e) {
-                            System.out.println("  - MATCH but failed to parse score: " + score.score);
                             return null;
                         }
                     }
                 }
-                System.out.println("  - No match found for away team '" + away_team + "'");
-            } else {
-                System.out.println("DEBUG: scores array is null, using fallback away_score: " + away_score);
             }
             return away_score; // Fallback to old format
         }
         
         public Integer getHomeScore() {
             if (scores != null) {
-                System.out.println("DEBUG: Looking for home team '" + home_team + "' in scores array:");
                 for (ScoreEntry score : scores) {
-                    System.out.println("  - Found score entry: name='" + score.name + "', score='" + score.score + "'");
                     if (score.name.equals(home_team)) {
                         try {
-                            Integer parsedScore = Integer.parseInt(score.score);
-                            System.out.println("  - MATCH! Parsed home score: " + parsedScore);
-                            return parsedScore;
+                            return Integer.parseInt(score.score);
                         } catch (NumberFormatException e) {
-                            System.out.println("  - MATCH but failed to parse score: " + score.score);
                             return null;
                         }
                     }
                 }
-                System.out.println("  - No match found for home team '" + home_team + "'");
-            } else {
-                System.out.println("DEBUG: scores array is null, using fallback home_score: " + home_score);
             }
             return home_score; // Fallback to old format
         }
