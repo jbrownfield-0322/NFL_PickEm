@@ -61,34 +61,36 @@ public class ScoringService {
                 System.out.println("Processing result for game: " + game.getAwayTeam() + " @ " + game.getHomeTeam() + 
                     " (ID: " + game.getId() + ", Already scored: " + game.isScored() + ")");
                 
-                // Only score games that haven't been scored yet
+                // Allow re-scoring games with real data (overwrite previous random results)
+                String winningTeam = result.getWinningTeam();
+                String previousWinner = game.getWinningTeam();
+                
                 if (!game.isScored()) {
-                    String winningTeam = result.getWinningTeam();
-                    System.out.println("Updating game " + game.getId() + " with winner: " + winningTeam);
-                    
-                    game.setWinningTeam(winningTeam);
-                    game.setScored(true);
-                    gameRepository.save(game);
-
-                    // Score all picks for this game
-                    List<Pick> picksForGame = pickRepository.findByGame(game);
-                    System.out.println("Found " + picksForGame.size() + " picks for this game");
-                    
-                    for (Pick pick : picksForGame) {
-                        boolean isCorrect = pick.getPickedTeam().equals(winningTeam);
-                        pick.setCorrect(isCorrect);
-                        pick.setScoredAt(LocalDateTime.now());
-                        pickRepository.save(pick);
-                        System.out.println("Updated pick " + pick.getId() + " - Picked: " + pick.getPickedTeam() + 
-                            ", Winner: " + winningTeam + ", Correct: " + isCorrect);
-                    }
-                    
-                    System.out.println("✅ Game " + game.getId() + " scored with real data. " + 
-                        game.getAwayTeam() + " " + result.getAwayScore() + " @ " + 
-                        game.getHomeTeam() + " " + result.getHomeScore() + " - Winner: " + winningTeam);
+                    System.out.println("Updating unscored game " + game.getId() + " with winner: " + winningTeam);
                 } else {
-                    System.out.println("Game " + game.getId() + " already scored, skipping");
+                    System.out.println("Re-scoring game " + game.getId() + " - Previous winner: " + previousWinner + ", New winner: " + winningTeam);
                 }
+                
+                game.setWinningTeam(winningTeam);
+                game.setScored(true);
+                gameRepository.save(game);
+
+                // Score all picks for this game
+                List<Pick> picksForGame = pickRepository.findByGame(game);
+                System.out.println("Found " + picksForGame.size() + " picks for this game");
+                
+                for (Pick pick : picksForGame) {
+                    boolean isCorrect = pick.getPickedTeam().equals(winningTeam);
+                    pick.setCorrect(isCorrect);
+                    pick.setScoredAt(LocalDateTime.now());
+                    pickRepository.save(pick);
+                    System.out.println("Updated pick " + pick.getId() + " - Picked: " + pick.getPickedTeam() + 
+                        ", Winner: " + winningTeam + ", Correct: " + isCorrect);
+                }
+                
+                System.out.println("✅ Game " + game.getId() + " scored with real data. " + 
+                    game.getAwayTeam() + " " + result.getAwayScore() + " @ " + 
+                    game.getHomeTeam() + " " + result.getHomeScore() + " - Winner: " + winningTeam);
             }
             
         } catch (Exception e) {
