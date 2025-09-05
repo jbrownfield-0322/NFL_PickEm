@@ -164,6 +164,21 @@ public class GameController {
         }
     }
 
+    @GetMapping("/test-historical")
+    public ResponseEntity<String> testHistoricalScores() {
+        try {
+            if (!gameScoreService.isApiConfigured()) {
+                return ResponseEntity.ok("API not configured - check ODDS_API_KEY environment variable");
+            }
+            
+            var historicalResponse = gameScoreService.getHistoricalScores();
+            return ResponseEntity.ok("Historical Scores Test:\n" + historicalResponse);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body("Historical test failed: " + e.getMessage());
+        }
+    }
+
     private Instant parseKickoffTime(String kickoffTimeStr) {
         try {
             // Try parsing as ISO format first

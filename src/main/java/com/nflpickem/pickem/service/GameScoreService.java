@@ -69,12 +69,12 @@ public class GameScoreService {
                     
                     // Log ALL games for debugging (not just first 3)
                     System.out.println("=== ALL GAMES FROM API ===");
-                    for (int i = 0; i < response.getBody().length; i++) {
-                        ScoreApiResponse game = response.getBody()[i];
-                        System.out.println("Game " + (i+1) + ": " + game.away_team + " @ " + game.home_team + 
-                            " (Status: " + game.completed + ", Scores: " + game.away_score + "-" + game.home_score + 
-                            ", Time: " + game.commence_time + ")");
-                    }
+                                    for (int i = 0; i < response.getBody().length; i++) {
+                    ScoreApiResponse game = response.getBody()[i];
+                    System.out.println("Game " + (i+1) + ": " + game.away_team + " @ " + game.home_team + 
+                        " (Status: " + game.completed + ", Scores: " + game.getAwayScore() + "-" + game.getHomeScore() + 
+                        ", Time: " + game.commence_time + ")");
+                }
                     System.out.println("=== END API GAMES ===");
                     
                     return processScoreResponse(response.getBody());
@@ -132,17 +132,20 @@ public class GameScoreService {
         
         for (ScoreApiResponse response : responses) {
             try {
-                System.out.println("Processing game: " + response.away_team + " @ " + response.home_team + 
-                    " (Status: " + response.completed + ", Scores: " + response.away_score + "-" + response.home_score + ")");
+                Integer awayScore = response.getAwayScore();
+                Integer homeScore = response.getHomeScore();
                 
-                // Process games that are final OR have scores (some APIs don't mark as final immediately)
-                if (!"final".equals(response.completed) && (response.away_score == null || response.home_score == null)) {
-                    System.out.println("Skipping game - not final and no scores available");
+                System.out.println("Processing game: " + response.away_team + " @ " + response.home_team + 
+                    " (Status: " + response.completed + ", Scores: " + awayScore + "-" + homeScore + ")");
+                
+                // Process games that are completed AND have scores
+                if (!"true".equals(response.completed) && !Boolean.TRUE.equals(response.completed)) {
+                    System.out.println("Skipping game - not completed");
                     continue;
                 }
                 
                 // Skip if no scores available
-                if (response.away_score == null || response.home_score == null) {
+                if (awayScore == null || homeScore == null) {
                     System.out.println("Skipping game - no scores available");
                     continue;
                 }
@@ -251,9 +254,12 @@ public class GameScoreService {
      * Determine winner from score response
      */
     private String determineWinner(ScoreApiResponse response) {
-        if (response.away_score > response.home_score) {
+        Integer awayScore = response.getAwayScore();
+        Integer homeScore = response.getHomeScore();
+        
+        if (awayScore > homeScore) {
             return response.away_team;
-        } else if (response.home_score > response.away_score) {
+        } else if (homeScore > awayScore) {
             return response.home_team;
         } else {
             return "TIE";
@@ -267,6 +273,65 @@ public class GameScoreService {
         return oddsApiKey != null && !oddsApiKey.trim().isEmpty();
     }
     
+    /**
+     * Try to get historical scores from a different endpoint
+     */
+    public String getHistoricalScores() {
+        if (oddsApiKey == null || oddsApiKey.trim().isEmpty()) {
+            return "API not configured";
+        }
+        
+        StringBuilder response = new StringBuilder();
+        
+        // Try the historical scores endpoint
+        try {
+            String url = String.format("%s/sports/americanfootball_nfl/scores/?apiKey=%s&daysFrom=1&dateFormat=iso", 
+                oddsApiBaseUrl, oddsApiKey);
+            
+            response.append("=== TRYING HISTORICAL SCORES ===\n");
+            response.append("URL: ").append(url).append("\n");
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("User-Agent", "NFL-Pickem-App/1.0");
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            
+            ResponseEntity<ScoreApiResponse[]> apiResponse = restTemplate.exchange(
+                url, HttpMethod.GET, entity, ScoreApiResponse[].class);
+            
+            if (apiResponse.getBody() != null) {
+                response.append("Found ").append(apiResponse.getBody().length).append(" games\n");
+                
+                // Look for games with actual scores
+                int gamesWithScores = 0;
+                for (ScoreApiResponse game : apiResponse.getBody()) {
+                    Integer awayScore = game.getAwayScore();
+                    Integer homeScore = game.getHomeScore();
+                    if (awayScore != null && homeScore != null) {
+                        gamesWithScores++;
+                        response.append("Game with scores: ").append(game.away_team).append(" @ ").append(game.home_team)
+                            .append(" (Status: ").append(game.completed)
+                            .append(", Scores: ").append(awayScore).append("-").append(homeScore)
+                            .append(", Time: ").append(game.commence_time).append(")\n");
+                    }
+                }
+                
+                response.append("Total games with scores: ").append(gamesWithScores).append("\n");
+                
+                if (gamesWithScores == 0) {
+                    response.append("No games with scores found. This might be because:\n");
+                    response.append("1. It's off-season and no recent games\n");
+                    response.append("2. The API doesn't have historical scores for this period\n");
+                    response.append("3. Games haven't been marked as final yet\n");
+                }
+            }
+            
+        } catch (Exception e) {
+            response.append("Error: ").append(e.getMessage()).append("\n");
+        }
+        
+        return response.toString();
+    }
+
     /**
      * Get raw API response for debugging
      */
@@ -358,7 +423,7 @@ public class GameScoreService {
                     response.append("Game ").append(i + 1).append(": ")
                         .append(game.away_team).append(" @ ").append(game.home_team)
                         .append(" (Status: ").append(game.completed)
-                        .append(", Scores: ").append(game.away_score).append("-").append(game.home_score)
+                        .append(", Scores: ").append(game.getAwayScore()).append("-").append(game.getHomeScore())
                         .append(", Time: ").append(game.commence_time).append(")\n");
                 }
             }
@@ -425,6 +490,44 @@ public class GameScoreService {
         public Integer home_score;
         public Integer away_score;
         public String completed;
+        public List<ScoreEntry> scores;
+        public String last_update;
+        
+        // Helper method to get scores from the scores array
+        public Integer getAwayScore() {
+            if (scores != null) {
+                for (ScoreEntry score : scores) {
+                    if (score.name.equals(away_team)) {
+                        try {
+                            return Integer.parseInt(score.score);
+                        } catch (NumberFormatException e) {
+                            return null;
+                        }
+                    }
+                }
+            }
+            return away_score; // Fallback to old format
+        }
+        
+        public Integer getHomeScore() {
+            if (scores != null) {
+                for (ScoreEntry score : scores) {
+                    if (score.name.equals(home_team)) {
+                        try {
+                            return Integer.parseInt(score.score);
+                        } catch (NumberFormatException e) {
+                            return null;
+                        }
+                    }
+                }
+            }
+            return home_score; // Fallback to old format
+        }
+    }
+    
+    public static class ScoreEntry {
+        public String name;
+        public String score;
     }
     
     public static class GameScoreResult {
