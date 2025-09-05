@@ -12,6 +12,8 @@ function Leaderboard() {
   const [selectedWeek, setSelectedWeek] = useState(1);
   const [pickComparison, setPickComparison] = useState([]);
   const [showPickComparison, setShowPickComparison] = useState(false);
+  const [isScrollable, setIsScrollable] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const { user } = useAuth();
 
   const API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8080');
@@ -87,6 +89,45 @@ function Leaderboard() {
 
     fetchLeaderboards();
   }, [user, selectedWeek, selectedLeagueId, API_BASE]);
+
+  // Handle scrollable detection for mobile
+  useEffect(() => {
+    const checkScrollable = () => {
+      const scrollContainer = document.querySelector('.pick-comparison-scroll');
+      if (scrollContainer) {
+        const isScrollable = scrollContainer.scrollWidth > scrollContainer.clientWidth;
+        setIsScrollable(isScrollable);
+        
+        // Add/remove scrollable class for styling
+        if (isScrollable) {
+          scrollContainer.classList.add('scrollable');
+        } else {
+          scrollContainer.classList.remove('scrollable');
+        }
+      }
+    };
+
+    // Check on mount and when comparison is shown
+    if (showPickComparison) {
+      // Use setTimeout to ensure DOM is updated
+      setTimeout(checkScrollable, 100);
+    }
+
+    // Check on window resize
+    window.addEventListener('resize', checkScrollable);
+    return () => window.removeEventListener('resize', checkScrollable);
+  }, [showPickComparison, pickComparison]);
+
+  // Handle mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   if (loading) {
     return <div>Loading leaderboards...</div>;
@@ -164,10 +205,13 @@ function Leaderboard() {
           <h3>Pick Comparison - Week {selectedWeek}</h3>
           <p className="pick-comparison-description">
             Compare picks across all players in your league. Each column shows a player's picks, each row shows a game.
+            {isMobile && " Swipe horizontally to see all players."}
           </p>
           <button 
             onClick={() => setShowPickComparison(!showPickComparison)}
             className="toggle-button"
+            aria-expanded={showPickComparison}
+            aria-controls="pick-comparison-table"
           >
             {showPickComparison ? 'Hide Pick Comparison' : 'Show Pick Comparison'}
           </button>
@@ -176,7 +220,7 @@ function Leaderboard() {
         {showPickComparison && (
           <div className="pick-comparison-container">
             <div className="pick-comparison-scroll">
-              <table className="pick-comparison-table">
+              <table className="pick-comparison-table" id="pick-comparison-table">
                 <thead>
                   <tr>
                     <th className="game-header">
