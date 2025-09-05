@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,34 +26,34 @@ public class LeagueController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<LeagueResponse> createLeague(@RequestBody CreateLeagueRequest request) {
+    public ResponseEntity<?> createLeague(@RequestBody CreateLeagueRequest request) {
         try {
             User currentUser = AuthContext.getCurrentUser();
             if (currentUser == null) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(Map.of("message", "User not authenticated"), HttpStatus.UNAUTHORIZED);
             }
             
             League league = leagueService.createLeague(request.getLeagueName(), currentUser.getId());
             LeagueResponse leagueResponse = new LeagueResponse(league);
             return new ResponseEntity<>(leagueResponse, HttpStatus.CREATED);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Map.of("message", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/join")
-    public ResponseEntity<LeagueResponse> joinLeague(@RequestBody JoinLeagueRequest request) {
+    public ResponseEntity<?> joinLeague(@RequestBody JoinLeagueRequest request) {
         try {
             User currentUser = AuthContext.getCurrentUser();
             if (currentUser == null) {
-                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(Map.of("message", "User not authenticated"), HttpStatus.UNAUTHORIZED);
             }
             
             League league = leagueService.joinLeague(request.getJoinCode(), currentUser.getId());
             LeagueResponse leagueResponse = new LeagueResponse(league);
             return new ResponseEntity<>(leagueResponse, HttpStatus.OK);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Map.of("message", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 

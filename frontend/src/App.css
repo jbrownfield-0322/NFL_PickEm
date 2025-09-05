@@ -994,122 +994,557 @@ table tbody tr:hover {
   background-color: #fff8e1;
 }
 
-/* New Pick Comparison Table Styles */
+/* Enhanced Pick Comparison Table Styles */
+.pick-comparison-header {
+  margin-bottom: 20px;
+}
+
+.pick-comparison-description {
+  color: #6c757d;
+  font-size: 14px;
+  margin: 8px 0 15px 0;
+  font-style: italic;
+}
+
+/* Mobile-specific header improvements */
+@media (max-width: 768px) {
+  .pick-comparison-header {
+    margin-bottom: 15px;
+    padding: 0 10px;
+  }
+  
+  .pick-comparison-description {
+    font-size: 13px;
+    margin: 6px 0 12px 0;
+    line-height: 1.4;
+  }
+  
+  .pick-comparison-header h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+}
+
 .pick-comparison-container {
-  overflow-x: auto;
   margin-top: 15px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.pick-comparison-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+  position: relative;
+}
+
+/* Add scroll indicators for mobile */
+.pick-comparison-scroll::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 100%;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.1), transparent);
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.pick-comparison-scroll.scrollable::before {
+  opacity: 1;
 }
 
 .pick-comparison-table {
   width: 100%;
+  min-width: 800px;
   border-collapse: collapse;
   background-color: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
 }
 
 .pick-comparison-table th,
 .pick-comparison-table td {
-  padding: 12px 8px;
+  padding: 16px 12px;
   text-align: center;
   border-bottom: 1px solid #e9ecef;
   vertical-align: middle;
+  position: relative;
 }
 
 .pick-comparison-table th {
-  background-color: #f8f9fa;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   font-weight: 600;
   color: #495057;
   border-bottom: 2px solid #dee2e6;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.header-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.header-subtitle {
+  font-size: 11px;
+  color: #6c757d;
+  font-weight: 400;
 }
 
 .game-header {
   text-align: left !important;
-  min-width: 200px;
+  min-width: 220px;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%) !important;
 }
 
 .player-header {
-  min-width: 120px;
-  background-color: #e3f2fd !important;
+  min-width: 140px;
+  background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%) !important;
 }
 
 .player-header.current-user {
-  background-color: #e8f5e8 !important;
-  color: #2e7d32 !important;
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%) !important;
+  color: white !important;
   font-weight: bold;
 }
 
+.player-header.current-user .header-subtitle {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
 .result-header {
-  min-width: 120px;
-  background-color: #fff3e0 !important;
+  min-width: 140px;
+  background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%) !important;
 }
 
 .game-info {
   text-align: left !important;
+  background-color: #f8f9fa;
+}
+
+.game-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .game-teams {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   font-weight: 600;
   color: #2c3e50;
-  margin-bottom: 4px;
 }
 
-.game-time {
-  font-size: 12px;
+.away-team, .home-team {
+  font-size: 13px;
+}
+
+.vs {
+  font-size: 10px;
   color: #6c757d;
+  font-weight: 400;
+}
+
+.game-status {
+  font-size: 11px;
+}
+
+.status-final {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.status-pending {
+  color: #6c757d;
+  font-style: italic;
 }
 
 .pick-cell {
   background-color: #f8f9fa;
+  transition: background-color 0.2s ease;
+}
+
+.pick-cell:hover {
+  background-color: #e9ecef;
 }
 
 .pick-cell.current-user-pick {
-  background-color: #f1f8e9;
-  border-left: 3px solid #4caf50;
-  border-right: 3px solid #4caf50;
+  background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 100%);
+  border-left: 4px solid #4caf50;
+  border-right: 4px solid #4caf50;
+  position: relative;
+}
+
+.pick-cell.current-user-pick::before {
+  content: "YOU";
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 8px;
+  color: #4caf50;
+  font-weight: bold;
+  background: white;
+  padding: 1px 3px;
+  border-radius: 2px;
+}
+
+.pick-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
 .pick-display {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 8px 12px;
   border-radius: 20px;
   font-weight: 600;
-  font-size: 14px;
-  min-width: 60px;
+  font-size: 13px;
+  min-width: 70px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.pick-display.pending-pick {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
 }
 
 .pick-display.correct-pick {
   background-color: #d4edda;
   color: #155724;
   border: 1px solid #c3e6cb;
+  box-shadow: 0 2px 4px rgba(21, 87, 36, 0.2);
 }
 
 .pick-display.incorrect-pick {
   background-color: #f8d7da;
   color: #721c24;
   border: 1px solid #f5c6cb;
+  box-shadow: 0 2px 4px rgba(114, 28, 36, 0.2);
 }
 
-.pick-display.pending-pick {
-  background-color: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffeaa7;
+.pick-status {
+  font-size: 16px;
+  font-weight: bold;
 }
 
-/* Responsive design for mobile */
+.pick-status.correct {
+  color: #28a745;
+}
+
+.pick-status.incorrect {
+  color: #dc3545;
+}
+
+.no-pick {
+  color: #6c757d;
+  font-style: italic;
+  font-size: 12px;
+}
+
+.result-cell {
+  background-color: #fff8e1;
+  font-weight: 600;
+}
+
+.result-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.game-result {
+  color: #2c3e50;
+  font-size: 13px;
+}
+
+.result-label {
+  font-size: 10px;
+  color: #6c757d;
+  font-weight: 400;
+}
+
+.pending {
+  color: #6c757d;
+  font-style: italic;
+  font-size: 12px;
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
-  .pick-comparison-table {
+  .pick-comparison-table th,
+  .pick-comparison-table td {
+    padding: 12px 8px;
     font-size: 12px;
+  }
+  
+  .pick-display {
+    padding: 6px 8px;
+    font-size: 11px;
+    min-width: 50px;
+  }
+  
+  .game-header {
+    min-width: 180px;
+  }
+  
+  .player-header {
+    min-width: 100px;
+  }
+}
+
+/* Spread column styling */
+.spread-cell {
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: center;
+  min-width: 120px;
+}
+
+/* Enhanced Mobile Pick Comparison Table */
+@media (max-width: 768px) {
+  .pick-comparison-container {
+    margin: 10px -15px; /* Extend to screen edges */
+    border-radius: 0;
+  }
+  
+  .pick-comparison-scroll {
+    /* Enhanced scrolling with momentum */
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  .pick-comparison-table {
+    font-size: 11px;
+    min-width: 600px; /* Reduced minimum width */
   }
   
   .pick-comparison-table th,
   .pick-comparison-table td {
-    padding: 8px 4px;
+    padding: 6px 3px;
+    font-size: 11px;
   }
   
   .game-header {
-    min-width: 150px;
+    min-width: 120px;
+    position: sticky;
+    left: 0;
+    z-index: 15;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%) !important;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .player-header {
+    min-width: 70px;
+    font-size: 10px;
+  }
+  
+  .result-header {
+    min-width: 70px;
+  }
+  
+  .header-title {
+    font-size: 10px;
+  }
+  
+  .header-subtitle {
+    font-size: 8px;
+  }
+  
+  .pick-display {
+    padding: 3px 6px;
+    font-size: 10px;
+    min-width: 40px;
+    border-radius: 12px;
+  }
+  
+  .game-info {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    background-color: #f8f9fa;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .game-teams {
+    font-size: 10px;
+  }
+  
+  .away-team, .home-team {
+    font-size: 10px;
+  }
+  
+  .vs {
+    font-size: 8px;
+  }
+  
+  .game-status {
+    font-size: 8px;
+  }
+  
+  .pick-status {
+    font-size: 12px;
+  }
+  
+  .no-pick {
+    font-size: 9px;
+  }
+  
+  .result-container {
+    font-size: 10px;
+  }
+  
+  .game-result {
+    font-size: 10px;
+  }
+  
+  .result-label {
+    font-size: 8px;
+  }
+  
+  .pending {
+    font-size: 9px;
+  }
+}
+
+/* Very Small Mobile Screens */
+@media (max-width: 480px) {
+  .pick-comparison-header {
+    margin-bottom: 15px;
+  }
+  
+  .pick-comparison-description {
+    font-size: 12px;
+    margin: 5px 0 10px 0;
+  }
+  
+  .toggle-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  
+  .pick-comparison-container {
+    margin: 10px -10px;
+  }
+  
+  .pick-comparison-table {
+    font-size: 10px;
+    min-width: 500px;
+  }
+  
+  .pick-comparison-table th,
+  .pick-comparison-table td {
+    padding: 4px 2px;
+    font-size: 10px;
+  }
+  
+  .game-header {
+    min-width: 100px;
+  }
+  
+  .player-header {
+    min-width: 60px;
+  }
+  
+  .result-header {
+    min-width: 60px;
+  }
+  
+  .header-title {
+    font-size: 9px;
+  }
+  
+  .header-subtitle {
+    font-size: 7px;
+  }
+  
+  .pick-display {
+    padding: 2px 4px;
+    font-size: 9px;
+    min-width: 35px;
+    border-radius: 8px;
+  }
+  
+  .game-teams {
+    font-size: 9px;
+  }
+  
+  .away-team, .home-team {
+    font-size: 9px;
+  }
+  
+  .vs {
+    font-size: 7px;
+  }
+  
+  .game-status {
+    font-size: 7px;
+  }
+  
+  .pick-status {
+    font-size: 10px;
+  }
+  
+  .no-pick {
+    font-size: 8px;
+  }
+  
+  .result-container {
+    font-size: 9px;
+  }
+  
+  .game-result {
+    font-size: 9px;
+  }
+  
+  .result-label {
+    font-size: 7px;
+  }
+  
+  .pending {
+    font-size: 8px;
+  }
+  
+  /* Add visual indicators for scrollable content */
+  .pick-comparison-scroll::after {
+    content: "← Swipe to see more →";
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #6c757d;
+    font-style: italic;
+    pointer-events: none;
+  }
+}
+
+/* Landscape Mobile Optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+  .pick-comparison-table {
+    min-width: 700px;
+  }
+  
+  .game-header {
+    min-width: 140px;
   }
   
   .player-header {
@@ -1120,9 +1555,14 @@ table tbody tr:hover {
     min-width: 80px;
   }
   
+  .pick-comparison-table th,
+  .pick-comparison-table td {
+    padding: 8px 4px;
+  }
+  
   .pick-display {
-    padding: 4px 8px;
-    font-size: 12px;
-    min-width: 50px;
+    padding: 4px 6px;
+    font-size: 11px;
+    min-width: 45px;
   }
 }

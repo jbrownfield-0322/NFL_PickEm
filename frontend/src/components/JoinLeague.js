@@ -17,7 +17,18 @@ function JoinLeague() {
         },
         body: JSON.stringify({ joinCode }),
       });
-      const data = await response.json();
+      
+      // Check if response has content before trying to parse JSON
+      const contentType = response.headers.get('content-type');
+      let data = {};
+      
+      if (contentType && contentType.includes('application/json')) {
+        const text = await response.text();
+        if (text) {
+          data = JSON.parse(text);
+        }
+      }
+      
       if (response.ok) {
         setMessage(`Successfully joined league: ${data.name}`);
       } else {

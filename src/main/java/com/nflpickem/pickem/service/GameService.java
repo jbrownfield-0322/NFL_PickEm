@@ -1,6 +1,8 @@
 package com.nflpickem.pickem.service;
 
+import com.nflpickem.pickem.model.BettingOdds;
 import com.nflpickem.pickem.model.Game;
+import com.nflpickem.pickem.repository.BettingOddsRepository;
 import com.nflpickem.pickem.repository.GameRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,10 +15,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GameService {
     private final GameRepository gameRepository;
+    private final BettingOddsRepository bettingOddsRepository;
     private final NflScheduleScraper nflScheduleScraper;
     
     @Value("${ENABLE_NFL_SCRAPING:false}")
@@ -25,8 +29,9 @@ public class GameService {
     @Value("${NFL_SEASON_WEEKS:18}")
     private int nflSeasonWeeks;
 
-    public GameService(GameRepository gameRepository, NflScheduleScraper nflScheduleScraper) {
+    public GameService(GameRepository gameRepository, BettingOddsRepository bettingOddsRepository, NflScheduleScraper nflScheduleScraper) {
         this.gameRepository = gameRepository;
+        this.bettingOddsRepository = bettingOddsRepository;
         this.nflScheduleScraper = nflScheduleScraper;
     }
 
@@ -95,5 +100,34 @@ public class GameService {
         }
         long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(nflSeasonStart, today);
         return (int) (daysBetween / 7) + 1;
+    }
+    
+    /**
+     * Get odds for a specific game
+     */
+    public List<BettingOdds> getOddsForGame(Long gameId) {
+        return bettingOddsRepository.findByGameId(gameId);
+    }
+    
+    /**
+     * Get odds for a specific week
+     */
+    public List<BettingOdds> getOddsForWeek(Integer week) {
+        return bettingOddsRepository.findByWeek(week);
+    }
+    
+    /**
+     * Check if a game has odds
+     */
+    public boolean gameHasOdds(Long gameId) {
+        return !bettingOddsRepository.findByGameId(gameId).isEmpty();
+    }
+    
+    /**
+     * Get the primary odds for a game (first available odds)
+     */
+    public Optional<BettingOdds> getPrimaryOddsForGame(Long gameId) {
+        List<BettingOdds> odds = bettingOddsRepository.findByGameId(gameId);
+        return odds.isEmpty() ? Optional.empty() : Optional.of(odds.get(0));
     }
 } 

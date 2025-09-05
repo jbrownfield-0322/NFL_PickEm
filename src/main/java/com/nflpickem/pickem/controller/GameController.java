@@ -1,7 +1,10 @@
 package com.nflpickem.pickem.controller;
 
+import com.nflpickem.pickem.dto.GameWithOddsDto;
 import com.nflpickem.pickem.model.Game;
 import com.nflpickem.pickem.service.GameService;
+import com.nflpickem.pickem.service.ScoringService;
+import com.nflpickem.pickem.service.GameScoreService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,29 +13,68 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/games")
 public class GameController {
     private final GameService gameService;
+    private final ScoringService scoringService;
+    private final GameScoreService gameScoreService;
 
-    public GameController(GameService gameService) {
+    public GameController(GameService gameService, ScoringService scoringService, GameScoreService gameScoreService) {
         this.gameService = gameService;
+        this.scoringService = scoringService;
+        this.gameScoreService = gameScoreService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Game>> getAllGames() {
-        return ResponseEntity.ok(gameService.getAllGames());
+    public ResponseEntity<List<GameWithOddsDto>> getAllGames() {
+        List<Game> games = gameService.getAllGames();
+        List<GameWithOddsDto> gamesWithOdds = games.stream()
+            .map(game -> {
+                var odds = gameService.getOddsForGame(game.getId());
+                return new GameWithOddsDto(game, odds);
+            })
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(gamesWithOdds);
     }
 
     @GetMapping("/week/{weekNum}")
-    public ResponseEntity<List<Game>> getGamesByWeek(@PathVariable Integer weekNum) {
-        return ResponseEntity.ok(gameService.getGamesByWeek(weekNum));
+    public ResponseEntity<List<GameWithOddsDto>> getGamesByWeek(@PathVariable Integer weekNum) {
+        List<Game> games = gameService.getGamesByWeek(weekNum);
+        List<GameWithOddsDto> gamesWithOdds = games.stream()
+            .map(game -> {
+                var odds = gameService.getOddsForGame(game.getId());
+                return new GameWithOddsDto(game, odds);
+            })
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(gamesWithOdds);
     }
 
     @GetMapping("/currentWeek")
     public ResponseEntity<Integer> getCurrentWeek() {
         return ResponseEntity.ok(gameService.getCurrentWeek());
+    }
+    
+    @GetMapping("/{gameId}/odds")
+    public ResponseEntity<?> getOddsForGame(@PathVariable Long gameId) {
+        try {
+            var odds = gameService.getOddsForGame(gameId);
+            return ResponseEntity.ok(odds);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    
+    @GetMapping("/week/{weekNum}/odds")
+    public ResponseEntity<?> getOddsForWeek(@PathVariable Integer weekNum) {
+        try {
+            var odds = gameService.getOddsForWeek(weekNum);
+            return ResponseEntity.ok(odds);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PostMapping
@@ -70,6 +112,70 @@ public class GameController {
             return ResponseEntity.ok(updatedGame);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/update-scores")
+    public ResponseEntity<String> updateScoresFromApi() {
+        try {
+            scoringService.scoreGamesWithRealData();
+            return ResponseEntity.ok("Scores updated successfully from API");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body("Error updating scores: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/test-api")
+    public ResponseEntity<String> testApiConnection() {
+        try {
+            if (!gameScoreService.isApiConfigured()) {
+                return ResponseEntity.ok("API not configured - check ODDS_API_KEY environment variable");
+            }
+            
+            // Show database games first
+            var allGames = gameService.getAllGames();
+            var dbInfo = "Database has " + allGames.size() + " games. ";
+            if (allGames.size() > 0) {
+                dbInfo += "Sample: " + allGames.get(0).getAwayTeam() + " @ " + allGames.get(0).getHomeTeam();
+            }
+            
+            var results = gameScoreService.fetchLiveScores();
+            return ResponseEntity.ok(dbInfo + " API test successful. Found " + results.size() + " game results. Check server logs for details.");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body("API test failed: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/debug-api")
+    public ResponseEntity<String> debugApiResponse() {
+        try {
+            if (!gameScoreService.isApiConfigured()) {
+                return ResponseEntity.ok("API not configured - check ODDS_API_KEY environment variable");
+            }
+            
+            // Get raw API response for debugging
+            var rawResponse = gameScoreService.getRawApiResponse();
+            return ResponseEntity.ok("Raw API Response:\n" + rawResponse);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body("Debug failed: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/test-historical")
+    public ResponseEntity<String> testHistoricalScores() {
+        try {
+            if (!gameScoreService.isApiConfigured()) {
+                return ResponseEntity.ok("API not configured - check ODDS_API_KEY environment variable");
+            }
+            
+            var historicalResponse = gameScoreService.getHistoricalScores();
+            return ResponseEntity.ok("Historical Scores Test:\n" + historicalResponse);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body("Historical test failed: " + e.getMessage());
         }
     }
 

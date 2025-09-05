@@ -20,7 +20,14 @@ export const apiCall = async (endpoint, options = {}) => {
       throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
     }
     
-    return await response.json();
+    // Check if response has content before trying to parse JSON
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const text = await response.text();
+      return text ? JSON.parse(text) : {};
+    }
+    
+    return {};
   } catch (error) {
     console.error(`API call failed for ${endpoint}:`, error);
     throw error;

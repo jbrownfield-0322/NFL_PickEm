@@ -12,6 +12,8 @@ function Leaderboard() {
   const [selectedWeek, setSelectedWeek] = useState(1);
   const [pickComparison, setPickComparison] = useState([]);
   const [showPickComparison, setShowPickComparison] = useState(false);
+  const [isScrollable, setIsScrollable] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const { user } = useAuth();
 
   const API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8080');
@@ -88,6 +90,45 @@ function Leaderboard() {
     fetchLeaderboards();
   }, [user, selectedWeek, selectedLeagueId, API_BASE]);
 
+  // Handle scrollable detection for mobile
+  useEffect(() => {
+    const checkScrollable = () => {
+      const scrollContainer = document.querySelector('.pick-comparison-scroll');
+      if (scrollContainer) {
+        const isScrollable = scrollContainer.scrollWidth > scrollContainer.clientWidth;
+        setIsScrollable(isScrollable);
+        
+        // Add/remove scrollable class for styling
+        if (isScrollable) {
+          scrollContainer.classList.add('scrollable');
+        } else {
+          scrollContainer.classList.remove('scrollable');
+        }
+      }
+    };
+
+    // Check on mount and when comparison is shown
+    if (showPickComparison) {
+      // Use setTimeout to ensure DOM is updated
+      setTimeout(checkScrollable, 100);
+    }
+
+    // Check on window resize
+    window.addEventListener('resize', checkScrollable);
+    return () => window.removeEventListener('resize', checkScrollable);
+  }, [showPickComparison, pickComparison]);
+
+  // Handle mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   if (loading) {
     return <div>Loading leaderboards...</div>;
   }
@@ -160,85 +201,129 @@ function Leaderboard() {
 
     return (
       <div className="table-container">
-        <h3>Pick Comparison - Week {selectedWeek}</h3>
-        <button 
-          onClick={() => setShowPickComparison(!showPickComparison)}
-          className="toggle-button"
-          style={{ marginBottom: '10px' }}
-        >
-          {showPickComparison ? 'Hide Pick Comparison' : 'Show Pick Comparison'}
-        </button>
+        <div className="pick-comparison-header">
+          <h3>Pick Comparison - Week {selectedWeek}</h3>
+          <p className="pick-comparison-description">
+            Compare picks across all players in your league. Each column shows a player's picks, each row shows a game.
+            {isMobile && " Swipe horizontally to see all players."}
+          </p>
+          <button 
+            onClick={() => setShowPickComparison(!showPickComparison)}
+            className="toggle-button"
+            aria-expanded={showPickComparison}
+            aria-controls="pick-comparison-table"
+          >
+            {showPickComparison ? 'Hide Pick Comparison' : 'Show Pick Comparison'}
+          </button>
+        </div>
         
         {showPickComparison && (
           <div className="pick-comparison-container">
-            <table className="pick-comparison-table">
-              <thead>
-                <tr>
-                  <th className="game-header">Game</th>
-                  {usernameList.map(username => (
-                    <th key={username} className={`player-header ${username === user.username ? 'current-user' : ''}`}>
-                      {username === user.username ? `${user.name || username} (You)` : usernameToNameMap.get(username) || username}
+            <div className="pick-comparison-scroll">
+              <table className="pick-comparison-table" id="pick-comparison-table">
+                <thead>
+                  <tr>
+                    <th className="game-header">
+                      <div className="header-content">
+                        <span className="header-title">Game</span>
+                        <span className="header-subtitle">Away @ Home</span>
+                      </div>
                     </th>
-                  ))}
-                  <th className="result-header">Result</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pickComparison.map((game) => (
-                  <tr key={game.gameId} className="game-row">
-                    <td className="game-info">
-                      <div className="game-teams">
-                        <strong>{game.awayTeam} @ {game.homeTeam}</strong>
+                    {usernameList.map(username => (
+                      <th key={username} className={`player-header ${username === user.username ? 'current-user' : ''}`}>
+                        <div className="header-content">
+                          <span className="header-title">
+                            {username === user.username ? 'You' : (usernameToNameMap.get(username) || username)}
+                          </span>
+                          <span className="header-subtitle">
+                            {username === user.username ? user.name || user.username : username}
+                          </span>
+                        </div>
+                      </th>
+                    ))}
+                    <th className="result-header">
+                      <div className="header-content">
+                        <span className="header-title">Result</span>
+                        <span className="header-subtitle">Winner</span>
                       </div>
-                      <div className="game-time">
-                        {game.scored ? 'Final' : 'Not played'}
-                      </div>
-                    </td>
-                    
-                    {usernameList.map(username => {
-                      let pickData = null;
-                      let isCurrentUser = username === user.username;
-                      
-                      if (isCurrentUser) {
-                        pickData = game.yourPick;
-                      } else {
-                        const otherPick = game.otherPicks.find(p => p.username === username);
-                        pickData = otherPick ? otherPick.pickedTeam : null;
-                      }
-                      
-                      const isCorrect = game.scored && pickData === game.winningTeam;
-                      const isIncorrect = game.scored && pickData && pickData !== game.winningTeam;
-                      
-                      return (
-                        <td key={username} className={`pick-cell ${isCurrentUser ? 'current-user-pick' : ''}`}>
-                          {pickData ? (
-                            <span className={`pick-display ${
-                              game.scored 
-                                ? (isCorrect ? 'correct-pick' : 'incorrect-pick')
-                                : 'pending-pick'
-                            }`}>
-                              {pickData}
-                            </span>
-                          ) : (
-                            <span className="no-pick">-</span>
-                          )}
-                        </td>
-                      );
-                    })}
-                    
-                    <td className="result-cell">
-                      {game.scored ? (
-                        <span className="game-result">
-                          <strong>{game.winningTeam} wins</strong>
-                        </span>
-                      ) : (
-                        <span className="pending">Not played</span>
-                      )}
-                    </td>
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {pickComparison.map((game) => (
+                    <tr key={game.gameId} className="game-row">
+                      <td className="game-info">
+                        <div className="game-details">
+                          <div className="game-teams">
+                            <span className="away-team">{game.awayTeam}</span>
+                            <span className="vs">@</span>
+                            <span className="home-team">{game.homeTeam}</span>
+                          </div>
+                          <div className="game-status">
+                            {game.scored ? (
+                              <span className="status-final">Final</span>
+                            ) : (
+                              <span className="status-pending">Not played</span>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      
+                      {usernameList.map(username => {
+                        let pickData = null;
+                        let isCurrentUser = username === user.username;
+                        
+                        if (isCurrentUser) {
+                          pickData = game.yourPick;
+                        } else {
+                          const otherPick = game.otherPicks.find(p => p.username === username);
+                          pickData = otherPick ? otherPick.pickedTeam : null;
+                        }
+                        
+                        const isCorrect = game.scored && pickData === game.winningTeam;
+                        const isIncorrect = game.scored && pickData && pickData !== game.winningTeam;
+                        
+                        return (
+                          <td key={username} className={`pick-cell ${isCurrentUser ? 'current-user-pick' : ''}`}>
+                            {pickData ? (
+                              <div className="pick-container">
+                                <span className={`pick-display ${
+                                  game.scored 
+                                    ? (isCorrect ? 'correct-pick' : 'incorrect-pick')
+                                    : 'pending-pick'
+                                }`}>
+                                  {pickData}
+                                </span>
+                                {game.scored && (
+                                  <span className={`pick-status ${isCorrect ? 'correct' : 'incorrect'}`}>
+                                    {isCorrect ? '✓' : '✗'}
+                                  </span>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="no-pick">No pick</span>
+                            )}
+                          </td>
+                        );
+                      })}
+                      
+                      <td className="result-cell">
+                        {game.scored ? (
+                          <div className="result-container">
+                            <span className="game-result">
+                              <strong>{game.winningTeam}</strong>
+                            </span>
+                            <span className="result-label">Winner</span>
+                          </div>
+                        ) : (
+                          <span className="pending">TBD</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
