@@ -140,13 +140,13 @@ public class GameScoreService {
                 
                 // Process games that are completed AND have scores
                 if (!"true".equals(response.completed) && !Boolean.TRUE.equals(response.completed)) {
-                    System.out.println("Skipping game - not completed");
+                    System.out.println("❌ Skipping game - not completed (status: " + response.completed + ")");
                     continue;
                 }
                 
                 // Skip if no scores available
                 if (awayScore == null || homeScore == null) {
-                    System.out.println("Skipping game - no scores available (awayScore=" + awayScore + ", homeScore=" + homeScore + ")");
+                    System.out.println("❌ Skipping game - no scores available (awayScore=" + awayScore + ", homeScore=" + homeScore + ")");
                     continue;
                 }
                 
