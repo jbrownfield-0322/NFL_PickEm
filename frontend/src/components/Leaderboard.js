@@ -118,6 +118,42 @@ function Leaderboard() {
     return () => window.removeEventListener('resize', checkScrollable);
   }, [showPickComparison, pickComparison]);
 
+  // Add touch scroll indicators for mobile
+  useEffect(() => {
+    if (!isMobile || !showPickComparison) return;
+
+    const scrollContainer = document.querySelector('.pick-comparison-scroll');
+    if (!scrollContainer) return;
+
+    let scrollTimeout;
+    const showScrollHint = () => {
+      const hint = scrollContainer.querySelector('.scroll-hint');
+      if (hint) {
+        hint.style.opacity = '1';
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          hint.style.opacity = '0';
+        }, 2000);
+      }
+    };
+
+    const handleScroll = () => {
+      const hint = scrollContainer.querySelector('.scroll-hint');
+      if (hint) {
+        hint.style.opacity = '0';
+      }
+    };
+
+    scrollContainer.addEventListener('touchstart', showScrollHint);
+    scrollContainer.addEventListener('scroll', handleScroll);
+
+    return () => {
+      scrollContainer.removeEventListener('touchstart', showScrollHint);
+      scrollContainer.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
+    };
+  }, [isMobile, showPickComparison]);
+
   // Handle mobile detection
   useEffect(() => {
     const checkMobile = () => {
@@ -205,7 +241,12 @@ function Leaderboard() {
           <h3>Pick Comparison - Week {selectedWeek}</h3>
           <p className="pick-comparison-description">
             Compare picks across all players in your league. Each column shows a player's picks, each row shows a game.
-            {isMobile && " Swipe horizontally to see all players."}
+            {isMobile && (
+              <span className="mobile-hint">
+                <br />
+                <strong>💡 Mobile tip:</strong> Swipe horizontally to see all players. Your picks are highlighted in orange.
+              </span>
+            )}
           </p>
           <button 
             onClick={() => setShowPickComparison(!showPickComparison)}
