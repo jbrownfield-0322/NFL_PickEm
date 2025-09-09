@@ -1363,12 +1363,13 @@ table tbody tr:hover {
   
   .game-header {
     min-width: 180px; /* Increased to prevent text clipping */
-    position: sticky;
+    /* Temporarily remove sticky positioning to test artifact fix */
+    /* position: sticky;
     left: 0;
-    z-index: 15;
+    z-index: 15; */
     /* Keep desktop gradient and styling */
     background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%) !important;
-    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.15);
+    /* Remove box-shadow that might create visual artifacts when scrolling */
   }
   
   .player-header {
@@ -1417,13 +1418,14 @@ table tbody tr:hover {
   }
   
   .game-info {
-    position: sticky;
+    /* Temporarily remove sticky positioning to test artifact fix */
+    /* position: sticky;
     left: 0;
-    z-index: 10;
+    z-index: 10; */
     text-align: left !important; /* Ensure left alignment on mobile */
     /* Keep desktop background */
     background-color: #f8f9fa;
-    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.15);
+    /* Remove problematic box-shadow that creates black artifact */
   }
   
   .game-details {
