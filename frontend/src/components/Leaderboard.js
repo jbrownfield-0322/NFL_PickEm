@@ -520,11 +520,16 @@ function Leaderboard() {
         </div>
         
         <div className="pick-differences-container">
-          <div className="matrix-scroll">
+          <div className="pick-differences-scroll">
             <table className="pick-differences-matrix">
               <thead>
                 <tr>
-                  <th className="matrix-corner-header"></th>
+                  <th className="matrix-corner-header">
+                    <div className="header-content">
+                      <span className="header-title">Players</span>
+                      <span className="header-subtitle">Row vs Column</span>
+                    </div>
+                  </th>
                   {players.map((player) => (
                     <th key={player.username} className={`matrix-header ${player.isCurrentUser ? 'current-user-header' : ''}`}>
                       <div className="header-player-info">
