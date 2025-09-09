@@ -1365,24 +1365,6 @@ table tbody tr:hover {
     scroll-snap-align: start;
   }
   
-  .pick-comparison-scroll::before {
-    content: "← Swipe to see more →";
-    position: absolute;
-    bottom: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 11px;
-    color: #6c757d;
-    font-style: italic;
-    pointer-events: none;
-    opacity: 0.7;
-    z-index: 20;
-    transition: opacity 0.3s ease;
-  }
-  
-  .pick-comparison-scroll.scrollable::before {
-    opacity: 1;
-  }
   
   /* Add scroll fade indicators */
   .pick-comparison-scroll::after {
@@ -1475,6 +1457,7 @@ table tbody tr:hover {
     position: sticky;
     left: 0;
     z-index: 10;
+    text-align: left !important; /* Ensure left alignment on mobile */
     /* Keep desktop background */
     background-color: #f8f9fa;
     box-shadow: 2px 0 6px rgba(0, 0, 0, 0.15);
@@ -1484,6 +1467,10 @@ table tbody tr:hover {
     font-size: 12px; /* Larger for better mobile readability */
     font-weight: 600;
     color: #2c3e50;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
   }
   
   .away-team, .home-team {
@@ -1583,10 +1570,6 @@ table tbody tr:hover {
     border-radius: 12px; /* Keep desktop border radius */
   }
   
-  .pick-comparison-scroll::before {
-    font-size: 10px;
-    bottom: -25px;
-  }
   
   .pick-comparison-table {
     font-size: 12px; /* Larger for better readability */
@@ -1637,6 +1620,10 @@ table tbody tr:hover {
     font-size: 11px; /* Larger for better readability */
     font-weight: 600;
     color: #2c3e50;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 3px;
   }
   
   .away-team, .home-team {
@@ -1752,6 +1739,10 @@ table tbody tr:hover {
     font-size: 13px; /* Closer to desktop size */
     font-weight: 600;
     color: #2c3e50;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
   }
   
   .away-team, .home-team {

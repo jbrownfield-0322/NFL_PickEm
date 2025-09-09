@@ -244,7 +244,7 @@ function Leaderboard() {
             {isMobile && (
               <span className="mobile-hint">
                 <br />
-                <strong>💡 Mobile tip:</strong> Swipe horizontally to see all players. Your picks are highlighted in orange.
+                <strong>💡 Mobile tip:</strong> Your picks are highlighted in green.
               </span>
             )}
           </p>
