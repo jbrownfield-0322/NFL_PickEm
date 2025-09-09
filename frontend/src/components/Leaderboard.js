@@ -14,9 +14,62 @@ function Leaderboard() {
   const [showPickComparison, setShowPickComparison] = useState(false);
   const [isScrollable, setIsScrollable] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [pickDifferences, setPickDifferences] = useState([]);
   const { user } = useAuth();
 
   const API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8080');
+
+  // Function to calculate pick differences between current user and other players
+  const calculatePickDifferences = (comparisonData, currentUser) => {
+    if (!comparisonData || comparisonData.length === 0 || !currentUser) {
+      return [];
+    }
+
+    // Get all unique usernames
+    const allUsernames = new Set();
+    const usernameToNameMap = new Map();
+    
+    allUsernames.add(currentUser.username);
+    usernameToNameMap.set(currentUser.username, currentUser.name || currentUser.username);
+    
+    comparisonData.forEach(game => {
+      game.otherPicks.forEach(pick => {
+        allUsernames.add(pick.username);
+        usernameToNameMap.set(pick.username, pick.name || pick.username);
+      });
+    });
+    
+    const otherUsers = Array.from(allUsernames).filter(username => username !== currentUser.username);
+    
+    return otherUsers.map(otherUsername => {
+      let differences = 0;
+      let totalGames = 0;
+      
+      comparisonData.forEach(game => {
+        // Get current user's pick
+        const currentUserPick = game.yourPick;
+        
+        // Get other user's pick
+        const otherUserPick = game.otherPicks.find(p => p.username === otherUsername)?.pickedTeam;
+        
+        // Only count games where both users made picks
+        if (currentUserPick && otherUserPick) {
+          totalGames++;
+          if (currentUserPick !== otherUserPick) {
+            differences++;
+          }
+        }
+      });
+      
+      return {
+        username: otherUsername,
+        name: usernameToNameMap.get(otherUsername) || otherUsername,
+        differences: differences,
+        totalGames: totalGames,
+        percentage: totalGames > 0 ? Math.round((differences / totalGames) * 100) : 0
+      };
+    }).sort((a, b) => a.differences - b.differences); // Sort by fewest differences first
+  };
 
   useEffect(() => {
     const fetchLeaderboards = async () => {
@@ -72,11 +125,16 @@ function Leaderboard() {
           if (comparisonResponse.ok) {
             const comparisonData = await comparisonResponse.json();
             setPickComparison(comparisonData);
+            // Calculate pick differences
+            const differences = calculatePickDifferences(comparisonData, user);
+            setPickDifferences(differences);
           } else {
             setPickComparison([]);
+            setPickDifferences([]);
           }
         } else {
           setPickComparison([]);
+          setPickDifferences([]);
         }
 
       } catch (error) {
@@ -369,6 +427,67 @@ function Leaderboard() {
     );
   };
 
+  const renderPickDifferencesTable = () => {
+    if (pickDifferences.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className="table-container">
+        <div className="pick-differences-header">
+          <h3>Pick Differences - Week {selectedWeek}</h3>
+          <p className="pick-differences-description">
+            Shows how many picks you have different from each player in your league.
+            {isMobile && (
+              <span className="mobile-hint">
+                <br />
+                <strong>💡 Tip:</strong> Lower numbers mean you have more similar picks to that player.
+              </span>
+            )}
+          </p>
+        </div>
+        
+        <div className="pick-differences-container">
+          <table className="pick-differences-table">
+            <thead>
+              <tr>
+                <th className="player-diff-header">Player</th>
+                <th className="differences-header">Different Picks</th>
+                <th className="total-header">Total Games</th>
+                <th className="percentage-header">% Different</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pickDifferences.map((player) => (
+                <tr key={player.username} className="difference-row">
+                  <td className="player-diff-cell">
+                    <div className="player-info">
+                      <span className="player-name">{player.name}</span>
+                      <span className="player-username">@{player.username}</span>
+                    </div>
+                  </td>
+                  <td className="differences-cell">
+                    <span className={`difference-count ${player.differences === 0 ? 'perfect-match' : player.differences <= 2 ? 'close-match' : 'different-match'}`}>
+                      {player.differences}
+                    </span>
+                  </td>
+                  <td className="total-cell">
+                    <span className="total-count">{player.totalGames}</span>
+                  </td>
+                  <td className="percentage-cell">
+                    <span className={`percentage ${player.percentage === 0 ? 'perfect-match' : player.percentage <= 25 ? 'close-match' : 'different-match'}`}>
+                      {player.percentage}%
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="main-content">
       <h2>Leaderboards</h2>
@@ -399,6 +518,7 @@ function Leaderboard() {
       {renderTable(`Weekly Leaderboard (Week ${selectedWeek})`, weeklyLeaderboard)}
       {renderTable("Season Leaderboard", seasonLeaderboard)}
       {renderPickComparisonTable()}
+      {renderPickDifferencesTable()}
     </div>
   );
 }
