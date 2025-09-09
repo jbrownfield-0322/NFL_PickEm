@@ -502,40 +502,40 @@ table tbody tr:hover {
 
   /* Responsive table for mobile */
   @media (max-width: 600px) {
-    table {
+    table:not(.pick-comparison-table):not(.pick-differences-matrix) {
       display: block;
       overflow-x: auto;
       white-space: nowrap;
     }
 
-    table th,
-    table td {
+    table:not(.pick-comparison-table):not(.pick-differences-matrix) th,
+    table:not(.pick-comparison-table):not(.pick-differences-matrix) td {
       min-width: 100px;
     }
 
     /* Improve spacing for medium mobile screens */
-    table td {
+    table:not(.pick-comparison-table):not(.pick-differences-matrix) td {
       padding: 10px 8px;
     }
 
                   /* Stack table cells for very small screens */
         @media (max-width: 480px) {
-          table:not(.pick-comparison-table),
-          table:not(.pick-comparison-table) thead,
-          table:not(.pick-comparison-table) tbody,
-          table:not(.pick-comparison-table) th,
-          table:not(.pick-comparison-table) td,
-          table:not(.pick-comparison-table) tr {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix),
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) thead,
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) tbody,
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) th,
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) td,
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) tr {
             display: block;
           }
 
-          table:not(.pick-comparison-table) thead tr {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) thead tr {
             position: absolute;
             top: -9999px;
             left: -9999px;
           }
 
-          table:not(.pick-comparison-table) tr {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) tr {
             border: 1px solid #ccc;
             margin-bottom: 10px;
             border-radius: 6px;
@@ -543,7 +543,7 @@ table tbody tr:hover {
             padding: 10px;
           }
 
-          table:not(.pick-comparison-table) td {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) td {
             border: none;
             border-bottom: 1px solid #eee;
             position: relative;
@@ -558,7 +558,7 @@ table tbody tr:hover {
             align-items: center;
           }
 
-          table:not(.pick-comparison-table) td:before {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) td:before {
             content: attr(data-label) ": ";
             font-weight: bold;
             color: #333;
@@ -567,22 +567,22 @@ table tbody tr:hover {
             grid-column: 1;
           }
 
-          table:not(.pick-comparison-table) td > * {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) td > * {
             grid-column: 2;
           }
 
-          table:not(.pick-comparison-table) td:last-child {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) td:last-child {
             border-bottom: none;
           }
 
           /* Special handling for select elements in table cells */
-          table:not(.pick-comparison-table) td select {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) td select {
             width: 100%;
             max-width: 200px;
           }
 
           /* Special handling for links in table cells */
-          table:not(.pick-comparison-table) td a {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) td a {
             display: inline-block;
           }
         }
