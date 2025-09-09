@@ -520,22 +520,22 @@ table tbody tr:hover {
 
                   /* Stack table cells for very small screens */
         @media (max-width: 480px) {
-          table,
-          table thead,
-          table tbody,
-          table th,
-          table td,
-          table tr {
+          table:not(.pick-comparison-table),
+          table:not(.pick-comparison-table) thead,
+          table:not(.pick-comparison-table) tbody,
+          table:not(.pick-comparison-table) th,
+          table:not(.pick-comparison-table) td,
+          table:not(.pick-comparison-table) tr {
             display: block;
           }
 
-          table thead tr {
+          table:not(.pick-comparison-table) thead tr {
             position: absolute;
             top: -9999px;
             left: -9999px;
           }
 
-          table tr {
+          table:not(.pick-comparison-table) tr {
             border: 1px solid #ccc;
             margin-bottom: 10px;
             border-radius: 6px;
@@ -543,7 +543,7 @@ table tbody tr:hover {
             padding: 10px;
           }
 
-          table td {
+          table:not(.pick-comparison-table) td {
             border: none;
             border-bottom: 1px solid #eee;
             position: relative;
@@ -558,7 +558,7 @@ table tbody tr:hover {
             align-items: center;
           }
 
-          table td:before {
+          table:not(.pick-comparison-table) td:before {
             content: attr(data-label) ": ";
             font-weight: bold;
             color: #333;
@@ -567,22 +567,22 @@ table tbody tr:hover {
             grid-column: 1;
           }
 
-          table td > * {
+          table:not(.pick-comparison-table) td > * {
             grid-column: 2;
           }
 
-          table td:last-child {
+          table:not(.pick-comparison-table) td:last-child {
             border-bottom: none;
           }
 
           /* Special handling for select elements in table cells */
-          table td select {
+          table:not(.pick-comparison-table) td select {
             width: 100%;
             max-width: 200px;
           }
 
           /* Special handling for links in table cells */
-          table td a {
+          table:not(.pick-comparison-table) td a {
             display: inline-block;
           }
         }
@@ -1204,18 +1204,6 @@ table tbody tr:hover {
   position: relative;
 }
 
-.pick-cell.current-user-pick::before {
-  content: "YOU";
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  font-size: 8px;
-  color: #4caf50;
-  font-weight: bold;
-  background: white;
-  padding: 1px 3px;
-  border-radius: 2px;
-}
 
 .pick-container {
   display: flex;
