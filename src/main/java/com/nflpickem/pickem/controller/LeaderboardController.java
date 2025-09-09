@@ -1,6 +1,7 @@
 package com.nflpickem.pickem.controller;
 
 import com.nflpickem.pickem.dto.PlayerScore;
+import com.nflpickem.pickem.dto.WeeklyWinsDto;
 import com.nflpickem.pickem.service.LeaderboardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +37,15 @@ public class LeaderboardController {
     public ResponseEntity<List<PlayerScore>> getSeasonLeaderboard(@RequestParam Long leagueId) {
         try {
             return ResponseEntity.ok(leaderboardService.getSeasonLeaderboard(leagueId));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/weekly-wins")
+    public ResponseEntity<List<WeeklyWinsDto>> getWeeklyWins(@RequestParam Long leagueId) {
+        try {
+            return ResponseEntity.ok(leaderboardService.getWeeklyWins(leagueId));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }

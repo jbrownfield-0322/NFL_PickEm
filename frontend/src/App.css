@@ -502,40 +502,40 @@ table tbody tr:hover {
 
   /* Responsive table for mobile */
   @media (max-width: 600px) {
-    table {
+    table:not(.pick-comparison-table):not(.pick-differences-matrix) {
       display: block;
       overflow-x: auto;
       white-space: nowrap;
     }
 
-    table th,
-    table td {
+    table:not(.pick-comparison-table):not(.pick-differences-matrix) th,
+    table:not(.pick-comparison-table):not(.pick-differences-matrix) td {
       min-width: 100px;
     }
 
     /* Improve spacing for medium mobile screens */
-    table td {
+    table:not(.pick-comparison-table):not(.pick-differences-matrix) td {
       padding: 10px 8px;
     }
 
                   /* Stack table cells for very small screens */
         @media (max-width: 480px) {
-          table:not(.pick-comparison-table),
-          table:not(.pick-comparison-table) thead,
-          table:not(.pick-comparison-table) tbody,
-          table:not(.pick-comparison-table) th,
-          table:not(.pick-comparison-table) td,
-          table:not(.pick-comparison-table) tr {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix),
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) thead,
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) tbody,
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) th,
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) td,
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) tr {
             display: block;
           }
 
-          table:not(.pick-comparison-table) thead tr {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) thead tr {
             position: absolute;
             top: -9999px;
             left: -9999px;
           }
 
-          table:not(.pick-comparison-table) tr {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) tr {
             border: 1px solid #ccc;
             margin-bottom: 10px;
             border-radius: 6px;
@@ -543,7 +543,7 @@ table tbody tr:hover {
             padding: 10px;
           }
 
-          table:not(.pick-comparison-table) td {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) td {
             border: none;
             border-bottom: 1px solid #eee;
             position: relative;
@@ -558,7 +558,7 @@ table tbody tr:hover {
             align-items: center;
           }
 
-          table:not(.pick-comparison-table) td:before {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) td:before {
             content: attr(data-label) ": ";
             font-weight: bold;
             color: #333;
@@ -567,22 +567,22 @@ table tbody tr:hover {
             grid-column: 1;
           }
 
-          table:not(.pick-comparison-table) td > * {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) td > * {
             grid-column: 2;
           }
 
-          table:not(.pick-comparison-table) td:last-child {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) td:last-child {
             border-bottom: none;
           }
 
           /* Special handling for select elements in table cells */
-          table:not(.pick-comparison-table) td select {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) td select {
             width: 100%;
             max-width: 200px;
           }
 
           /* Special handling for links in table cells */
-          table:not(.pick-comparison-table) td a {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix) td a {
             display: inline-block;
           }
         }
@@ -1782,41 +1782,49 @@ table tbody tr:hover {
   background-color: white;
 }
 
-.matrix-scroll {
+.pick-differences-scroll {
   overflow-x: auto;
   overflow-y: visible;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
 }
 
 .pick-differences-matrix {
+  width: 100%;
+  min-width: 600px;
   border-collapse: collapse;
   background-color: white;
-  font-size: 13px;
-  min-width: 100%;
+  font-size: 14px;
+  scroll-snap-align: start;
 }
 
 .pick-differences-matrix th,
 .pick-differences-matrix td {
-  padding: 12px 8px;
+  padding: 16px 12px;
   text-align: center;
-  border: 1px solid #e9ecef;
+  border-bottom: 1px solid #e9ecef;
   vertical-align: middle;
-  white-space: nowrap;
+  position: relative;
 }
 
 /* Corner header (empty top-left cell) */
 .matrix-corner-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
   border-right: 2px solid #dee2e6;
   border-bottom: 2px solid #dee2e6;
   min-width: 150px;
   position: sticky;
   left: 0;
   z-index: 10;
+  text-align: left !important;
 }
 
 /* Column headers */
 .matrix-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
   font-weight: 600;
   color: #495057;
   border-bottom: 2px solid #dee2e6;
@@ -1827,14 +1835,18 @@ table tbody tr:hover {
 }
 
 .matrix-header.current-user-header {
-  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-  color: #1976d2;
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  color: white;
   font-weight: 700;
+}
+
+.matrix-header.current-user-header .header-player-username {
+  color: rgba(255, 255, 255, 0.8) !important;
 }
 
 /* Row headers */
 .matrix-row-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
   text-align: left !important;
   border-right: 2px solid #dee2e6;
   min-width: 150px;
@@ -1844,28 +1856,35 @@ table tbody tr:hover {
 }
 
 .matrix-row-header.current-user-row-header {
-  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-  color: #1976d2;
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  color: white;
   font-weight: 700;
+}
+
+.matrix-row-header.current-user-row-header .row-player-username {
+  color: rgba(255, 255, 255, 0.8) !important;
 }
 
 /* Matrix cells */
 .matrix-cell {
-  background-color: white;
+  background-color: #f8f9fa;
   min-width: 80px;
   transition: background-color 0.2s ease;
 }
 
 .matrix-cell:hover {
-  background-color: #f8f9fa;
+  background-color: #e9ecef;
 }
 
 .matrix-cell.current-user-cell {
-  background-color: #f3f8ff;
+  background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 100%);
+  border-left: 4px solid #4caf50;
+  border-right: 4px solid #4caf50;
+  position: relative;
 }
 
 .matrix-cell.current-user-cell:hover {
-  background-color: #e8f4fd;
+  background: linear-gradient(135deg, #e8f5e8 0%, #dcedc8 100%);
 }
 
 /* Player info in headers */
@@ -1916,24 +1935,30 @@ table tbody tr:hover {
 .difference-count {
   font-weight: 600;
   font-size: 14px;
-  padding: 3px 6px;
-  border-radius: 8px;
+  padding: 6px 10px;
+  border-radius: 20px;
   display: inline-block;
+  min-width: 30px;
+  text-align: center;
+  transition: all 0.2s ease;
 }
 
 .difference-count.perfect-match {
   background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
   color: white;
+  box-shadow: 0 2px 4px rgba(21, 87, 36, 0.2);
 }
 
 .difference-count.close-match {
   background: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%);
   color: white;
+  box-shadow: 0 2px 4px rgba(255, 152, 0, 0.2);
 }
 
 .difference-count.different-match {
   background: linear-gradient(135deg, #f44336 0%, #ef5350 100%);
   color: white;
+  box-shadow: 0 2px 4px rgba(244, 67, 54, 0.2);
 }
 
 .total-games {
@@ -1944,32 +1969,92 @@ table tbody tr:hover {
 
 /* Mobile Matrix Styles */
 @media (max-width: 768px) {
+  .pick-differences-header {
+    margin-bottom: 15px;
+    padding: 0 10px;
+  }
+  
+  .pick-differences-description {
+    font-size: 13px;
+    margin: 6px 0 12px 0;
+    line-height: 1.4;
+  }
+  
+  .mobile-hint {
+    font-size: 12px;
+    padding: 6px 10px;
+    margin-top: 6px;
+  }
+  
+  .pick-differences-header h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+  
   .pick-differences-container {
     margin: 10px 0;
     border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .pick-differences-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
   }
   
   .pick-differences-matrix {
-    font-size: 12px;
+    font-size: 13px;
+    min-width: 500px;
+    border-collapse: collapse;
   }
   
   .pick-differences-matrix th,
   .pick-differences-matrix td {
-    padding: 8px 6px;
-    font-size: 12px;
+    padding: 12px 10px;
+    font-size: 13px;
+    border: none !important;
+    box-shadow: none !important;
   }
   
-  .matrix-corner-header,
-  .matrix-row-header {
+  .matrix-corner-header {
     min-width: 120px;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%) !important;
   }
   
   .matrix-header {
     min-width: 80px;
+    background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%) !important;
+  }
+  
+  .matrix-header.current-user-header {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%) !important;
+    color: white !important;
+    font-weight: bold;
+  }
+  
+  .matrix-row-header {
+    min-width: 120px;
+    background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%) !important;
+  }
+  
+  .matrix-row-header.current-user-row-header {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%) !important;
+    color: white !important;
+    font-weight: bold;
   }
   
   .matrix-cell {
     min-width: 60px;
+    background-color: #f8f9fa;
+  }
+  
+  .matrix-cell.current-user-cell {
+    background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 100%);
+    border-left: 4px solid #4caf50;
+    border-right: 4px solid #4caf50;
   }
   
   .header-player-name,
@@ -1984,7 +2069,9 @@ table tbody tr:hover {
   
   .difference-count {
     font-size: 12px;
-    padding: 2px 4px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
   }
   
   .total-games {
@@ -1998,14 +2085,42 @@ table tbody tr:hover {
 
 /* Very Small Mobile Matrix */
 @media (max-width: 480px) {
-  .pick-differences-matrix {
+  .pick-differences-header {
+    margin-bottom: 15px;
+    padding: 0 5px;
+  }
+  
+  .pick-differences-description {
+    font-size: 12px;
+    margin: 5px 0 10px 0;
+    line-height: 1.3;
+  }
+  
+  .mobile-hint {
     font-size: 11px;
+    padding: 5px 8px;
+    margin-top: 5px;
+  }
+  
+  .pick-differences-header h3 {
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+  }
+  
+  .pick-differences-container {
+    margin: 10px 0;
+    border-radius: 12px;
+  }
+  
+  .pick-differences-matrix {
+    font-size: 12px;
+    min-width: 400px;
   }
   
   .pick-differences-matrix th,
   .pick-differences-matrix td {
-    padding: 6px 4px;
-    font-size: 11px;
+    padding: 8px 6px;
+    font-size: 12px;
   }
   
   .matrix-corner-header,
@@ -2033,7 +2148,9 @@ table tbody tr:hover {
   
   .difference-count {
     font-size: 11px;
-    padding: 2px 3px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-weight: 500;
   }
   
   .total-games {
