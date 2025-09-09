@@ -1467,10 +1467,6 @@ table tbody tr:hover {
     font-size: 12px; /* Larger for better mobile readability */
     font-weight: 600;
     color: #2c3e50;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 4px;
   }
   
   .away-team, .home-team {
@@ -1620,10 +1616,6 @@ table tbody tr:hover {
     font-size: 11px; /* Larger for better readability */
     font-weight: 600;
     color: #2c3e50;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 3px;
   }
   
   .away-team, .home-team {
@@ -1739,10 +1731,6 @@ table tbody tr:hover {
     font-size: 13px; /* Closer to desktop size */
     font-weight: 600;
     color: #2c3e50;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 4px;
   }
   
   .away-team, .home-team {

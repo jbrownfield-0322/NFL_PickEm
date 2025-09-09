@@ -266,7 +266,7 @@ function Leaderboard() {
                   <tr>
                     <th className="game-header">
                       <div className="header-content">
-                        <span className="header-title">Game</span>
+                        <span className="header-title">Matchup</span>
                         <span className="header-subtitle">Away @ Home</span>
                       </div>
                     </th>
@@ -276,9 +276,7 @@ function Leaderboard() {
                           <span className="header-title">
                             {username === user.username ? 'You' : (usernameToNameMap.get(username) || username)}
                           </span>
-                          <span className="header-subtitle">
-                            {username === user.username ? user.name || user.username : username}
-                          </span>
+                          <span className="header-subtitle">Pick</span>
                         </div>
                       </th>
                     ))}
