@@ -1055,24 +1055,6 @@ table tbody tr:hover {
   position: relative;
 }
 
-/* Add scroll indicators for mobile */
-.pick-comparison-scroll::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 20px;
-  height: 100%;
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.1), transparent);
-  pointer-events: none;
-  z-index: 5;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.pick-comparison-scroll.scrollable::before {
-  opacity: 1;
-}
 
 .pick-comparison-table {
   width: 100%;
@@ -1358,7 +1340,9 @@ table tbody tr:hover {
   .pick-comparison-table td {
     padding: 12px 10px; /* Increased horizontal padding to prevent clipping */
     font-size: 13px;
-    /* Remove border-right to match desktop */
+    /* Remove all borders to prevent artifacts */
+    border: none !important;
+    box-shadow: none !important;
   }
   
   .game-header {
