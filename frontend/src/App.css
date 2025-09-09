@@ -1325,7 +1325,7 @@ table tbody tr:hover {
 /* Enhanced Mobile Pick Comparison Table - Desktop-like styling */
 @media (max-width: 768px) {
   .pick-comparison-container {
-    margin: 10px -15px; /* Extend to screen edges */
+    margin: 10px 0; /* Remove negative margins to prevent clipping */
     border-radius: 12px; /* Keep desktop border radius */
     background: #ffffff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Keep desktop shadow */
@@ -1336,13 +1336,6 @@ table tbody tr:hover {
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
     position: relative;
-    /* Add subtle gradient fade at edges to indicate scrollable content */
-    background: linear-gradient(90deg, 
-      rgba(255,255,255,0) 0%, 
-      rgba(255,255,255,1) 5%, 
-      rgba(255,255,255,1) 95%, 
-      rgba(255,255,255,0) 100%
-    );
     /* Add scroll snap for better mobile experience */
     scroll-snap-type: x mandatory;
     /* Improve touch scrolling */
@@ -1354,24 +1347,6 @@ table tbody tr:hover {
   }
   
   
-  /* Add scroll fade indicators */
-  .pick-comparison-scroll::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 20px;
-    height: 100%;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 100%);
-    pointer-events: none;
-    z-index: 5;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  
-  .pick-comparison-scroll.scrollable::after {
-    opacity: 1;
-  }
   
   .pick-comparison-table {
     font-size: 13px; /* Slightly larger for better mobile readability */
@@ -1559,7 +1534,7 @@ table tbody tr:hover {
   }
   
   .pick-comparison-container {
-    margin: 10px -10px;
+    margin: 10px 0; /* Remove negative margins to prevent clipping */
     border-radius: 12px; /* Keep desktop border radius */
   }
   
