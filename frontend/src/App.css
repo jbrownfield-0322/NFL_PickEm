@@ -1463,7 +1463,16 @@ table tbody tr:hover {
     box-shadow: 2px 0 6px rgba(0, 0, 0, 0.15);
   }
   
+  .game-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
   .game-teams {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
     font-size: 12px; /* Larger for better mobile readability */
     font-weight: 600;
     color: #2c3e50;
@@ -1613,6 +1622,9 @@ table tbody tr:hover {
   }
   
   .game-teams {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
     font-size: 11px; /* Larger for better readability */
     font-weight: 600;
     color: #2c3e50;
@@ -1728,6 +1740,9 @@ table tbody tr:hover {
   }
   
   .game-teams {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
     font-size: 13px; /* Closer to desktop size */
     font-weight: 600;
     color: #2c3e50;
