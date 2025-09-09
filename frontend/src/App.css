@@ -1464,15 +1464,15 @@ table tbody tr:hover {
   }
   
   .game-details {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
   }
   
   .game-teams {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
     font-size: 12px; /* Larger for better mobile readability */
     font-weight: 600;
     color: #2c3e50;
@@ -1622,9 +1622,9 @@ table tbody tr:hover {
   }
   
   .game-teams {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
     font-size: 11px; /* Larger for better readability */
     font-weight: 600;
     color: #2c3e50;
@@ -1740,9 +1740,9 @@ table tbody tr:hover {
   }
   
   .game-teams {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
     font-size: 13px; /* Closer to desktop size */
     font-weight: 600;
     color: #2c3e50;
