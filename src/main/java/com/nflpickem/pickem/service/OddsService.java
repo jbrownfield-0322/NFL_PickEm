@@ -543,62 +543,60 @@ public class OddsService {
     }
     
     /**
-     * Save or update odds for a week
+     * Save or update odds for a week using upsert
      */
     public List<BettingOdds> updateOddsForWeek(Integer week) {
         List<BettingOdds> fetchedOdds = fetchOddsForWeek(week);
         List<BettingOdds> savedOdds = new ArrayList<>();
         
         for (BettingOdds odds : fetchedOdds) {
-            // Check if odds already exist for this game and sportsbook
-            Optional<BettingOdds> existingOdds = bettingOddsRepository
-                .findByGameAndSportsbook(odds.getGame(), odds.getSportsbook());
+            // Use upsert to atomically insert or update odds
+            bettingOddsRepository.upsertOdds(
+                odds.getGame().getId(),
+                odds.getSportsbook(),
+                odds.getOddsType(),
+                odds.getSpread(),
+                odds.getSpreadTeam(),
+                odds.getTotal(),
+                odds.getHomeTeamOdds(),
+                odds.getAwayTeamOdds(),
+                odds.getLastUpdated()
+            );
             
-            if (existingOdds.isPresent()) {
-                // Update existing odds
-                BettingOdds existing = existingOdds.get();
-                existing.setSpread(odds.getSpread());
-                existing.setSpreadTeam(odds.getSpreadTeam());
-                existing.setTotal(odds.getTotal());
-                existing.setHomeTeamOdds(odds.getHomeTeamOdds());
-                existing.setAwayTeamOdds(odds.getAwayTeamOdds());
-                existing.setLastUpdated(Instant.now());
-                savedOdds.add(bettingOddsRepository.save(existing));
-            } else {
-                // Save new odds
-                savedOdds.add(bettingOddsRepository.save(odds));
-            }
+            // Fetch the saved odds to return
+            Optional<BettingOdds> savedOdd = bettingOddsRepository
+                .findByGameAndSportsbook(odds.getGame(), odds.getSportsbook());
+            savedOdd.ifPresent(savedOdds::add);
         }
         
         return savedOdds;
     }
     
     /**
-     * Update all available odds and create/update games as needed
+     * Update all available odds and create/update games as needed using upsert
      */
     public List<BettingOdds> updateAllAvailableOdds() {
         List<BettingOdds> fetchedOdds = fetchAllAvailableOdds();
         List<BettingOdds> savedOdds = new ArrayList<>();
         
         for (BettingOdds odds : fetchedOdds) {
-            // Check if odds already exist for this game and sportsbook
-            Optional<BettingOdds> existingOdds = bettingOddsRepository
-                .findByGameAndSportsbook(odds.getGame(), odds.getSportsbook());
+            // Use upsert to atomically insert or update odds
+            bettingOddsRepository.upsertOdds(
+                odds.getGame().getId(),
+                odds.getSportsbook(),
+                odds.getOddsType(),
+                odds.getSpread(),
+                odds.getSpreadTeam(),
+                odds.getTotal(),
+                odds.getHomeTeamOdds(),
+                odds.getAwayTeamOdds(),
+                odds.getLastUpdated()
+            );
             
-        if (existingOdds.isPresent()) {
-                // Update existing odds
-            BettingOdds existing = existingOdds.get();
-            existing.setSpread(odds.getSpread());
-            existing.setSpreadTeam(odds.getSpreadTeam());
-            existing.setTotal(odds.getTotal());
-            existing.setHomeTeamOdds(odds.getHomeTeamOdds());
-            existing.setAwayTeamOdds(odds.getAwayTeamOdds());
-            existing.setLastUpdated(Instant.now());
-                savedOdds.add(bettingOddsRepository.save(existing));
-        } else {
-                // Save new odds
-                savedOdds.add(bettingOddsRepository.save(odds));
-            }
+            // Fetch the saved odds to return
+            Optional<BettingOdds> savedOdd = bettingOddsRepository
+                .findByGameAndSportsbook(odds.getGame(), odds.getSportsbook());
+            savedOdd.ifPresent(savedOdds::add);
         }
         
         return savedOdds;

@@ -5,6 +5,9 @@ import lombok.Data;
 import java.time.Instant;
 
 @Entity
+@Table(uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"game_id", "sportsbook", "oddsType"})
+})
 @Data
 public class BettingOdds {
     @Id
