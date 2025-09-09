@@ -1762,7 +1762,7 @@ table tbody tr:hover {
   }
 }
 
-/* Pick Differences Table Styles */
+/* Pick Differences Matrix Styles */
 .pick-differences-header {
   margin-bottom: 20px;
 }
@@ -1782,73 +1782,142 @@ table tbody tr:hover {
   background-color: white;
 }
 
-.pick-differences-table {
-  width: 100%;
+.matrix-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.pick-differences-matrix {
   border-collapse: collapse;
   background-color: white;
-  font-size: 14px;
+  font-size: 13px;
+  min-width: 100%;
 }
 
-.pick-differences-table th,
-.pick-differences-table td {
-  padding: 16px 12px;
+.pick-differences-matrix th,
+.pick-differences-matrix td {
+  padding: 12px 8px;
   text-align: center;
-  border-bottom: 1px solid #e9ecef;
+  border: 1px solid #e9ecef;
   vertical-align: middle;
+  white-space: nowrap;
 }
 
-.pick-differences-table th {
+/* Corner header (empty top-left cell) */
+.matrix-corner-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-right: 2px solid #dee2e6;
+  border-bottom: 2px solid #dee2e6;
+  min-width: 150px;
+  position: sticky;
+  left: 0;
+  z-index: 10;
+}
+
+/* Column headers */
+.matrix-header {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   font-weight: 600;
   color: #495057;
   border-bottom: 2px solid #dee2e6;
-}
-
-.player-diff-header {
-  text-align: left !important;
-  min-width: 200px;
-}
-
-.differences-header {
-  min-width: 120px;
-}
-
-.total-header {
   min-width: 100px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
 }
 
-.percentage-header {
-  min-width: 100px;
+.matrix-header.current-user-header {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  color: #1976d2;
+  font-weight: 700;
 }
 
-.player-diff-cell {
+/* Row headers */
+.matrix-row-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   text-align: left !important;
+  border-right: 2px solid #dee2e6;
+  min-width: 150px;
+  position: sticky;
+  left: 0;
+  z-index: 3;
+}
+
+.matrix-row-header.current-user-row-header {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  color: #1976d2;
+  font-weight: 700;
+}
+
+/* Matrix cells */
+.matrix-cell {
+  background-color: white;
+  min-width: 80px;
+  transition: background-color 0.2s ease;
+}
+
+.matrix-cell:hover {
   background-color: #f8f9fa;
 }
 
-.player-info {
+.matrix-cell.current-user-cell {
+  background-color: #f3f8ff;
+}
+
+.matrix-cell.current-user-cell:hover {
+  background-color: #e8f4fd;
+}
+
+/* Player info in headers */
+.header-player-info,
+.row-player-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  align-items: center;
 }
 
-.player-name {
+.header-player-name,
+.row-player-name {
   font-weight: 600;
   color: #2c3e50;
-  font-size: 14px;
+  font-size: 12px;
 }
 
-.player-username {
-  font-size: 12px;
+.header-player-username,
+.row-player-username {
+  font-size: 10px;
   color: #6c757d;
   font-style: italic;
 }
 
+/* Self cell (diagonal) */
+.self-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.self-indicator {
+  font-size: 18px;
+  color: #6c757d;
+  font-weight: bold;
+}
+
+/* Difference cell */
+.difference-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
 .difference-count {
   font-weight: 600;
-  font-size: 16px;
-  padding: 4px 8px;
-  border-radius: 12px;
+  font-size: 14px;
+  padding: 3px 6px;
+  border-radius: 8px;
   display: inline-block;
 }
 
@@ -1867,133 +1936,111 @@ table tbody tr:hover {
   color: white;
 }
 
-.total-count {
+.total-games {
+  font-size: 10px;
+  color: #6c757d;
   font-weight: 500;
-  color: #495057;
 }
 
-.percentage {
-  font-weight: 600;
-  font-size: 14px;
-  padding: 4px 8px;
-  border-radius: 12px;
-  display: inline-block;
-}
-
-.percentage.perfect-match {
-  background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
-  color: white;
-}
-
-.percentage.close-match {
-  background: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%);
-  color: white;
-}
-
-.percentage.different-match {
-  background: linear-gradient(135deg, #f44336 0%, #ef5350 100%);
-  color: white;
-}
-
-.difference-row:hover {
-  background-color: #f8f9fa;
-}
-
-/* Mobile Pick Differences Table */
+/* Mobile Matrix Styles */
 @media (max-width: 768px) {
   .pick-differences-container {
     margin: 10px 0;
     border-radius: 12px;
   }
   
-  .pick-differences-table {
-    font-size: 13px;
-  }
-  
-  .pick-differences-table th,
-  .pick-differences-table td {
-    padding: 12px 8px;
-    font-size: 13px;
-  }
-  
-  .player-diff-header {
-    min-width: 150px;
-  }
-  
-  .differences-header {
-    min-width: 100px;
-  }
-  
-  .total-header {
-    min-width: 80px;
-  }
-  
-  .percentage-header {
-    min-width: 80px;
-  }
-  
-  .player-name {
-    font-size: 13px;
-  }
-  
-  .player-username {
-    font-size: 11px;
-  }
-  
-  .difference-count {
-    font-size: 14px;
-    padding: 3px 6px;
-  }
-  
-  .percentage {
-    font-size: 12px;
-    padding: 3px 6px;
-  }
-}
-
-/* Very Small Mobile Pick Differences */
-@media (max-width: 480px) {
-  .pick-differences-table {
+  .pick-differences-matrix {
     font-size: 12px;
   }
   
-  .pick-differences-table th,
-  .pick-differences-table td {
-    padding: 10px 6px;
+  .pick-differences-matrix th,
+  .pick-differences-matrix td {
+    padding: 8px 6px;
     font-size: 12px;
   }
   
-  .player-diff-header {
+  .matrix-corner-header,
+  .matrix-row-header {
     min-width: 120px;
   }
   
-  .differences-header {
+  .matrix-header {
     min-width: 80px;
   }
   
-  .total-header {
-    min-width: 70px;
+  .matrix-cell {
+    min-width: 60px;
   }
   
-  .percentage-header {
-    min-width: 70px;
+  .header-player-name,
+  .row-player-name {
+    font-size: 11px;
   }
   
-  .player-name {
-    font-size: 12px;
-  }
-  
-  .player-username {
-    font-size: 10px;
+  .header-player-username,
+  .row-player-username {
+    font-size: 9px;
   }
   
   .difference-count {
-    font-size: 13px;
-    padding: 2px 5px;
+    font-size: 12px;
+    padding: 2px 4px;
   }
   
-  .percentage {
+  .total-games {
+    font-size: 9px;
+  }
+  
+  .self-indicator {
+    font-size: 16px;
+  }
+}
+
+/* Very Small Mobile Matrix */
+@media (max-width: 480px) {
+  .pick-differences-matrix {
     font-size: 11px;
-    padding: 2px 5px;
+  }
+  
+  .pick-differences-matrix th,
+  .pick-differences-matrix td {
+    padding: 6px 4px;
+    font-size: 11px;
+  }
+  
+  .matrix-corner-header,
+  .matrix-row-header {
+    min-width: 100px;
+  }
+  
+  .matrix-header {
+    min-width: 70px;
+  }
+  
+  .matrix-cell {
+    min-width: 50px;
+  }
+  
+  .header-player-name,
+  .row-player-name {
+    font-size: 10px;
+  }
+  
+  .header-player-username,
+  .row-player-username {
+    font-size: 8px;
+  }
+  
+  .difference-count {
+    font-size: 11px;
+    padding: 2px 3px;
+  }
+  
+  .total-games {
+    font-size: 8px;
+  }
+  
+  .self-indicator {
+    font-size: 14px;
   }
 }

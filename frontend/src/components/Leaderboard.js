@@ -19,13 +19,13 @@ function Leaderboard() {
 
   const API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8080');
 
-  // Function to calculate pick differences between current user and other players
-  const calculatePickDifferences = (comparisonData, currentUser) => {
+  // Function to calculate pick differences matrix between all players
+  const calculatePickDifferencesMatrix = (comparisonData, currentUser) => {
     if (!comparisonData || comparisonData.length === 0 || !currentUser) {
-      return [];
+      return { players: [], matrix: [] };
     }
 
-    // Get all unique usernames
+    // Get all unique usernames and create player list
     const allUsernames = new Set();
     const usernameToNameMap = new Map();
     
@@ -39,36 +39,63 @@ function Leaderboard() {
       });
     });
     
-    const otherUsers = Array.from(allUsernames).filter(username => username !== currentUser.username);
+    const players = Array.from(allUsernames).map(username => ({
+      username: username,
+      name: usernameToNameMap.get(username) || username,
+      isCurrentUser: username === currentUser.username
+    })).sort((a, b) => {
+      // Put current user first, then sort alphabetically
+      if (a.isCurrentUser) return -1;
+      if (b.isCurrentUser) return 1;
+      return a.name.localeCompare(b.name);
+    });
     
-    return otherUsers.map(otherUsername => {
-      let differences = 0;
-      let totalGames = 0;
-      
-      comparisonData.forEach(game => {
-        // Get current user's pick
-        const currentUserPick = game.yourPick;
-        
-        // Get other user's pick
-        const otherUserPick = game.otherPicks.find(p => p.username === otherUsername)?.pickedTeam;
-        
-        // Only count games where both users made picks
-        if (currentUserPick && otherUserPick) {
-          totalGames++;
-          if (currentUserPick !== otherUserPick) {
-            differences++;
-          }
+    // Create matrix of differences
+    const matrix = players.map(rowPlayer => 
+      players.map(colPlayer => {
+        if (rowPlayer.username === colPlayer.username) {
+          return { differences: 0, totalGames: 0, percentage: 0, isSelf: true };
         }
-      });
-      
-      return {
-        username: otherUsername,
-        name: usernameToNameMap.get(otherUsername) || otherUsername,
-        differences: differences,
-        totalGames: totalGames,
-        percentage: totalGames > 0 ? Math.round((differences / totalGames) * 100) : 0
-      };
-    }).sort((a, b) => a.differences - b.differences); // Sort by fewest differences first
+        
+        let differences = 0;
+        let totalGames = 0;
+        
+        comparisonData.forEach(game => {
+          // Get row player's pick
+          let rowPlayerPick;
+          if (rowPlayer.username === currentUser.username) {
+            rowPlayerPick = game.yourPick;
+          } else {
+            rowPlayerPick = game.otherPicks.find(p => p.username === rowPlayer.username)?.pickedTeam;
+          }
+          
+          // Get column player's pick
+          let colPlayerPick;
+          if (colPlayer.username === currentUser.username) {
+            colPlayerPick = game.yourPick;
+          } else {
+            colPlayerPick = game.otherPicks.find(p => p.username === colPlayer.username)?.pickedTeam;
+          }
+          
+          // Only count games where both players made picks
+          if (rowPlayerPick && colPlayerPick) {
+            totalGames++;
+            if (rowPlayerPick !== colPlayerPick) {
+              differences++;
+            }
+          }
+        });
+        
+        return {
+          differences: differences,
+          totalGames: totalGames,
+          percentage: totalGames > 0 ? Math.round((differences / totalGames) * 100) : 0,
+          isSelf: false
+        };
+      })
+    );
+    
+    return { players, matrix };
   };
 
   useEffect(() => {
@@ -125,9 +152,9 @@ function Leaderboard() {
           if (comparisonResponse.ok) {
             const comparisonData = await comparisonResponse.json();
             setPickComparison(comparisonData);
-            // Calculate pick differences
-            const differences = calculatePickDifferences(comparisonData, user);
-            setPickDifferences(differences);
+            // Calculate pick differences matrix
+            const matrixData = calculatePickDifferencesMatrix(comparisonData, user);
+            setPickDifferences(matrixData);
           } else {
             setPickComparison([]);
             setPickDifferences([]);
@@ -428,61 +455,76 @@ function Leaderboard() {
   };
 
   const renderPickDifferencesTable = () => {
-    if (pickDifferences.length === 0) {
+    if (!pickDifferences || !pickDifferences.players || pickDifferences.players.length === 0) {
       return null;
     }
+
+    const { players, matrix } = pickDifferences;
 
     return (
       <div className="table-container">
         <div className="pick-differences-header">
-          <h3>Pick Differences - Week {selectedWeek}</h3>
+          <h3>Pick Differences Matrix - Week {selectedWeek}</h3>
           <p className="pick-differences-description">
-            Shows how many picks you have different from each player in your league.
+            Shows how many picks differ between each pair of players. Read across rows to see how different each player is from others.
             {isMobile && (
               <span className="mobile-hint">
                 <br />
-                <strong>💡 Tip:</strong> Lower numbers mean you have more similar picks to that player.
+                <strong>💡 Tip:</strong> Scroll horizontally to see all players. Lower numbers = more similar picks.
               </span>
             )}
           </p>
         </div>
         
         <div className="pick-differences-container">
-          <table className="pick-differences-table">
-            <thead>
-              <tr>
-                <th className="player-diff-header">Player</th>
-                <th className="differences-header">Different Picks</th>
-                <th className="total-header">Total Games</th>
-                <th className="percentage-header">% Different</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pickDifferences.map((player) => (
-                <tr key={player.username} className="difference-row">
-                  <td className="player-diff-cell">
-                    <div className="player-info">
-                      <span className="player-name">{player.name}</span>
-                      <span className="player-username">@{player.username}</span>
-                    </div>
-                  </td>
-                  <td className="differences-cell">
-                    <span className={`difference-count ${player.differences === 0 ? 'perfect-match' : player.differences <= 2 ? 'close-match' : 'different-match'}`}>
-                      {player.differences}
-                    </span>
-                  </td>
-                  <td className="total-cell">
-                    <span className="total-count">{player.totalGames}</span>
-                  </td>
-                  <td className="percentage-cell">
-                    <span className={`percentage ${player.percentage === 0 ? 'perfect-match' : player.percentage <= 25 ? 'close-match' : 'different-match'}`}>
-                      {player.percentage}%
-                    </span>
-                  </td>
+          <div className="matrix-scroll">
+            <table className="pick-differences-matrix">
+              <thead>
+                <tr>
+                  <th className="matrix-corner-header"></th>
+                  {players.map((player) => (
+                    <th key={player.username} className={`matrix-header ${player.isCurrentUser ? 'current-user-header' : ''}`}>
+                      <div className="header-player-info">
+                        <span className="header-player-name">{player.name}</span>
+                        <span className="header-player-username">@{player.username}</span>
+                      </div>
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {players.map((rowPlayer, rowIndex) => (
+                  <tr key={rowPlayer.username} className={`matrix-row ${rowPlayer.isCurrentUser ? 'current-user-row' : ''}`}>
+                    <td className={`matrix-row-header ${rowPlayer.isCurrentUser ? 'current-user-row-header' : ''}`}>
+                      <div className="row-player-info">
+                        <span className="row-player-name">{rowPlayer.name}</span>
+                        <span className="row-player-username">@{rowPlayer.username}</span>
+                      </div>
+                    </td>
+                    {players.map((colPlayer, colIndex) => {
+                      const cellData = matrix[rowIndex][colIndex];
+                      return (
+                        <td key={colPlayer.username} className={`matrix-cell ${rowPlayer.isCurrentUser ? 'current-user-cell' : ''} ${colPlayer.isCurrentUser ? 'current-user-cell' : ''}`}>
+                          {cellData.isSelf ? (
+                            <div className="self-cell">
+                              <span className="self-indicator">—</span>
+                            </div>
+                          ) : (
+                            <div className="difference-cell">
+                              <span className={`difference-count ${cellData.differences === 0 ? 'perfect-match' : cellData.differences <= 2 ? 'close-match' : 'different-match'}`}>
+                                {cellData.differences}
+                              </span>
+                              <span className="total-games">/{cellData.totalGames}</span>
+                            </div>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     );
