@@ -6,6 +6,7 @@ function LeagueDetails() {
   const [league, setLeague] = useState(null);
   const [weeklyLeaderboard, setWeeklyLeaderboard] = useState([]);
   const [seasonLeaderboard, setSeasonLeaderboard] = useState([]);
+  const [weeklyWins, setWeeklyWins] = useState([]);
   const [currentWeek, setCurrentWeek] = useState(1); // Default, will be fetched
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,6 +51,15 @@ function LeagueDetails() {
         }
         const seasonData = await seasonResponse.json();
         setSeasonLeaderboard(seasonData);
+
+        // Fetch weekly wins for the league
+        const weeklyWinsUrl = `${API_BASE}/leaderboard/weekly-wins?leagueId=${leagueId}`;
+        const weeklyWinsResponse = await fetch(weeklyWinsUrl);
+        if (!weeklyWinsResponse.ok) {
+          throw new Error(`HTTP error! status: ${weeklyWinsResponse.status}`);
+        }
+        const weeklyWinsData = await weeklyWinsResponse.json();
+        setWeeklyWins(weeklyWinsData);
 
       } catch (error) {
         setError(error);
@@ -101,6 +111,37 @@ function LeagueDetails() {
     </div>
   );
 
+  const renderWeeklyWinsTable = () => (
+    <div className="table-container">
+      <h3>Weekly Wins</h3>
+      <p className="table-description">
+        Tracks the number of weeks each player has won. Ties count as wins for all tied players.
+      </p>
+      {weeklyWins.length === 0 ? (
+        <p>No weekly wins data available.</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Name</th>
+              <th>Weekly Wins</th>
+            </tr>
+          </thead>
+          <tbody>
+            {weeklyWins.map((player, index) => (
+              <tr key={player.username}>
+                <td data-label="Rank">{index + 1}</td>
+                <td data-label="Name">{player.name || player.username}</td>
+                <td data-label="Weekly Wins">{player.weeklyWins}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+
   return (
     <div className="main-content">
       <h2>League: {league.name}</h2>
@@ -116,6 +157,7 @@ function LeagueDetails() {
 
       {renderTable(`Weekly Leaderboard (Week ${currentWeek})`, weeklyLeaderboard)}
       {renderTable("Season Leaderboard", seasonLeaderboard)}
+      {renderWeeklyWinsTable()}
     </div>
   );
 }

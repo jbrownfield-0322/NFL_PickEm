@@ -4,6 +4,7 @@ import { useAuth } from '../AuthContext';
 function Leaderboard() {
   const [weeklyLeaderboard, setWeeklyLeaderboard] = useState([]);
   const [seasonLeaderboard, setSeasonLeaderboard] = useState([]);
+  const [weeklyWins, setWeeklyWins] = useState([]);
   const [leagues, setLeagues] = useState([]);
   const [selectedLeagueId, setSelectedLeagueId] = useState('');
   const [loading, setLoading] = useState(true);
@@ -144,6 +145,17 @@ function Leaderboard() {
           }
         } else {
           setSeasonLeaderboard([]);
+        }
+
+        // Fetch weekly wins only if league is selected
+        if (selectedLeagueId) {
+          const weeklyWinsResponse = await fetch(`${API_BASE}/leaderboard/weekly-wins?leagueId=${parseInt(selectedLeagueId, 10)}`);
+          if (weeklyWinsResponse.ok) {
+            const weeklyWinsData = await weeklyWinsResponse.json();
+            setWeeklyWins(weeklyWinsData);
+          }
+        } else {
+          setWeeklyWins([]);
         }
 
         // Fetch pick comparison only if league is selected
@@ -290,6 +302,37 @@ function Leaderboard() {
                 <td data-label="Rank">{index + 1}</td>
                 <td data-label="Name">{player.name || player.username}</td>
                 <td data-label="Score">{player.score}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+
+  const renderWeeklyWinsTable = () => (
+    <div className="table-container">
+      <h3>Weekly Wins</h3>
+      <p className="table-description">
+        Tracks the number of weeks each player has won. Ties count as wins for all tied players.
+      </p>
+      {weeklyWins.length === 0 ? (
+        <p>No weekly wins data available.</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Name</th>
+              <th>Weekly Wins</th>
+            </tr>
+          </thead>
+          <tbody>
+            {weeklyWins.map((player, index) => (
+              <tr key={player.username}>
+                <td data-label="Rank">{index + 1}</td>
+                <td data-label="Name">{player.name || player.username}</td>
+                <td data-label="Weekly Wins">{player.weeklyWins}</td>
               </tr>
             ))}
           </tbody>
@@ -559,6 +602,7 @@ function Leaderboard() {
 
       {renderTable(`Weekly Leaderboard (Week ${selectedWeek})`, weeklyLeaderboard)}
       {renderTable("Season Leaderboard", seasonLeaderboard)}
+      {renderWeeklyWinsTable()}
       {renderPickComparisonTable()}
       {renderPickDifferencesTable()}
     </div>
