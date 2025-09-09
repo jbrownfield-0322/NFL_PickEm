@@ -1381,13 +1381,13 @@ table tbody tr:hover {
   
   .pick-comparison-table th,
   .pick-comparison-table td {
-    padding: 12px 8px; /* Closer to desktop padding */
+    padding: 12px 10px; /* Increased horizontal padding to prevent clipping */
     font-size: 13px;
     /* Remove border-right to match desktop */
   }
   
   .game-header {
-    min-width: 160px; /* Larger to match desktop proportions */
+    min-width: 180px; /* Increased to prevent text clipping */
     position: sticky;
     left: 0;
     z-index: 15;
@@ -1571,12 +1571,12 @@ table tbody tr:hover {
   
   .pick-comparison-table th,
   .pick-comparison-table td {
-    padding: 8px 4px; /* Closer to desktop padding */
+    padding: 8px 6px; /* Increased horizontal padding to prevent clipping */
     font-size: 12px;
   }
   
   .game-header {
-    min-width: 130px; /* Larger to match desktop proportions */
+    min-width: 150px; /* Increased to prevent text clipping on small screens */
     font-size: 11px;
   }
   
@@ -1692,7 +1692,7 @@ table tbody tr:hover {
   }
   
   .game-header {
-    min-width: 180px; /* Larger to match desktop proportions */
+    min-width: 200px; /* Increased to prevent text clipping in landscape */
   }
   
   .player-header {
@@ -1705,7 +1705,7 @@ table tbody tr:hover {
   
   .pick-comparison-table th,
   .pick-comparison-table td {
-    padding: 14px 10px; /* Closer to desktop padding */
+    padding: 14px 12px; /* Increased horizontal padding to prevent clipping */
     font-size: 14px;
   }
   
