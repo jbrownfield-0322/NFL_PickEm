@@ -502,40 +502,40 @@ table tbody tr:hover {
 
   /* Responsive table for mobile */
   @media (max-width: 600px) {
-    table:not(.pick-comparison-table):not(.pick-differences-matrix) {
+    table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) {
       display: block;
       overflow-x: auto;
       white-space: nowrap;
     }
 
-    table:not(.pick-comparison-table):not(.pick-differences-matrix) th,
-    table:not(.pick-comparison-table):not(.pick-differences-matrix) td {
+    table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) th,
+    table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) td {
       min-width: 100px;
     }
 
     /* Improve spacing for medium mobile screens */
-    table:not(.pick-comparison-table):not(.pick-differences-matrix) td {
+    table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) td {
       padding: 10px 8px;
     }
 
                   /* Stack table cells for very small screens */
         @media (max-width: 480px) {
-          table:not(.pick-comparison-table):not(.pick-differences-matrix),
-          table:not(.pick-comparison-table):not(.pick-differences-matrix) thead,
-          table:not(.pick-comparison-table):not(.pick-differences-matrix) tbody,
-          table:not(.pick-comparison-table):not(.pick-differences-matrix) th,
-          table:not(.pick-comparison-table):not(.pick-differences-matrix) td,
-          table:not(.pick-comparison-table):not(.pick-differences-matrix) tr {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table),
+          table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) thead,
+          table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) tbody,
+          table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) th,
+          table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) td,
+          table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) tr {
             display: block;
           }
 
-          table:not(.pick-comparison-table):not(.pick-differences-matrix) thead tr {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) thead tr {
             position: absolute;
             top: -9999px;
             left: -9999px;
           }
 
-          table:not(.pick-comparison-table):not(.pick-differences-matrix) tr {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) tr {
             border: 1px solid #ccc;
             margin-bottom: 10px;
             border-radius: 6px;
@@ -543,7 +543,7 @@ table tbody tr:hover {
             padding: 10px;
           }
 
-          table:not(.pick-comparison-table):not(.pick-differences-matrix) td {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) td {
             border: none;
             border-bottom: 1px solid #eee;
             position: relative;
@@ -558,7 +558,7 @@ table tbody tr:hover {
             align-items: center;
           }
 
-          table:not(.pick-comparison-table):not(.pick-differences-matrix) td:before {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) td:before {
             content: attr(data-label) ": ";
             font-weight: bold;
             color: #333;
@@ -567,22 +567,22 @@ table tbody tr:hover {
             grid-column: 1;
           }
 
-          table:not(.pick-comparison-table):not(.pick-differences-matrix) td > * {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) td > * {
             grid-column: 2;
           }
 
-          table:not(.pick-comparison-table):not(.pick-differences-matrix) td:last-child {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) td:last-child {
             border-bottom: none;
           }
 
           /* Special handling for select elements in table cells */
-          table:not(.pick-comparison-table):not(.pick-differences-matrix) td select {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) td select {
             width: 100%;
             max-width: 200px;
           }
 
           /* Special handling for links in table cells */
-          table:not(.pick-comparison-table):not(.pick-differences-matrix) td a {
+          table:not(.pick-comparison-table):not(.pick-differences-matrix):not(.score-tally-table) td a {
             display: inline-block;
           }
         }
@@ -2159,5 +2159,208 @@ table tbody tr:hover {
   
   .self-indicator {
     font-size: 14px;
+  }
+}
+
+/* Score Tally Table Styles - Similar to comparison tables */
+.score-tally-table {
+  width: 100%;
+  min-width: 400px;
+  border-collapse: collapse;
+  background-color: white;
+  font-size: 14px;
+}
+
+.score-tally-table th,
+.score-tally-table td {
+  padding: 16px 12px;
+  text-align: center;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: middle;
+  position: relative;
+}
+
+.score-tally-table th {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.score-tally-table td {
+  background-color: #ffffff;
+}
+
+.score-tally-table tr:nth-child(even) td {
+  background-color: #f8f9fa;
+}
+
+.score-tally-table tr:hover td {
+  background-color: #e9ecef;
+}
+
+.score-tally-container {
+  margin-top: 15px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.score-tally-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Mobile Score Tally Styles */
+@media (max-width: 768px) {
+  .score-tally-container {
+    margin: 10px 0;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .score-tally-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+  }
+  
+  .score-tally-table {
+    font-size: 13px;
+    min-width: 350px;
+    border-collapse: collapse;
+  }
+  
+  .score-tally-table th,
+  .score-tally-table td {
+    padding: 12px 10px;
+    font-size: 13px;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  
+  .score-tally-table th {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  .score-tally-table td {
+    background-color: #ffffff;
+  }
+  
+  .score-tally-table tr:nth-child(even) td {
+    background-color: #f8f9fa;
+  }
+  
+  .score-tally-table tr:hover td {
+    background-color: #e9ecef;
+  }
+}
+
+/* Very Small Mobile Score Tally */
+@media (max-width: 480px) {
+  .score-tally-container {
+    margin: 10px 0;
+    border-radius: 12px;
+  }
+  
+  .score-tally-table {
+    font-size: 12px;
+    min-width: 300px;
+  }
+  
+  .score-tally-table th,
+  .score-tally-table td {
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+}
+
+/* Combined Table Specific Styles */
+.score-tally-table .player-info {
+  text-align: left;
+}
+
+.score-tally-table .player-name {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 2px;
+}
+
+.score-tally-table .player-username {
+  font-size: 12px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.score-tally-table .score-with-rank {
+  text-align: center;
+}
+
+.score-tally-table .score-value {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 2px;
+}
+
+.score-tally-table .rank-info {
+  font-size: 11px;
+  color: #6c757d;
+  font-weight: 400;
+}
+
+.score-tally-table .no-data {
+  color: #6c757d;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Mobile Combined Table Adjustments */
+@media (max-width: 768px) {
+  .score-tally-table .player-name {
+    font-size: 13px;
+  }
+  
+  .score-tally-table .player-username {
+    font-size: 11px;
+  }
+  
+  .score-tally-table .score-value {
+    font-size: 13px;
+  }
+  
+  .score-tally-table .rank-info {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .score-tally-table .player-name {
+    font-size: 12px;
+  }
+  
+  .score-tally-table .player-username {
+    font-size: 10px;
+  }
+  
+  .score-tally-table .score-value {
+    font-size: 12px;
+  }
+  
+  .score-tally-table .rank-info {
+    font-size: 9px;
   }
 }

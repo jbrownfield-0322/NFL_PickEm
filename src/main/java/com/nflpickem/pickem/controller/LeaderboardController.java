@@ -50,4 +50,16 @@ public class LeaderboardController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/week/{weekNum}/complete")
+    public ResponseEntity<Boolean> isWeekComplete(@PathVariable Integer weekNum) {
+        try {
+            if (weekNum == null || weekNum < 1) {
+                return ResponseEntity.badRequest().build();
+            }
+            return ResponseEntity.ok(leaderboardService.isWeekComplete(weekNum));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 } 
