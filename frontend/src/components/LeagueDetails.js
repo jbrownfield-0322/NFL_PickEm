@@ -89,24 +89,28 @@ function LeagueDetails() {
       {data.length === 0 ? (
         <p>No data available for this leaderboard.</p>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Rank</th>
-                              <th>Name</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((player, index) => (
-              <tr key={player.username}>
-                <td data-label="Rank">{index + 1}</td>
-                <td data-label="Name">{player.name || player.username}</td>
-                <td data-label="Score">{player.score}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="score-tally-container">
+          <div className="score-tally-scroll">
+            <table className="score-tally-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Name</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((player, index) => (
+                  <tr key={player.username}>
+                    <td data-label="Rank">{index + 1}</td>
+                    <td data-label="Name">{player.name || player.username}</td>
+                    <td data-label="Score">{player.score}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -120,24 +124,28 @@ function LeagueDetails() {
       {weeklyWins.length === 0 ? (
         <p>No weekly wins data available.</p>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Name</th>
-              <th>Weekly Wins</th>
-            </tr>
-          </thead>
-          <tbody>
-            {weeklyWins.map((player, index) => (
-              <tr key={player.username}>
-                <td data-label="Rank">{index + 1}</td>
-                <td data-label="Name">{player.name || player.username}</td>
-                <td data-label="Weekly Wins">{player.weeklyWins}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="score-tally-container">
+          <div className="score-tally-scroll">
+            <table className="score-tally-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Name</th>
+                  <th>Weekly Wins</th>
+                </tr>
+              </thead>
+              <tbody>
+                {weeklyWins.map((player, index) => (
+                  <tr key={player.username}>
+                    <td data-label="Rank">{index + 1}</td>
+                    <td data-label="Name">{player.name || player.username}</td>
+                    <td data-label="Weekly Wins">{player.weeklyWins}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
     </div>
   );
