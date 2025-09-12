@@ -83,6 +83,171 @@ function LeagueDetails() {
     return <div>League not found.</div>;
   }
 
+  // Function to combine all leaderboard data into one table
+  const combineLeaderboardData = () => {
+    // Create a map to store combined player data
+    const playerMap = new Map();
+    
+    // Add weekly leaderboard data
+    weeklyLeaderboard.forEach((player, index) => {
+      const key = player.username;
+      if (!playerMap.has(key)) {
+        playerMap.set(key, {
+          username: player.username,
+          name: player.name || player.username,
+          weeklyRank: index + 1,
+          weeklyScore: player.score,
+          seasonRank: null,
+          seasonScore: null,
+          weeklyWins: null
+        });
+      } else {
+        const existing = playerMap.get(key);
+        existing.weeklyRank = index + 1;
+        existing.weeklyScore = player.score;
+      }
+    });
+    
+    // Add season leaderboard data
+    seasonLeaderboard.forEach((player, index) => {
+      const key = player.username;
+      if (!playerMap.has(key)) {
+        playerMap.set(key, {
+          username: player.username,
+          name: player.name || player.username,
+          weeklyRank: null,
+          weeklyScore: null,
+          seasonRank: index + 1,
+          seasonScore: player.score,
+          weeklyWins: null
+        });
+      } else {
+        const existing = playerMap.get(key);
+        existing.seasonRank = index + 1;
+        existing.seasonScore = player.score;
+      }
+    });
+    
+    // Add weekly wins data
+    weeklyWins.forEach((player, index) => {
+      const key = player.username;
+      if (!playerMap.has(key)) {
+        playerMap.set(key, {
+          username: player.username,
+          name: player.name || player.username,
+          weeklyRank: null,
+          weeklyScore: null,
+          seasonRank: null,
+          seasonScore: null,
+          weeklyWins: player.weeklyWins
+        });
+      } else {
+        const existing = playerMap.get(key);
+        existing.weeklyWins = player.weeklyWins;
+      }
+    });
+    
+    // Convert map to array and sort by season rank (primary) or weekly rank (secondary)
+    return Array.from(playerMap.values()).sort((a, b) => {
+      // If both have season ranks, sort by season rank
+      if (a.seasonRank && b.seasonRank) {
+        return a.seasonRank - b.seasonRank;
+      }
+      // If only one has season rank, prioritize it
+      if (a.seasonRank && !b.seasonRank) return -1;
+      if (!a.seasonRank && b.seasonRank) return 1;
+      // If neither has season rank, sort by weekly rank
+      if (a.weeklyRank && b.weeklyRank) {
+        return a.weeklyRank - b.weeklyRank;
+      }
+      // If only one has weekly rank, prioritize it
+      if (a.weeklyRank && !b.weeklyRank) return -1;
+      if (!a.weeklyRank && b.weeklyRank) return 1;
+      // Finally, sort alphabetically by name
+      return a.name.localeCompare(b.name);
+    });
+  };
+
+  const renderCombinedTable = () => {
+    const combinedData = combineLeaderboardData();
+    
+    return (
+      <div className="table-container">
+        <h3>League Standings</h3>
+        <p className="table-description">
+          Combined view of weekly scores, season totals, and weekly wins for all players.
+        </p>
+        {combinedData.length === 0 ? (
+          <p>No leaderboard data available.</p>
+        ) : (
+          <div className="score-tally-container">
+            <div className="score-tally-scroll">
+              <table className="score-tally-table">
+                <thead>
+                  <tr>
+                    <th>Player</th>
+                    <th>Weekly Score</th>
+                    <th>Season Score</th>
+                    <th>Weekly Wins</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {combinedData.map((player) => (
+                    <tr key={player.username}>
+                      <td data-label="Player">
+                        <div className="player-info">
+                          <div className="player-name">{player.name}</div>
+                          <div className="player-username">
+                            @{player.username}
+                          </div>
+                        </div>
+                      </td>
+                      <td data-label="Weekly Score">
+                        {player.weeklyScore !== null ? (
+                          <div className="score-with-rank">
+                            <div className="score-value">{player.weeklyScore}</div>
+                            {player.weeklyRank && (
+                              <div className="rank-info">
+                                Rank #{player.weeklyRank}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="no-data">—</span>
+                        )}
+                      </td>
+                      <td data-label="Season Score">
+                        {player.seasonScore !== null ? (
+                          <div className="score-with-rank">
+                            <div className="score-value">{player.seasonScore}</div>
+                            {player.seasonRank && (
+                              <div className="rank-info">
+                                Rank #{player.seasonRank}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="no-data">—</span>
+                        )}
+                      </td>
+                      <td data-label="Weekly Wins">
+                        {player.weeklyWins !== null ? (
+                          <span className="score-value">{player.weeklyWins}</span>
+                        ) : (
+                          <span className="no-data">—</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const renderTable = (title, data) => (
     <div className="table-container">
       <h3>{title}</h3>
@@ -163,9 +328,7 @@ function LeagueDetails() {
         ))}
       </ul>
 
-      {renderTable(`Weekly Leaderboard (Week ${currentWeek})`, weeklyLeaderboard)}
-      {renderTable("Season Leaderboard", seasonLeaderboard)}
-      {renderWeeklyWinsTable()}
+      {renderCombinedTable()}
     </div>
   );
 }
