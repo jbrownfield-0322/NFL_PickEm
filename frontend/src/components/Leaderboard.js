@@ -11,6 +11,7 @@ function Leaderboard() {
   const [error, setError] = useState(null);
   const [currentWeek, setCurrentWeek] = useState(1);
   const [selectedWeek, setSelectedWeek] = useState(1);
+  const [hasInitialized, setHasInitialized] = useState(false);
   const [pickComparison, setPickComparison] = useState([]);
   const [showPickComparison, setShowPickComparison] = useState(false);
   const [isScrollable, setIsScrollable] = useState(false);
@@ -113,8 +114,10 @@ function Leaderboard() {
           const weekData = await weekResponse.text();
           const fetchedWeek = parseInt(weekData, 10);
           setCurrentWeek(fetchedWeek);
-          if (selectedWeek === 1) {
+          // Only set selectedWeek to current week on initial load
+          if (!hasInitialized) {
             setSelectedWeek(fetchedWeek);
+            setHasInitialized(true);
           }
         }
 
