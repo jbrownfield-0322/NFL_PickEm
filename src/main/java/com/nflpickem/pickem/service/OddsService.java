@@ -259,27 +259,35 @@ public class OddsService {
     
     /**
      * Calculate NFL week number based on game date and season start
+     * NFL weeks run Thursday to Wednesday
      */
     private Integer calculateNflWeek(LocalDate gameDate, LocalDate seasonStart) {
-        long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(seasonStart, gameDate);
-        
-        if (daysBetween < 0) {
+        if (gameDate.isBefore(seasonStart)) {
             return null; // Before season
         }
         
-        // NFL regular season is 18 weeks
-        // Calculate week based on days since season start
-        // Each week is approximately 7 days, but we'll be more flexible
+        // NFL weeks run Thursday to Wednesday
+        // Find which Thursday-to-Wednesday period the game falls into
         
-        int week = (int) (daysBetween / 7) + 1;
+        LocalDate currentWeekStart = seasonStart; // This should be a Thursday
+        int week = 1;
         
-        // Cap at 18 weeks for regular season
-        if (week > 18) {
-            return 18; // Week 18 or playoffs
+        // Iterate through weeks to find the correct one
+        while (week <= 18) {
+            LocalDate currentWeekEnd = currentWeekStart.plusDays(6); // Thursday to Wednesday (7 days)
+            
+            // Check if game falls within this week (inclusive)
+            if (!gameDate.isAfter(currentWeekEnd)) {
+                return week;
+            }
+            
+            // Move to next week (next Thursday)
+            currentWeekStart = currentWeekStart.plusDays(7);
+            week++;
         }
         
-        // Ensure we don't return week 0 or negative
-        return Math.max(1, week);
+        // If we get here, it's Week 18 or later
+        return 18;
     }
     
     /**
