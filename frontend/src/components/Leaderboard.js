@@ -17,6 +17,8 @@ function Leaderboard() {
   const [isScrollable, setIsScrollable] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [pickDifferences, setPickDifferences] = useState([]);
+  const [popupData, setPopupData] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
   const { user } = useAuth();
 
   const API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8080');
@@ -56,11 +58,12 @@ function Leaderboard() {
     const matrix = players.map(rowPlayer => 
       players.map(colPlayer => {
         if (rowPlayer.username === colPlayer.username) {
-          return { differences: 0, totalGames: 0, percentage: 0, isSelf: true };
+          return { differences: 0, totalGames: 0, percentage: 0, isSelf: true, differentGames: [] };
         }
         
         let differences = 0;
         let totalGames = 0;
+        const differentGames = [];
         
         comparisonData.forEach(game => {
           // Get row player's pick
@@ -84,6 +87,18 @@ function Leaderboard() {
             totalGames++;
             if (rowPlayerPick !== colPlayerPick) {
               differences++;
+              // Store the game details where picks differ
+              differentGames.push({
+                gameId: game.gameId,
+                awayTeam: game.awayTeam,
+                homeTeam: game.homeTeam,
+                kickoffTime: game.kickoffTime,
+                rowPlayerPick: rowPlayerPick,
+                colPlayerPick: colPlayerPick,
+                gameResult: game.gameResult,
+                rowPlayerCorrect: rowPlayerPick === game.gameResult,
+                colPlayerCorrect: colPlayerPick === game.gameResult
+              });
             }
           }
         });
@@ -92,12 +107,35 @@ function Leaderboard() {
           differences: differences,
           totalGames: totalGames,
           percentage: totalGames > 0 ? Math.round((differences / totalGames) * 100) : 0,
-          isSelf: false
+          isSelf: false,
+          differentGames: differentGames
         };
       })
     );
     
     return { players, matrix };
+  };
+
+  // Function to show popup with pick differences
+  const showPickDifferencesPopup = (rowPlayer, colPlayer, cellData) => {
+    if (cellData.isSelf || cellData.differentGames.length === 0) {
+      return;
+    }
+    
+    setPopupData({
+      rowPlayer: rowPlayer,
+      colPlayer: colPlayer,
+      differentGames: cellData.differentGames,
+      totalDifferences: cellData.differences,
+      totalGames: cellData.totalGames
+    });
+    setShowPopup(true);
+  };
+
+  // Function to hide popup
+  const hidePopup = () => {
+    setShowPopup(false);
+    setPopupData(null);
   };
 
   useEffect(() => {
@@ -731,7 +769,19 @@ function Leaderboard() {
                     {players.map((colPlayer, colIndex) => {
                       const cellData = matrix[rowIndex][colIndex];
                       return (
-                        <td key={colPlayer.username} className={`matrix-cell ${rowPlayer.isCurrentUser ? 'current-user-cell' : ''} ${colPlayer.isCurrentUser ? 'current-user-cell' : ''}`}>
+                        <td 
+                          key={colPlayer.username} 
+                          className={`matrix-cell ${rowPlayer.isCurrentUser ? 'current-user-cell' : ''} ${colPlayer.isCurrentUser ? 'current-user-cell' : ''} ${!cellData.isSelf && cellData.differentGames.length > 0 ? 'clickable-cell' : ''}`}
+                          onClick={() => showPickDifferencesPopup(rowPlayer, colPlayer, cellData)}
+                          onMouseEnter={(e) => {
+                            if (!cellData.isSelf && cellData.differentGames.length > 0) {
+                              e.target.style.cursor = 'pointer';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.cursor = 'default';
+                          }}
+                        >
                           {cellData.isSelf ? (
                             <div className="self-cell">
                               <span className="self-indicator">—</span>
@@ -742,6 +792,9 @@ function Leaderboard() {
                                 {cellData.differences}
                               </span>
                               <span className="total-games">/{cellData.totalGames}</span>
+                              {cellData.differentGames.length > 0 && (
+                                <div className="hover-hint">Click for details</div>
+                              )}
                             </div>
                           )}
                         </td>
@@ -751,6 +804,122 @@ function Leaderboard() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Popup component for showing pick differences
+  const renderPickDifferencesPopup = () => {
+    if (!showPopup || !popupData) {
+      return null;
+    }
+
+    const formatKickoffTime = (kickoffTime) => {
+      if (!kickoffTime) return 'TBD';
+      const date = new Date(kickoffTime);
+      return date.toLocaleString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        timeZoneName: 'short'
+      });
+    };
+
+    const getPickResultClass = (isCorrect) => {
+      return isCorrect ? 'correct-pick' : 'incorrect-pick';
+    };
+
+    const getPickResultIcon = (isCorrect) => {
+      return isCorrect ? '✅' : '❌';
+    };
+
+    return (
+      <div className="popup-overlay" onClick={hidePopup}>
+        <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+          <div className="popup-header">
+            <h3>Pick Differences</h3>
+            <button className="popup-close" onClick={hidePopup}>×</button>
+          </div>
+          
+          <div className="popup-body">
+            <div className="players-comparison">
+              <div className="player-info">
+                <strong>{popupData.rowPlayer.name}</strong>
+                <span className="username">@{popupData.rowPlayer.username}</span>
+              </div>
+              <div className="vs-separator">vs</div>
+              <div className="player-info">
+                <strong>{popupData.colPlayer.name}</strong>
+                <span className="username">@{popupData.colPlayer.username}</span>
+              </div>
+            </div>
+            
+            <div className="summary-stats">
+              <p>
+                <strong>{popupData.totalDifferences}</strong> different picks out of <strong>{popupData.totalGames}</strong> total games
+                ({Math.round((popupData.totalDifferences / popupData.totalGames) * 100)}% disagreement)
+              </p>
+            </div>
+
+            <div className="differences-list">
+              <h4>Games with Different Picks:</h4>
+              <div className="score-tally-container">
+                <div className="score-tally-scroll">
+                  <table className="score-tally-table">
+                    <thead>
+                      <tr>
+                        <th>Game</th>
+                        <th>Kickoff</th>
+                        <th>{popupData.rowPlayer.name}</th>
+                        <th>{popupData.colPlayer.name}</th>
+                        <th>Result</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {popupData.differentGames.map((game, index) => (
+                        <tr key={game.gameId || index}>
+                          <td data-label="Game">
+                            <div className="player-info">
+                              <div className="player-name">
+                                {game.awayTeam} @ {game.homeTeam}
+                              </div>
+                            </div>
+                          </td>
+                          <td data-label="Kickoff">
+                            <span className="score-value">
+                              {formatKickoffTime(game.kickoffTime)}
+                            </span>
+                          </td>
+                          <td data-label={popupData.rowPlayer.name}>
+                            <div className="pick-display">
+                              <span className={`pick-team ${getPickResultClass(game.rowPlayerCorrect)}`}>
+                                {getPickResultIcon(game.rowPlayerCorrect)} {game.rowPlayerPick}
+                              </span>
+                            </div>
+                          </td>
+                          <td data-label={popupData.colPlayer.name}>
+                            <div className="pick-display">
+                              <span className={`pick-team ${getPickResultClass(game.colPlayerCorrect)}`}>
+                                {getPickResultIcon(game.colPlayerCorrect)} {game.colPlayerPick}
+                              </span>
+                            </div>
+                          </td>
+                          <td data-label="Result">
+                            <span className="score-value">
+                              {game.gameResult || 'TBD'}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -787,6 +956,7 @@ function Leaderboard() {
       {renderCombinedTable()}
       {renderPickComparisonTable()}
       {renderPickDifferencesTable()}
+      {renderPickDifferencesPopup()}
     </div>
   );
 }
