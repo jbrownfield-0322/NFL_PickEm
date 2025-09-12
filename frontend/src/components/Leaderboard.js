@@ -377,7 +377,8 @@ function Leaderboard() {
       <div className="table-container">
         <h3>League Standings</h3>
         <p className="table-description">
-          Combined view of weekly scores, season totals, and weekly wins for all players.
+          Combined view of weekly scores, season totals, and weekly wins for all players. 
+          Weekly wins are only calculated after all games for a week have been completed and scored.
         </p>
         {combinedData.length === 0 ? (
           <p>No leaderboard data available.</p>
@@ -436,7 +437,9 @@ function Leaderboard() {
                         {player.weeklyWins !== null ? (
                           <span className="score-value">{player.weeklyWins}</span>
                         ) : (
-                          <span className="no-data">—</span>
+                          <span className="no-data" title="Weekly wins are only calculated after all games for completed weeks are scored">
+                            —
+                          </span>
                         )}
                       </td>
                     </tr>

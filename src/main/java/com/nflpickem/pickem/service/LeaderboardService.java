@@ -134,6 +134,18 @@ public class LeaderboardService {
             logger.info("Found weeks: {}", weeks);
             
             for (Integer week : weeks) {
+                // Check if all games for this week have been scored
+                List<Game> weekGames = gameRepository.findByWeek(week);
+                boolean allGamesScored = weekGames.stream().allMatch(Game::isScored);
+                
+                if (!allGamesScored) {
+                    logger.info("Week {}: Not all games scored yet ({} of {} games scored), skipping weekly wins calculation", 
+                        week, 
+                        weekGames.stream().mapToInt(g -> g.isScored() ? 1 : 0).sum(),
+                        weekGames.size());
+                    continue; // Skip this week if not all games are scored
+                }
+                
                 // Get weekly leaderboard for this week
                 List<PlayerScore> weeklyLeaderboard = getWeeklyLeaderboard(week, leagueId);
                 
@@ -146,7 +158,7 @@ public class LeaderboardService {
                             .filter(player -> player.getScore().equals(highestScore))
                             .collect(Collectors.toList());
                     
-                    logger.info("Week {}: {} players tied with score {}", week, winners.size(), highestScore);
+                    logger.info("Week {}: All games scored, {} players tied with score {}", week, winners.size(), highestScore);
                     
                     // Award a win to each player who tied for first
                     for (PlayerScore winner : winners) {
@@ -186,5 +198,16 @@ public class LeaderboardService {
             logger.error("Error getting weekly wins for leagueId: {}", leagueId, e);
             throw e;
         }
+    }
+
+    /**
+     * Check if all games for a specific week have been scored
+     */
+    public boolean isWeekComplete(Integer week) {
+        List<Game> weekGames = gameRepository.findByWeek(week);
+        if (weekGames.isEmpty()) {
+            return false; // No games for this week
+        }
+        return weekGames.stream().allMatch(Game::isScored);
     }
 } 
