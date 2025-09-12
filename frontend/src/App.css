@@ -2364,3 +2364,243 @@ table tbody tr:hover {
     font-size: 9px;
   }
 }
+
+/* Pick Differences Popup Styles */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.popup-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  max-width: 90vw;
+  max-height: 90vh;
+  width: 800px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e9ecef;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.popup-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.4rem;
+}
+
+.popup-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.popup-close:hover {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.popup-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.players-comparison {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-radius: 8px;
+}
+
+.players-comparison .player-info {
+  text-align: center;
+}
+
+.players-comparison .player-info strong {
+  display: block;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  margin-bottom: 4px;
+}
+
+.players-comparison .username {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.vs-separator {
+  font-weight: bold;
+  color: #495057;
+  font-size: 1.2rem;
+}
+
+.summary-stats {
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.summary-stats p {
+  margin: 0;
+  font-size: 1rem;
+  color: #495057;
+}
+
+.differences-list h4 {
+  margin: 0 0 16px 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+/* Clickable cell styles */
+.clickable-cell {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clickable-cell:hover {
+  background-color: #e3f2fd !important;
+}
+
+.hover-hint {
+  font-size: 10px;
+  color: #6c757d;
+  margin-top: 2px;
+  font-style: italic;
+}
+
+/* Pick result styles */
+.correct-pick {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.incorrect-pick {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+/* Mobile popup styles */
+@media (max-width: 768px) {
+  .popup-overlay {
+    padding: 10px;
+  }
+  
+  .popup-content {
+    width: 95vw;
+    max-height: 95vh;
+  }
+  
+  .popup-header {
+    padding: 16px 20px;
+  }
+  
+  .popup-header h3 {
+    font-size: 1.2rem;
+  }
+  
+  .popup-body {
+    padding: 20px;
+  }
+  
+  .players-comparison {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+  }
+  
+  .vs-separator {
+    font-size: 1rem;
+  }
+  
+  .summary-stats {
+    padding: 12px;
+  }
+  
+  .summary-stats p {
+    font-size: 0.9rem;
+  }
+  
+  .differences-list h4 {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .popup-overlay {
+    padding: 5px;
+  }
+  
+  .popup-content {
+    width: 98vw;
+    max-height: 98vh;
+  }
+  
+  .popup-header {
+    padding: 12px 16px;
+  }
+  
+  .popup-header h3 {
+    font-size: 1.1rem;
+  }
+  
+  .popup-body {
+    padding: 16px;
+  }
+  
+  .players-comparison {
+    padding: 10px;
+  }
+  
+  .players-comparison .player-info strong {
+    font-size: 1rem;
+  }
+  
+  .players-comparison .username {
+    font-size: 0.8rem;
+  }
+  
+  .summary-stats {
+    padding: 10px;
+  }
+  
+  .summary-stats p {
+    font-size: 0.85rem;
+  }
+}

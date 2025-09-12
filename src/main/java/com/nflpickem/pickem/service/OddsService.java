@@ -19,9 +19,15 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
+@Transactional
 public class OddsService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(OddsService.class);
     
     private final BettingOddsRepository bettingOddsRepository;
     private final GameRepository gameRepository;
@@ -57,7 +63,7 @@ public class OddsService {
             String url = String.format("%s/sports/americanfootball_nfl/odds/?apiKey=%s&regions=us&markets=spreads&bookmakers=fanduel&oddsFormat=american&dateFormat=iso", 
                 oddsApiBaseUrl, oddsApiKey);
             
-            System.out.println("Fetching FanDuel point spreads for week " + week + " from: " + url);
+            logger.debug("Fetching FanDuel point spreads for week {} from: {}", week, url);
             
             HttpHeaders headers = new HttpHeaders();
             headers.set("User-Agent", "NFL-Pickem-App/1.0");
@@ -71,13 +77,13 @@ public class OddsService {
             }
             
         } catch (HttpClientErrorException e) {
-            System.err.println("Error fetching odds from API: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+            logger.error("Error fetching odds from API: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
             throw new RuntimeException("Failed to fetch odds from API: " + e.getMessage());
         } catch (ResourceAccessException e) {
-            System.err.println("Network error fetching odds: " + e.getMessage());
+            logger.error("Network error fetching odds: {}", e.getMessage());
             throw new RuntimeException("Network error fetching odds: " + e.getMessage());
         } catch (Exception e) {
-            System.err.println("Unexpected error fetching odds: " + e.getMessage());
+            logger.error("Unexpected error fetching odds: {}", e.getMessage());
             throw new RuntimeException("Unexpected error fetching odds: " + e.getMessage());
         }
         
@@ -96,7 +102,7 @@ public class OddsService {
             String url = String.format("%s/sports/americanfootball_nfl/odds/?apiKey=%s&regions=us&markets=spreads&bookmakers=fanduel&oddsFormat=american&dateFormat=iso", 
                 oddsApiBaseUrl, oddsApiKey);
             
-            System.out.println("Fetching all available FanDuel point spreads from: " + url);
+            logger.debug("Fetching all available FanDuel point spreads from: {}", url);
             
             HttpHeaders headers = new HttpHeaders();
             headers.set("User-Agent", "NFL-Pickem-App/1.0");
@@ -110,13 +116,13 @@ public class OddsService {
             }
             
         } catch (HttpClientErrorException e) {
-            System.err.println("Error fetching odds from API: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+            logger.error("Error fetching odds from API: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
             throw new RuntimeException("Failed to fetch odds from API: " + e.getMessage());
         } catch (ResourceAccessException e) {
-            System.err.println("Network error fetching odds: " + e.getMessage());
+            logger.error("Network error fetching odds: {}", e.getMessage());
             throw new RuntimeException("Network error fetching odds: " + e.getMessage());
         } catch (Exception e) {
-            System.err.println("Unexpected error fetching odds: " + e.getMessage());
+            logger.error("Unexpected error fetching odds: {}", e.getMessage());
             throw new RuntimeException("Unexpected error fetching odds: " + e.getMessage());
         }
         
@@ -154,7 +160,7 @@ public class OddsService {
                 // Determine the week from the game time
                 Integer week = determineWeekFromGameTime(response.commence_time);
                 if (week == null) {
-                    System.err.println("Could not determine week for game: " + response.getAwayTeam() + " @ " + response.getHomeTeam());
+                    logger.warn("Could not determine week for game: {} @ {}", response.getAwayTeam(), response.getHomeTeam());
                     continue;
                 }
                 
@@ -205,7 +211,7 @@ public class OddsService {
             
             // Calculate week based on NFL week structure
             Integer week = calculateNflWeek(gameDate, nflSeasonStart);
-            System.out.println("Game date " + gameDate + " (season start: " + nflSeasonStart + ") determined week: " + week);
+            logger.debug("Game date {} (season start: {}) determined week: {}", gameDate, nflSeasonStart, week);
             return week;
             
         } catch (Exception e) {
@@ -223,13 +229,15 @@ public class OddsService {
         // Check if season start date is configured
         if (nflSeasonStartDate != null && !nflSeasonStartDate.trim().isEmpty()) {
             try {
-                LocalDate configuredStart = LocalDate.parse(nflSeasonStartDate);
+                // Remove quotes if present (common issue with environment variables)
+                String cleanDate = nflSeasonStartDate.trim().replaceAll("^\"|\"$", "");
+                LocalDate configuredStart = LocalDate.parse(cleanDate);
                 if (configuredStart.getYear() == year) {
-                    System.out.println("Using configured NFL season start date: " + configuredStart);
+                    logger.debug("Using configured NFL season start date: {}", configuredStart);
                     return configuredStart;
                 }
             } catch (Exception e) {
-                System.err.println("Invalid NFL_SEASON_START_DATE format, using calculated date: " + e.getMessage());
+                logger.warn("Invalid NFL_SEASON_START_DATE format '{}', using calculated date: {}", nflSeasonStartDate, e.getMessage());
             }
         }
         
@@ -245,7 +253,7 @@ public class OddsService {
             nflSeasonStart = laborDay;
         }
         
-        System.out.println("Calculated NFL season start date for " + year + ": " + nflSeasonStart);
+        logger.debug("Calculated NFL season start date for {}: {}", year, nflSeasonStart);
         return nflSeasonStart;
     }
     
@@ -327,7 +335,7 @@ public class OddsService {
         // Strategy 1: Database-level exact match check
         Optional<Game> exactMatch = gameRepository.findByWeekAndHomeTeamAndAwayTeam(week, response.getHomeTeam(), response.getAwayTeam());
         if (exactMatch.isPresent()) {
-            System.out.println("Found exact database match for " + response.getAwayTeam() + " @ " + response.getHomeTeam());
+            logger.debug("Found exact database match for {} @ {}", response.getAwayTeam(), response.getHomeTeam());
             return exactMatch.get();
         }
         
@@ -528,8 +536,8 @@ public class OddsService {
             Market.Outcome spreadOutcome = spreadMarket.get().outcomes.get(0);
             odds.setSpread(spreadOutcome.point); // Keep the original sign (+ or -)
             odds.setSpreadTeam(spreadOutcome.name);
-            System.out.println("Created FanDuel spread odds for " + game.getAwayTeam() + " @ " + game.getHomeTeam() + 
-                ": " + spreadOutcome.name + " " + spreadOutcome.point);
+            logger.debug("Created FanDuel spread odds for {} @ {}: {} {}", 
+                game.getAwayTeam(), game.getHomeTeam(), spreadOutcome.name, spreadOutcome.point);
         } else {
             // No spreads found, return null
             System.out.println("No FanDuel spreads found for " + game.getAwayTeam() + " @ " + game.getHomeTeam());
