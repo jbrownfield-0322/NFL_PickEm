@@ -138,6 +138,13 @@ function Leaderboard() {
     setPopupData(null);
   };
 
+  // Auto-select league when leagues are loaded and user has only one
+  useEffect(() => {
+    if (leagues.length === 1 && !selectedLeagueId) {
+      setSelectedLeagueId(leagues[0].id.toString());
+    }
+  }, [leagues, selectedLeagueId]);
+
   useEffect(() => {
     const fetchLeaderboards = async () => {
       if (!user) {
@@ -164,6 +171,11 @@ function Leaderboard() {
         if (leaguesResponse.ok) {
           const leaguesData = await leaguesResponse.json();
           setLeagues(leaguesData);
+          
+          // Auto-select league if user is only in one league
+          if (leaguesData.length === 1 && !selectedLeagueId) {
+            setSelectedLeagueId(leaguesData[0].id.toString());
+          }
         }
 
         // Fetch weekly leaderboard only if league is selected

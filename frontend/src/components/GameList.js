@@ -22,6 +22,13 @@ const GameList = () => {
     fetchLeagues();
   }, []);
 
+  // Auto-select league when leagues are loaded and user has only one
+  useEffect(() => {
+    if (leagues.length === 1 && !selectedLeagueId) {
+      setSelectedLeagueId(leagues[0].id.toString());
+    }
+  }, [leagues, selectedLeagueId]);
+
   useEffect(() => {
     if (user) {
       fetchUserPicks();
@@ -73,6 +80,11 @@ const GameList = () => {
       if (response.ok) {
         const data = await response.json();
         setLeagues(data);
+        
+        // Auto-select league if user is only in one league
+        if (data.length === 1 && !selectedLeagueId) {
+          setSelectedLeagueId(data[0].id.toString());
+        }
       }
     } catch (error) {
       console.error('Error fetching leagues:', error);
