@@ -14,6 +14,7 @@ import java.util.Optional;
 public interface GameRepository extends JpaRepository<Game, Long> {
     List<Game> findByWeek(Integer week);
     List<Game> findByScoredFalseAndKickoffTimeBefore(Instant dateTime);
+    List<Game> findByScoredFalseAndKickoffTimeBetween(Instant startTime, Instant endTime);
     
     // Check for exact duplicate
     Optional<Game> findByWeekAndHomeTeamAndAwayTeam(Integer week, String homeTeam, String awayTeam);

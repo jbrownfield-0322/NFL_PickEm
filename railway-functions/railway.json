@@ -12,7 +12,7 @@
     },
     "live-score-updater": {
       "path": "./live-score-updater.js",
-      "schedule": "*/15 * * * 0,1", // Run every 15 minutes on Sunday and Monday
+      "schedule": "0 * * * 0,1", // Run every hour on Sunday and Monday
       "description": "Updates live scores during game days"
     }
   },
