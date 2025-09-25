@@ -106,8 +106,14 @@ public class PickService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
-        // Get all games for the specified week
+        // Get all games for the specified week and sort by kickoff time
         List<Game> games = gameService.getGamesByWeek(week);
+        
+        // Sort games by kickoff time (Thursday night first, Monday night last)
+        games.sort((a, b) -> {
+            return a.getKickoffTime().compareTo(b.getKickoffTime());
+        });
+        
         List<PickComparisonDto> comparisonData = new ArrayList<>();
         
         for (Game game : games) {
