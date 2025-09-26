@@ -478,8 +478,8 @@ public class GameScoreService {
         // Start fetching 1 hour before the first game
         Instant fetchStartTime = earliestGame.minus(java.time.Duration.ofHours(1));
         
-        // Continue fetching until 4 hours after the last game (to account for overtime, delays, etc.)
-        Instant fetchEndTime = latestGame.plus(java.time.Duration.ofHours(4));
+        // Continue fetching until 12 hours after the last game (to account for overtime, delays, API delays, etc.)
+        Instant fetchEndTime = latestGame.plus(java.time.Duration.ofHours(12));
         
         Instant now = Instant.now();
         boolean shouldFetch = now.isAfter(fetchStartTime) && now.isBefore(fetchEndTime);
