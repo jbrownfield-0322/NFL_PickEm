@@ -430,6 +430,7 @@ public class GameScoreService {
     
     /**
      * Check if we should start fetching scores (after first game of the day)
+     * and continue until all games for the day are completed
      */
     public boolean shouldStartFetchingScores() {
         if (!isGameDay()) {
@@ -447,6 +448,13 @@ public class GameScoreService {
             return false;
         }
         
+        // Check if there are unscored games from today - if so, continue fetching
+        List<Game> unscoredToday = gameRepository.findByScoredFalseAndKickoffTimeBetween(startOfDay, endOfDay);
+        if (!unscoredToday.isEmpty()) {
+            System.out.println("Found " + unscoredToday.size() + " unscored games for today, continuing to fetch scores");
+            return true;
+        }
+        
         // Find the earliest game
         Instant earliestGame = todaysGames.stream()
             .map(Game::getKickoffTime)
@@ -457,9 +465,32 @@ public class GameScoreService {
             return false;
         }
         
+        // Find the latest game
+        Instant latestGame = todaysGames.stream()
+            .map(Game::getKickoffTime)
+            .max(Instant::compareTo)
+            .orElse(null);
+        
+        if (latestGame == null) {
+            return false;
+        }
+        
         // Start fetching 1 hour before the first game
         Instant fetchStartTime = earliestGame.minus(java.time.Duration.ofHours(1));
-        return Instant.now().isAfter(fetchStartTime);
+        
+        // Continue fetching until 4 hours after the last game (to account for overtime, delays, etc.)
+        Instant fetchEndTime = latestGame.plus(java.time.Duration.ofHours(4));
+        
+        Instant now = Instant.now();
+        boolean shouldFetch = now.isAfter(fetchStartTime) && now.isBefore(fetchEndTime);
+        
+        if (shouldFetch) {
+            System.out.println("Within scoring window: " + fetchStartTime + " to " + fetchEndTime + " (current: " + now + ")");
+        } else {
+            System.out.println("Outside scoring window: " + fetchStartTime + " to " + fetchEndTime + " (current: " + now + ")");
+        }
+        
+        return shouldFetch;
     }
     
     // Inner classes for API response mapping
