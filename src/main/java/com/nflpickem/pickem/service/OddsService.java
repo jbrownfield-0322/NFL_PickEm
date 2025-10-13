@@ -32,6 +32,7 @@ public class OddsService {
     private final BettingOddsRepository bettingOddsRepository;
     private final GameRepository gameRepository;
     private final RestTemplate restTemplate;
+    private final AlertService alertService;
     
     @Value("${ODDS_API_KEY:}")
     private String oddsApiKey;
@@ -45,10 +46,11 @@ public class OddsService {
     @Value("${NFL_SEASON_START_DATE}")
     private String nflSeasonStartDate;
     
-    public OddsService(BettingOddsRepository bettingOddsRepository, GameRepository gameRepository) {
+    public OddsService(BettingOddsRepository bettingOddsRepository, GameRepository gameRepository, RestTemplate restTemplate, AlertService alertService) {
         this.bettingOddsRepository = bettingOddsRepository;
         this.gameRepository = gameRepository;
-        this.restTemplate = new RestTemplate();
+        this.restTemplate = restTemplate;
+        this.alertService = alertService;
     }
     
     /**
@@ -72,13 +74,34 @@ public class OddsService {
             ResponseEntity<OddsApiResponse[]> response = restTemplate.exchange(
                 url, HttpMethod.GET, entity, OddsApiResponse[].class);
             
+            // Check for milestone alerts
+            alertService.checkApiLimits(response.getHeaders(), "fetchOddsForWeek");
+            
             if (response.getBody() != null) {
                 return processOddsResponse(response.getBody(), week);
             }
             
         } catch (HttpClientErrorException e) {
-            logger.error("Error fetching odds from API: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new RuntimeException("Failed to fetch odds from API: " + e.getMessage());
+            if (e.getStatusCode().value() == 401) {
+                // Handle API quota exceeded error
+                String responseBody = e.getResponseBodyAsString();
+                logger.error("Error fetching odds from API: {} - {}", e.getStatusCode(), responseBody);
+                
+                // Check if it's a quota exceeded error
+                if (responseBody != null && responseBody.contains("Usage quota has been reached")) {
+                    try {
+                        // Send Discord alert for quota exceeded
+                        alertService.sendQuotaExceededAlert("fetchOddsForWeek", responseBody);
+                    } catch (Exception alertException) {
+                        logger.error("Failed to send Discord alert for quota exceeded: {}", alertException.getMessage());
+                    }
+                }
+                
+                throw new RuntimeException("API quota exceeded - failed to fetch odds from API: " + e.getMessage());
+            } else {
+                logger.error("Error fetching odds from API: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+                throw new RuntimeException("Failed to fetch odds from API: " + e.getMessage());
+            }
         } catch (ResourceAccessException e) {
             logger.error("Network error fetching odds: {}", e.getMessage());
             throw new RuntimeException("Network error fetching odds: " + e.getMessage());
@@ -111,13 +134,34 @@ public class OddsService {
             ResponseEntity<OddsApiResponse[]> response = restTemplate.exchange(
                 url, HttpMethod.GET, entity, OddsApiResponse[].class);
             
+            // Check for milestone alerts
+            alertService.checkApiLimits(response.getHeaders(), "fetchAllAvailableOdds");
+            
             if (response.getBody() != null) {
                 return processAllOddsResponse(response.getBody());
             }
             
         } catch (HttpClientErrorException e) {
-            logger.error("Error fetching odds from API: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new RuntimeException("Failed to fetch odds from API: " + e.getMessage());
+            if (e.getStatusCode().value() == 401) {
+                // Handle API quota exceeded error
+                String responseBody = e.getResponseBodyAsString();
+                logger.error("Error fetching odds from API: {} - {}", e.getStatusCode(), responseBody);
+                
+                // Check if it's a quota exceeded error
+                if (responseBody != null && responseBody.contains("Usage quota has been reached")) {
+                    try {
+                        // Send Discord alert for quota exceeded
+                        alertService.sendQuotaExceededAlert("fetchAllAvailableOdds", responseBody);
+                    } catch (Exception alertException) {
+                        logger.error("Failed to send Discord alert for quota exceeded: {}", alertException.getMessage());
+                    }
+                }
+                
+                throw new RuntimeException("API quota exceeded - failed to fetch odds from API: " + e.getMessage());
+            } else {
+                logger.error("Error fetching odds from API: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+                throw new RuntimeException("Failed to fetch odds from API: " + e.getMessage());
+            }
         } catch (ResourceAccessException e) {
             logger.error("Network error fetching odds: {}", e.getMessage());
             throw new RuntimeException("Network error fetching odds: " + e.getMessage());

@@ -1,11 +1,15 @@
 package com.nflpickem.pickem.controller;
 
+import com.nflpickem.pickem.model.AlertMilestone;
+import com.nflpickem.pickem.repository.AlertMilestoneRepository;
+import com.nflpickem.pickem.service.AlertService;
 import com.nflpickem.pickem.service.OddsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -15,6 +19,12 @@ public class AdminController {
     
     @Autowired
     private OddsService oddsService;
+    
+    @Autowired
+    private AlertService alertService;
+    
+    @Autowired
+    private AlertMilestoneRepository alertMilestoneRepository;
     
     /**
      * Trigger odds update for current week
@@ -117,6 +127,43 @@ public class AdminController {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
             response.put("message", "Failed to get odds status: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+    
+    /**
+     * Get alert milestone history
+     */
+    @GetMapping("/alerts/milestones")
+    public ResponseEntity<List<AlertMilestone>> getMilestoneHistory() {
+        try {
+            List<AlertMilestone> alerts = alertMilestoneRepository.findRecentAlerts();
+            // Limit to 10 most recent
+            if (alerts.size() > 10) {
+                alerts = alerts.subList(0, 10);
+            }
+            return ResponseEntity.ok(alerts);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    
+    /**
+     * Get alert status and configuration
+     */
+    @GetMapping("/alerts/status")
+    public ResponseEntity<Map<String, Object>> getAlertStatus() {
+        try {
+            Map<String, Object> status = new HashMap<>();
+            status.put("milestones", alertService.getMilestones());
+            status.put("totalAlertsSent", alertMilestoneRepository.count());
+            AlertMilestone lastAlert = alertMilestoneRepository.findMostRecentAlert();
+            status.put("lastAlert", lastAlert);
+            return ResponseEntity.ok(status);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Failed to get alert status: " + e.getMessage());
             return ResponseEntity.internalServerError().body(response);
         }
     }

@@ -179,6 +179,22 @@ public class GameController {
         }
     }
 
+    @PostMapping("/update-yesterday-scores")
+    public ResponseEntity<String> updateYesterdayScores() {
+        try {
+            if (!gameScoreService.isApiConfigured()) {
+                return ResponseEntity.badRequest()
+                    .body("API not configured - check ODDS_API_KEY environment variable");
+            }
+            
+            int updatedCount = gameScoreService.updateYesterdayScores();
+            return ResponseEntity.ok("Updated " + updatedCount + " games from yesterday (Monday or Thursday night games)");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body("Error updating yesterday's scores: " + e.getMessage());
+        }
+    }
+
     private Instant parseKickoffTime(String kickoffTimeStr) {
         try {
             // Try parsing as ISO format first
