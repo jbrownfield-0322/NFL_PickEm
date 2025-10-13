@@ -142,6 +142,21 @@ public class AlertService {
     
     
     /**
+     * Send Discord alert for API quota exceeded
+     */
+    public void sendQuotaExceededAlert(String apiEndpoint, String errorResponse) {
+        try {
+            // Send Discord alert
+            discordService.sendQuotaExceededAlert(apiEndpoint, errorResponse);
+            
+            logger.info("✅ Discord quota exceeded alert sent for endpoint: {}", apiEndpoint);
+            
+        } catch (Exception e) {
+            logger.error("❌ Failed to send Discord quota exceeded alert: {}", e.getMessage());
+        }
+    }
+    
+    /**
      * Get configured milestones (for admin endpoints)
      */
     public List<Integer> getMilestones() {

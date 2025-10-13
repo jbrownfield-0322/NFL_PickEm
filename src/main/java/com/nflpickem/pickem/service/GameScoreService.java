@@ -30,10 +30,10 @@ public class GameScoreService {
     @Value("${ODDS_API_BASE_URL}")
     private String oddsApiBaseUrl;
     
-    public GameScoreService(GameRepository gameRepository, AlertService alertService) {
+    public GameScoreService(GameRepository gameRepository, RestTemplate restTemplate, AlertService alertService) {
         this.gameRepository = gameRepository;
+        this.restTemplate = restTemplate;
         this.alertService = alertService;
-        this.restTemplate = new RestTemplate();
     }
     
     /**
@@ -82,6 +82,22 @@ public class GameScoreService {
                 if (e.getStatusCode().value() == 422) {
                     System.err.println("daysFrom=" + daysFrom + " not allowed, trying next value...");
                     continue; // Try next daysFrom value
+                } else if (e.getStatusCode().value() == 401) {
+                    // Handle API quota exceeded error
+                    String responseBody = e.getResponseBodyAsString();
+                    System.err.println("Error fetching scores from API: " + e.getStatusCode() + " - " + responseBody);
+                    
+                    // Check if it's a quota exceeded error
+                    if (responseBody != null && responseBody.contains("Usage quota has been reached")) {
+                        try {
+                            // Send Discord alert for quota exceeded
+                            alertService.sendQuotaExceededAlert("fetchLiveScores", responseBody);
+                        } catch (Exception alertException) {
+                            System.err.println("Failed to send Discord alert for quota exceeded: " + alertException.getMessage());
+                        }
+                    }
+                    
+                    throw new RuntimeException("API quota exceeded - failed to fetch scores from API: " + e.getMessage());
                 } else {
                     System.err.println("Error fetching scores from API: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
                     throw new RuntimeException("Failed to fetch scores from API: " + e.getMessage());
@@ -117,6 +133,27 @@ public class GameScoreService {
                 return processScoreResponse(response.getBody());
             }
             
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode().value() == 401) {
+                // Handle API quota exceeded error
+                String responseBody = e.getResponseBodyAsString();
+                System.err.println("Final attempt failed with 401: " + e.getStatusCode() + " - " + responseBody);
+                
+                // Check if it's a quota exceeded error
+                if (responseBody != null && responseBody.contains("Usage quota has been reached")) {
+                    try {
+                        // Send Discord alert for quota exceeded
+                        alertService.sendQuotaExceededAlert("fetchLiveScores", responseBody);
+                    } catch (Exception alertException) {
+                        System.err.println("Failed to send Discord alert for quota exceeded: " + alertException.getMessage());
+                    }
+                }
+                
+                throw new RuntimeException("API quota exceeded - failed to fetch scores from API after all attempts: " + e.getMessage());
+            } else {
+                System.err.println("Final attempt failed: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+                throw new RuntimeException("Failed to fetch scores from API after all attempts: " + e.getMessage());
+            }
         } catch (Exception e) {
             System.err.println("Final attempt failed: " + e.getMessage());
             throw new RuntimeException("Failed to fetch scores from API after all attempts: " + e.getMessage());

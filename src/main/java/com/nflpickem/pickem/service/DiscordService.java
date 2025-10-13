@@ -120,4 +120,75 @@ public class DiscordService {
             default -> "• No specific recommendations";
         };
     }
+    
+    /**
+     * Send Discord alert for API quota exceeded
+     */
+    public void sendQuotaExceededAlert(String apiEndpoint, String errorResponse) {
+        if (webhookUrl == null || webhookUrl.trim().isEmpty()) {
+            logger.warn("Discord webhook URL not configured, skipping Discord quota exceeded alert");
+            return;
+        }
+        
+        try {
+            DiscordMessage message = buildQuotaExceededMessage(apiEndpoint, errorResponse);
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            
+            HttpEntity<DiscordMessage> entity = new HttpEntity<>(message, headers);
+            
+            ResponseEntity<String> response = restTemplate.postForEntity(webhookUrl, entity, String.class);
+            
+            if (response.getStatusCode().is2xxSuccessful()) {
+                logger.info("✅ Discord quota exceeded alert sent successfully for endpoint: {}", apiEndpoint);
+            } else {
+                logger.error("❌ Discord quota exceeded alert failed: {}", response.getStatusCode());
+            }
+            
+        } catch (Exception e) {
+            logger.error("❌ Failed to send Discord quota exceeded alert: {}", e.getMessage());
+        }
+    }
+    
+    private DiscordMessage buildQuotaExceededMessage(String apiEndpoint, String errorResponse) {
+        DiscordMessage message = new DiscordMessage();
+        message.setUsername(botName);
+        message.setAvatarUrl("https://cdn-icons-png.flaticon.com/512/25/25694.png"); // NFL icon
+        
+        // Build embed for rich formatting
+        DiscordEmbed embed = new DiscordEmbed();
+        embed.setTitle("🚨 CRITICAL: API Quota Exceeded");
+        embed.setColor(0xDC3545); // Red color for critical alerts
+        embed.setTimestamp(Instant.now().toString());
+        
+        // Add fields
+        embed.addField("Status", "❌ QUOTA EXCEEDED", true);
+        embed.addField("API Endpoint", apiEndpoint, true);
+        embed.addField("Error Code", "401 UNAUTHORIZED", true);
+        embed.addField("Time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), false);
+        
+        // Add error details
+        if (errorResponse != null && !errorResponse.trim().isEmpty()) {
+            String truncatedError = errorResponse.length() > 1000 ? 
+                errorResponse.substring(0, 1000) + "..." : errorResponse;
+            embed.addField("Error Details", "```json\n" + truncatedError + "\n```", false);
+        }
+        
+        // Add urgent recommendations
+        embed.addField("🚨 IMMEDIATE ACTIONS REQUIRED", 
+            "• **STOP** all non-essential API calls immediately\n" +
+            "• **UPGRADE** your API plan at https://the-odds-api.com\n" +
+            "• **REVIEW** your API usage patterns\n" +
+            "• **CONTACT** support if this is unexpected", false);
+        
+        // Add footer
+        DiscordEmbed.Footer footer = new DiscordEmbed.Footer();
+        footer.setText("NFL Pick'em System • Critical Alert");
+        embed.setFooter(footer);
+        
+        message.addEmbed(embed);
+        
+        return message;
+    }
 }
