@@ -46,11 +46,11 @@ public class OddsService {
     @Value("${NFL_SEASON_START_DATE}")
     private String nflSeasonStartDate;
     
-    public OddsService(BettingOddsRepository bettingOddsRepository, GameRepository gameRepository, AlertService alertService) {
+    public OddsService(BettingOddsRepository bettingOddsRepository, GameRepository gameRepository, RestTemplate restTemplate, AlertService alertService) {
         this.bettingOddsRepository = bettingOddsRepository;
         this.gameRepository = gameRepository;
+        this.restTemplate = restTemplate;
         this.alertService = alertService;
-        this.restTemplate = new RestTemplate();
     }
     
     /**
