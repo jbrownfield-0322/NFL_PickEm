@@ -1,6 +1,5 @@
 package com.nflpickem.pickem.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nflpickem.pickem.model.AlertMilestone;
 import com.nflpickem.pickem.repository.AlertMilestoneRepository;
 import org.slf4j.Logger;
