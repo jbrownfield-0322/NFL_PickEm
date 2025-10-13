@@ -66,8 +66,9 @@ public class AlertService {
      * Find which milestone was triggered (if any)
      */
     private Integer findTriggeredMilestone(int requestsRemaining) {
-        // Check milestones in descending order (100, 50, 25, 10)
-        for (Integer milestone : milestones) {
+        // Check milestones in ascending order to find the smallest crossed milestone
+        for (int i = milestones.size() - 1; i >= 0; i--) {
+            Integer milestone = milestones.get(i);
             if (requestsRemaining <= milestone) {
                 return milestone;
             }
