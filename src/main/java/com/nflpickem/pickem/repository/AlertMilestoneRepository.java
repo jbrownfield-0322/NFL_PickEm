@@ -29,6 +29,6 @@ public interface AlertMilestoneRepository extends JpaRepository<AlertMilestone, 
     /**
      * Get the most recent alert
      */
-    @Query("SELECT a FROM AlertMilestone a ORDER BY a.sentAt DESC")
-    List<AlertMilestone> findMostRecentAlert();
+    @Query("SELECT a FROM AlertMilestone a ORDER BY a.sentAt DESC LIMIT 1")
+    AlertMilestone findMostRecentAlert();
 }

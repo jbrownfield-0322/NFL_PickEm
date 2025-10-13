@@ -157,8 +157,8 @@ public class AdminController {
             Map<String, Object> status = new HashMap<>();
             status.put("milestones", alertService.getMilestones());
             status.put("totalAlertsSent", alertMilestoneRepository.count());
-            List<AlertMilestone> recentAlerts = alertMilestoneRepository.findMostRecentAlert();
-            status.put("lastAlert", recentAlerts.isEmpty() ? null : recentAlerts.get(0));
+            AlertMilestone lastAlert = alertMilestoneRepository.findMostRecentAlert();
+            status.put("lastAlert", lastAlert);
             return ResponseEntity.ok(status);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
