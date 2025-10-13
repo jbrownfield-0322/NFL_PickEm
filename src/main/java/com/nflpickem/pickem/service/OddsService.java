@@ -5,7 +5,6 @@ import com.nflpickem.pickem.model.Game;
 import com.nflpickem.pickem.repository.BettingOddsRepository;
 import com.nflpickem.pickem.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -47,7 +46,7 @@ public class OddsService {
     @Value("${NFL_SEASON_START_DATE}")
     private String nflSeasonStartDate;
     
-    public OddsService(BettingOddsRepository bettingOddsRepository, GameRepository gameRepository, @Lazy AlertService alertService) {
+    public OddsService(BettingOddsRepository bettingOddsRepository, GameRepository gameRepository, AlertService alertService) {
         this.bettingOddsRepository = bettingOddsRepository;
         this.gameRepository = gameRepository;
         this.alertService = alertService;

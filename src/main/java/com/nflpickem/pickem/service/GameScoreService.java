@@ -3,7 +3,6 @@ package com.nflpickem.pickem.service;
 import com.nflpickem.pickem.model.Game;
 import com.nflpickem.pickem.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -31,7 +30,7 @@ public class GameScoreService {
     @Value("${ODDS_API_BASE_URL}")
     private String oddsApiBaseUrl;
     
-    public GameScoreService(GameRepository gameRepository, @Lazy AlertService alertService) {
+    public GameScoreService(GameRepository gameRepository, AlertService alertService) {
         this.gameRepository = gameRepository;
         this.alertService = alertService;
         this.restTemplate = new RestTemplate();

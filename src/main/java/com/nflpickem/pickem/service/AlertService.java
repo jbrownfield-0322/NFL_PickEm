@@ -5,8 +5,10 @@ import com.nflpickem.pickem.repository.AlertMilestoneRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import jakarta.annotation.PostConstruct;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Lazy
 public class AlertService {
     
     private static final Logger logger = LoggerFactory.getLogger(AlertService.class);
@@ -24,11 +27,15 @@ public class AlertService {
     
     private final DiscordService discordService;
     private final AlertMilestoneRepository alertRepository;
-    private final List<Integer> milestones;
+    private List<Integer> milestones;
     
     public AlertService(DiscordService discordService, AlertMilestoneRepository alertRepository) {
         this.discordService = discordService;
         this.alertRepository = alertRepository;
+    }
+    
+    @PostConstruct
+    public void init() {
         this.milestones = parseMilestones();
     }
     
@@ -138,6 +145,9 @@ public class AlertService {
      * Get configured milestones (for admin endpoints)
      */
     public List<Integer> getMilestones() {
+        if (milestones == null) {
+            return Arrays.asList(100, 50, 25, 10); // Default fallback
+        }
         return milestones;
     }
 }
