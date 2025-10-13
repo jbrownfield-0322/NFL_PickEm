@@ -22,6 +22,7 @@ public class GameScoreService {
     
     private final GameRepository gameRepository;
     private final RestTemplate restTemplate;
+    private final AlertService alertService;
     
     @Value("${ODDS_API_KEY:}")
     private String oddsApiKey;
@@ -29,8 +30,9 @@ public class GameScoreService {
     @Value("${ODDS_API_BASE_URL}")
     private String oddsApiBaseUrl;
     
-    public GameScoreService(GameRepository gameRepository) {
+    public GameScoreService(GameRepository gameRepository, AlertService alertService) {
         this.gameRepository = gameRepository;
+        this.alertService = alertService;
         this.restTemplate = new RestTemplate();
     }
     
@@ -58,6 +60,9 @@ public class GameScoreService {
                 
                 ResponseEntity<ScoreApiResponse[]> response = restTemplate.exchange(
                     url, HttpMethod.GET, entity, ScoreApiResponse[].class);
+                
+                // Check for milestone alerts
+                alertService.checkApiLimits(response.getHeaders(), "fetchLiveScores");
                 
                 if (response.getBody() != null) {
                     System.out.println("API returned " + response.getBody().length + " games (daysFrom=" + daysFrom + ")");
@@ -103,6 +108,9 @@ public class GameScoreService {
             
             ResponseEntity<ScoreApiResponse[]> response = restTemplate.exchange(
                 url, HttpMethod.GET, entity, ScoreApiResponse[].class);
+            
+            // Check for milestone alerts
+            alertService.checkApiLimits(response.getHeaders(), "fetchLiveScores");
             
             if (response.getBody() != null) {
                 System.out.println("API returned " + response.getBody().length + " games (live/upcoming only)");

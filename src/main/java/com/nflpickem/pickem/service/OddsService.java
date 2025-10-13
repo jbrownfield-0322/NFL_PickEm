@@ -32,6 +32,7 @@ public class OddsService {
     private final BettingOddsRepository bettingOddsRepository;
     private final GameRepository gameRepository;
     private final RestTemplate restTemplate;
+    private final AlertService alertService;
     
     @Value("${ODDS_API_KEY:}")
     private String oddsApiKey;
@@ -45,9 +46,10 @@ public class OddsService {
     @Value("${NFL_SEASON_START_DATE}")
     private String nflSeasonStartDate;
     
-    public OddsService(BettingOddsRepository bettingOddsRepository, GameRepository gameRepository) {
+    public OddsService(BettingOddsRepository bettingOddsRepository, GameRepository gameRepository, AlertService alertService) {
         this.bettingOddsRepository = bettingOddsRepository;
         this.gameRepository = gameRepository;
+        this.alertService = alertService;
         this.restTemplate = new RestTemplate();
     }
     
@@ -71,6 +73,9 @@ public class OddsService {
             
             ResponseEntity<OddsApiResponse[]> response = restTemplate.exchange(
                 url, HttpMethod.GET, entity, OddsApiResponse[].class);
+            
+            // Check for milestone alerts
+            alertService.checkApiLimits(response.getHeaders(), "fetchOddsForWeek");
             
             if (response.getBody() != null) {
                 return processOddsResponse(response.getBody(), week);
@@ -110,6 +115,9 @@ public class OddsService {
             
             ResponseEntity<OddsApiResponse[]> response = restTemplate.exchange(
                 url, HttpMethod.GET, entity, OddsApiResponse[].class);
+            
+            // Check for milestone alerts
+            alertService.checkApiLimits(response.getHeaders(), "fetchAllAvailableOdds");
             
             if (response.getBody() != null) {
                 return processAllOddsResponse(response.getBody());

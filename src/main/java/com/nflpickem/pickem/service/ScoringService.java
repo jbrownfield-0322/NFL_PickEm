@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class ScoringService {
@@ -40,13 +39,12 @@ public class ScoringService {
      * Score games using real data from The Odds API
      */
     public void scoreGamesWithRealData() {
+        if (!gameScoreService.isApiConfigured()) {
+            System.out.println("Odds API not configured, skipping scoring");
+            return;
+        }
+        
         try {
-            if (!gameScoreService.isApiConfigured()) {
-                System.out.println("Odds API not configured, falling back to legacy scoring");
-                scoreGames();
-                return;
-            }
-            
             // Fetch live scores from The Odds API
             List<GameScoreService.GameScoreResult> scoreResults = gameScoreService.fetchLiveScores();
             System.out.println("Fetched " + scoreResults.size() + " game results from API");
@@ -88,38 +86,7 @@ public class ScoringService {
             
         } catch (Exception e) {
             System.err.println("Error scoring games with real data: " + e.getMessage());
-            System.out.println("Falling back to legacy scoring method");
-            scoreGames();
-        }
-    }
-    
-    /**
-     * Legacy scoring method (fallback with random selection)
-     */
-    public void scoreGames() {
-        List<Game> unscoredGames = gameRepository.findByScoredFalseAndKickoffTimeBefore(Instant.now());
-
-        for (Game game : unscoredGames) {
-            String winningTeam;
-            if (game.getWinningTeam() != null && !game.getWinningTeam().isEmpty()) {
-                winningTeam = game.getWinningTeam();
-            } else {
-                // Fallback to random if no winner scraped yet (game not over or data not updated)
-                winningTeam = new Random().nextBoolean() ? game.getHomeTeam() : game.getAwayTeam();
-                System.out.println("WARNING: Using random selection for game " + game.getId() + 
-                    " (" + game.getAwayTeam() + " @ " + game.getHomeTeam() + ") - Winner: " + winningTeam);
-            }
-            game.setWinningTeam(winningTeam);
-            game.setScored(true);
-            gameRepository.save(game);
-
-            List<Pick> picksForGame = pickRepository.findByGame(game);
-            for (Pick pick : picksForGame) {
-                pick.setCorrect(pick.getPickedTeam().equals(winningTeam));
-                pick.setScoredAt(LocalDateTime.now());
-                pickRepository.save(pick);
-            }
-            System.out.println("Game " + game.getId() + " scored. Winner: " + winningTeam);
+            System.out.println("Skipping scoring due to API error - games will remain unscored until next attempt");
         }
     }
 } 
