@@ -137,7 +137,11 @@ public class AdminController {
     @GetMapping("/alerts/milestones")
     public ResponseEntity<List<AlertMilestone>> getMilestoneHistory() {
         try {
-            List<AlertMilestone> alerts = alertMilestoneRepository.findTop10ByOrderBySentAtDesc();
+            List<AlertMilestone> alerts = alertMilestoneRepository.findRecentAlerts();
+            // Limit to 10 most recent
+            if (alerts.size() > 10) {
+                alerts = alerts.subList(0, 10);
+            }
             return ResponseEntity.ok(alerts);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
@@ -153,7 +157,8 @@ public class AdminController {
             Map<String, Object> status = new HashMap<>();
             status.put("milestones", alertService.getMilestones());
             status.put("totalAlertsSent", alertMilestoneRepository.count());
-            status.put("lastAlert", alertMilestoneRepository.findTop1ByOrderBySentAtDesc());
+            List<AlertMilestone> recentAlerts = alertMilestoneRepository.findMostRecentAlert();
+            status.put("lastAlert", recentAlerts.isEmpty() ? null : recentAlerts.get(0));
             return ResponseEntity.ok(status);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();

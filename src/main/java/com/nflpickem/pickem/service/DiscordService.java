@@ -29,8 +29,8 @@ public class DiscordService {
     
     private final RestTemplate restTemplate;
     
-    public DiscordService() {
-        this.restTemplate = new RestTemplate();
+    public DiscordService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
     
     public void sendMilestoneAlert(Integer milestone, String apiEndpoint, int requestsRemaining) {
