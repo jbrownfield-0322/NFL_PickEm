@@ -30,6 +30,13 @@ public interface BettingOddsRepository extends JpaRepository<BettingOdds, Long> 
     @Query("SELECT bo FROM BettingOdds bo WHERE bo.lastUpdated < :cutoffTime")
     List<BettingOdds> findStaleOdds(@Param("cutoffTime") java.time.Instant cutoffTime);
     
+    /**
+     * Find stale odds only for games that are not yet completed (scored = false)
+     * This preserves odds for completed games for historical analytics
+     */
+    @Query("SELECT bo FROM BettingOdds bo WHERE bo.lastUpdated < :cutoffTime AND bo.game.scored = false")
+    List<BettingOdds> findStaleOddsForUncompletedGames(@Param("cutoffTime") java.time.Instant cutoffTime);
+    
     void deleteByGame(Game game);
     
     /**
