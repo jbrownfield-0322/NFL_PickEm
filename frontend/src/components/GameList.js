@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../AuthContext';
 
 const GameList = () => {
@@ -11,6 +11,7 @@ const GameList = () => {
   const [selectedGamePicks, setSelectedGamePicks] = useState({});
   const [bulkSubmitMessage, setBulkSubmitMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasInitializedWeek, setHasInitializedWeek] = useState(false);
   const { user } = useAuth();
 
   // API base URL - will work for both development and Railway production
@@ -21,6 +22,48 @@ const GameList = () => {
     fetchUserPicks();
     fetchLeagues();
   }, []);
+
+  // Fetch current week and set as default
+  const fetchCurrentWeek = useCallback(async () => {
+    if (hasInitializedWeek) return; // Already initialized
+    
+    try {
+      const response = await fetch(`${API_BASE}/games/currentWeek`);
+      if (response.ok) {
+        const weekData = await response.text();
+        const fetchedWeek = parseInt(weekData, 10);
+        // Only set selectedWeek to current week on initial load
+        // Also verify the week exists in available weeks
+        if (fetchedWeek) {
+          const availableWeeks = [...new Set(games.map(game => game.week))].sort((a, b) => a - b);
+          // If current week is available, use it; otherwise use the first available week
+          if (availableWeeks.includes(fetchedWeek)) {
+            setSelectedWeek(fetchedWeek);
+          } else if (availableWeeks.length > 0) {
+            setSelectedWeek(availableWeeks[0]);
+          }
+          setHasInitializedWeek(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching current week:', error);
+      // Fallback to first available week if fetch fails
+      if (games.length > 0) {
+        const availableWeeks = [...new Set(games.map(game => game.week))].sort((a, b) => a - b);
+        if (availableWeeks.length > 0) {
+          setSelectedWeek(availableWeeks[0]);
+          setHasInitializedWeek(true);
+        }
+      }
+    }
+  }, [games, hasInitializedWeek, API_BASE]);
+
+  // Set current week as default when games are loaded
+  useEffect(() => {
+    if (games.length > 0 && !hasInitializedWeek) {
+      fetchCurrentWeek();
+    }
+  }, [games, hasInitializedWeek, fetchCurrentWeek]);
 
   // Auto-select league when leagues are loaded and user has only one
   useEffect(() => {

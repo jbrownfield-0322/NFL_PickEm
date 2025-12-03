@@ -692,11 +692,15 @@ public class OddsService {
     
     /**
      * Clean up stale odds
+     * Only deletes odds for games that are not yet completed (scored = false)
+     * Preserves odds for completed games to support historical analytics
      */
     public void cleanupStaleOdds() {
         Instant cutoffTime = Instant.now().minusSeconds(updateIntervalHours * 24 * 3600); // 24 hours older than update interval
-        List<BettingOdds> staleOdds = bettingOddsRepository.findStaleOdds(cutoffTime);
+        // Only delete stale odds for uncompleted games - keep odds for completed games
+        List<BettingOdds> staleOdds = bettingOddsRepository.findStaleOddsForUncompletedGames(cutoffTime);
         bettingOddsRepository.deleteAll(staleOdds);
+        logger.info("Cleaned up {} stale odds entries (preserved odds for completed games)", staleOdds.size());
     }
     
     /**
