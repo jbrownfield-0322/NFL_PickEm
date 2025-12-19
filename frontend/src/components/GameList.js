@@ -253,15 +253,34 @@ const GameList = () => {
     const spread = game.primaryOdds.spread;
     const spreadTeam = game.primaryOdds.spreadTeam;
     const homeTeam = game.homeTeam;
+    const awayTeam = game.awayTeam;
+    
+    // Normalize team names for comparison (case-insensitive, trim whitespace)
+    const normalizeTeamName = (name) => {
+      if (!name) return '';
+      return name.toLowerCase().trim().replace(/\s+/g, ' ');
+    };
+    
+    const normalizedSpreadTeam = normalizeTeamName(spreadTeam);
+    const normalizedHomeTeam = normalizeTeamName(homeTeam);
+    const normalizedAwayTeam = normalizeTeamName(awayTeam);
+    
+    // Determine if spread team matches home or away team
+    const spreadTeamIsHome = normalizedSpreadTeam === normalizedHomeTeam;
+    const spreadTeamIsAway = normalizedSpreadTeam === normalizedAwayTeam;
     
     // Convert spread to home team perspective
     let homeTeamSpread;
-    if (spreadTeam === homeTeam) {
+    if (spreadTeamIsHome) {
       // If the spread team is the home team, keep the spread as is
       homeTeamSpread = spread;
-    } else {
+    } else if (spreadTeamIsAway) {
       // If the spread team is the away team, flip the sign for home team perspective
       homeTeamSpread = -spread;
+    } else {
+      // Team name mismatch - log for debugging and default to showing spread as-is
+      console.warn(`Spread team "${spreadTeam}" doesn't match home "${homeTeam}" or away "${awayTeam}"`);
+      homeTeamSpread = spread;
     }
     
     // Format the spread (always show negative for favorites, positive for underdogs)
