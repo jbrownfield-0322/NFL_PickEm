@@ -83,21 +83,35 @@ public class GameScoreService {
                     System.err.println("daysFrom=" + daysFrom + " not allowed, trying next value...");
                     continue; // Try next daysFrom value
                 } else if (e.getStatusCode().value() == 401) {
-                    // Handle API quota exceeded error
+                    // Handle 401 errors - could be quota exceeded OR invalid API key
                     String responseBody = e.getResponseBodyAsString();
-                    System.err.println("Error fetching scores from API: " + e.getStatusCode() + " - " + responseBody);
+                    System.err.println("401 Error from API: " + responseBody);
                     
-                    // Check if it's a quota exceeded error
-                    if (responseBody != null && responseBody.contains("Usage quota has been reached")) {
+                    // Only send alert if it's SPECIFICALLY a quota exceeded error
+                    // Check for the exact error code to avoid false positives
+                    if (responseBody != null && 
+                        (responseBody.contains("Usage quota has been reached") || 
+                         responseBody.contains("OUT_OF_USAGE_CREDITS"))) {
                         try {
+                            // Log the API key being used (masked for security)
+                            String maskedKey = oddsApiKey != null && oddsApiKey.length() > 8 
+                                ? oddsApiKey.substring(0, 4) + "..." + oddsApiKey.substring(oddsApiKey.length() - 4)
+                                : "***";
+                            System.err.println("⚠️ Quota exceeded detected. API Key in use: " + maskedKey);
+                            
                             // Send Discord alert for quota exceeded
                             alertService.sendQuotaExceededAlert("fetchLiveScores", responseBody);
                         } catch (Exception alertException) {
                             System.err.println("Failed to send Discord alert for quota exceeded: " + alertException.getMessage());
                         }
+                        throw new RuntimeException("API quota exceeded - failed to fetch scores from API: " + e.getMessage());
+                    } else {
+                        // This is a 401 but NOT quota exceeded - likely invalid API key
+                        System.err.println("⚠️ 401 Error but NOT quota exceeded. This might be an invalid API key issue.");
+                        System.err.println("   Response: " + responseBody);
+                        System.err.println("   Check that ODDS_API_KEY environment variable matches your valid key.");
+                        throw new RuntimeException("API authentication failed (401) - check API key configuration: " + e.getMessage());
                     }
-                    
-                    throw new RuntimeException("API quota exceeded - failed to fetch scores from API: " + e.getMessage());
                 } else {
                     System.err.println("Error fetching scores from API: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
                     throw new RuntimeException("Failed to fetch scores from API: " + e.getMessage());
@@ -135,21 +149,34 @@ public class GameScoreService {
             
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().value() == 401) {
-                // Handle API quota exceeded error
+                // Handle 401 errors - could be quota exceeded OR invalid API key
                 String responseBody = e.getResponseBodyAsString();
-                System.err.println("Final attempt failed with 401: " + e.getStatusCode() + " - " + responseBody);
+                System.err.println("Final attempt failed with 401: " + responseBody);
                 
-                // Check if it's a quota exceeded error
-                if (responseBody != null && responseBody.contains("Usage quota has been reached")) {
+                // Only send alert if it's SPECIFICALLY a quota exceeded error
+                if (responseBody != null && 
+                    (responseBody.contains("Usage quota has been reached") || 
+                     responseBody.contains("OUT_OF_USAGE_CREDITS"))) {
                     try {
+                        // Log the API key being used (masked for security)
+                        String maskedKey = oddsApiKey != null && oddsApiKey.length() > 8 
+                            ? oddsApiKey.substring(0, 4) + "..." + oddsApiKey.substring(oddsApiKey.length() - 4)
+                            : "***";
+                        System.err.println("⚠️ Quota exceeded detected. API Key in use: " + maskedKey);
+                        
                         // Send Discord alert for quota exceeded
                         alertService.sendQuotaExceededAlert("fetchLiveScores", responseBody);
                     } catch (Exception alertException) {
                         System.err.println("Failed to send Discord alert for quota exceeded: " + alertException.getMessage());
                     }
+                    throw new RuntimeException("API quota exceeded - failed to fetch scores from API after all attempts: " + e.getMessage());
+                } else {
+                    // This is a 401 but NOT quota exceeded - likely invalid API key
+                    System.err.println("⚠️ 401 Error but NOT quota exceeded. This might be an invalid API key issue.");
+                    System.err.println("   Response: " + responseBody);
+                    System.err.println("   Check that ODDS_API_KEY environment variable matches your valid key.");
+                    throw new RuntimeException("API authentication failed (401) - check API key configuration: " + e.getMessage());
                 }
-                
-                throw new RuntimeException("API quota exceeded - failed to fetch scores from API after all attempts: " + e.getMessage());
             } else {
                 System.err.println("Final attempt failed: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
                 throw new RuntimeException("Failed to fetch scores from API after all attempts: " + e.getMessage());

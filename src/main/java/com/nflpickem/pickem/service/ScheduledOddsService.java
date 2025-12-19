@@ -17,10 +17,11 @@ public class ScheduledOddsService {
     private GameService gameService;
     
     /**
-     * Update all available odds and games every 6 hours during NFL season
-     * Runs at 6 AM, 12 PM, 6 PM, and 12 AM UTC
+     * Update all available odds and games every 12 hours during NFL season
+     * OPTIMIZATION: Reduced from every 6 hours to every 12 hours to conserve API quota
+     * Runs at 6 AM and 6 PM UTC (was 6 AM, 12 PM, 6 PM, 12 AM)
      */
-    @Scheduled(cron = "0 0 6,12,18,0 * * *")
+    @Scheduled(cron = "0 0 6,18 * * *")
     public void scheduledOddsUpdate() {
         try {
             // Only run during NFL season (September to January)

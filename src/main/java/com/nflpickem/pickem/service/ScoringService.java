@@ -23,7 +23,9 @@ public class ScoringService {
         this.gameScoreService = gameScoreService;
     }
 
-    @Scheduled(fixedRate = 3600000) // Schedule to run every hour
+    // OPTIMIZATION: Reduced frequency to every 2 hours instead of every hour to conserve API quota
+    // On game days, this still provides timely updates while reducing API calls by 50%
+    @Scheduled(fixedRate = 7200000) // Schedule to run every 2 hours (was 1 hour)
     public void runScoring() {
         System.out.println("Running scoring task at " + LocalDateTime.now());
         
