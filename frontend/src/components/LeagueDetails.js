@@ -8,11 +8,13 @@ function LeagueDetails() {
   const [seasonLeaderboard, setSeasonLeaderboard] = useState([]);
   const [weeklyWins, setWeeklyWins] = useState([]);
   const [currentWeek, setCurrentWeek] = useState(1); // Default, will be fetched
+  const [seasonComplete, setSeasonComplete] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // API base URL - will work for both development and Railway production
   const API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8080');
+  const FINAL_WEEK = 18;
 
   useEffect(() => {
     const fetchLeagueDetails = async () => {
@@ -61,6 +63,13 @@ function LeagueDetails() {
         const weeklyWinsData = await weeklyWinsResponse.json();
         setWeeklyWins(weeklyWinsData);
 
+        // Crown champion once the final regular-season week is fully scored
+        const seasonCompleteResponse = await fetch(`${API_BASE}/leaderboard/week/${FINAL_WEEK}/complete`);
+        if (seasonCompleteResponse.ok) {
+          const isComplete = await seasonCompleteResponse.json();
+          setSeasonComplete(Boolean(isComplete));
+        }
+
       } catch (error) {
         setError(error);
       } finally {
@@ -82,6 +91,17 @@ function LeagueDetails() {
   if (!league) {
     return <div>League not found.</div>;
   }
+
+  const getChampions = () => {
+    if (!seasonComplete || !seasonLeaderboard.length) {
+      return [];
+    }
+    const topScore = seasonLeaderboard[0].score;
+    return seasonLeaderboard.filter((player) => player.score === topScore);
+  };
+
+  const champions = getChampions();
+  const championUsernames = new Set(champions.map((player) => player.username));
 
   // Function to combine all leaderboard data into one table
   const combineLeaderboardData = () => {
@@ -168,6 +188,40 @@ function LeagueDetails() {
     });
   };
 
+  const renderChampionBanner = () => {
+    if (!champions.length) {
+      return null;
+    }
+
+    const championNames = champions.map((player) => player.name || player.username);
+    const topScore = champions[0].score;
+    const isTie = champions.length > 1;
+
+    return (
+      <div className="league-champion-banner" role="status">
+        <div className="league-champion-crown" aria-hidden="true">
+          <svg viewBox="0 0 64 40" width="48" height="30" focusable="false">
+            <path
+              d="M4 32 L8 12 L22 24 L32 6 L42 24 L56 12 L60 32 Z"
+              fill="#d4a017"
+              stroke="#8a6a0a"
+              strokeWidth="2"
+              strokeLinejoin="round"
+            />
+            <rect x="4" y="32" width="56" height="6" rx="1.5" fill="#b8860b" />
+          </svg>
+        </div>
+        <div className="league-champion-copy">
+          <p className="league-champion-eyebrow">
+            {isTie ? 'League Co-Champions' : 'League Champion'}
+          </p>
+          <h3 className="league-champion-name">{championNames.join(' & ')}</h3>
+          <p className="league-champion-score">{topScore} season points</p>
+        </div>
+      </div>
+    );
+  };
+
   const renderCombinedTable = () => {
     const combinedData = combineLeaderboardData();
     
@@ -193,11 +247,16 @@ function LeagueDetails() {
                   </tr>
                 </thead>
                 <tbody>
-                  {combinedData.map((player) => (
-                    <tr key={player.username}>
+                  {combinedData.map((player) => {
+                    const isChampion = championUsernames.has(player.username);
+                    return (
+                    <tr key={player.username} className={isChampion ? 'champion-row' : undefined}>
                       <td data-label="Player">
                         <div className="player-info">
-                          <div className="player-name">{player.name}</div>
+                          <div className="player-name">
+                            {player.name}
+                            {isChampion && <span className="champion-badge">Champion</span>}
+                          </div>
                           <div className="player-username">
                             @{player.username}
                           </div>
@@ -241,7 +300,8 @@ function LeagueDetails() {
                         )}
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -323,6 +383,8 @@ function LeagueDetails() {
       <h2>League: {league.name}</h2>
       <p>Join Code: <strong>{league.joinCode}</strong></p>
       <p>Admin: {league.admin.name || league.admin.username}</p>
+
+      {renderChampionBanner()}
 
       <h3>Members:</h3>
       <ul className="member-list">
