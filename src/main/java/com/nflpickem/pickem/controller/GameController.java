@@ -115,6 +115,38 @@ public class GameController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteGame(@PathVariable Long id) {
+        try {
+            boolean deleted = gameService.deleteGame(id);
+            if (!deleted) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok("Deleted game " + id);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body("Error deleting game: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Remove playoff games incorrectly stored as a regular-season week (e.g. week 18).
+     */
+    @PostMapping("/week/{weekNum}/cleanup-playoffs")
+    public ResponseEntity<?> cleanupPlayoffGames(@PathVariable Integer weekNum) {
+        try {
+            List<String> deleted = gameService.removeGamesOutsideRegularSeasonWeek(weekNum);
+            return ResponseEntity.ok(java.util.Map.of(
+                "week", weekNum,
+                "deletedCount", deleted.size(),
+                "deleted", deleted
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body("Error cleaning up playoff games: " + e.getMessage());
+        }
+    }
+
     @PostMapping("/update-scores")
     public ResponseEntity<String> updateScoresFromApi() {
         try {
@@ -123,6 +155,23 @@ public class GameController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                 .body("Error updating scores: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Re-grade picks for games that already have winners set.
+     * Fixes weeks where games were marked scored without updating pick.correct
+     * (common for Week 18 Saturday games / admin score entry).
+     */
+    @PostMapping("/regrade-picks")
+    public ResponseEntity<String> regradePicks(@RequestParam(required = false) Integer week) {
+        try {
+            int gamesRegraded = scoringService.regradePicksForScoredGames(week);
+            String scope = week != null ? "week " + week : "all weeks";
+            return ResponseEntity.ok("Regraded picks for " + gamesRegraded + " scored games (" + scope + ")");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body("Error regrading picks: " + e.getMessage());
         }
     }
 

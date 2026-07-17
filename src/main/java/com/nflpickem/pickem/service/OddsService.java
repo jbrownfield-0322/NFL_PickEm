@@ -356,8 +356,8 @@ public class OddsService {
             week++;
         }
         
-        // If we get here, it's Week 18 or later
-        return 18;
+        // Past the regular season — do not clamp playoffs into week 18
+        return null;
     }
     
     /**

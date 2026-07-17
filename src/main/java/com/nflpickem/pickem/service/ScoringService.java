@@ -7,7 +7,6 @@ import com.nflpickem.pickem.repository.PickRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -72,16 +71,9 @@ public class ScoringService {
                 game.setScored(true);
                 gameRepository.save(game);
 
-                // Score all picks for this game
-                List<Pick> picksForGame = pickRepository.findByGame(game);
-                for (Pick pick : picksForGame) {
-                    boolean isCorrect = pick.getPickedTeam().equals(winningTeam);
-                    pick.setCorrect(isCorrect);
-                    pick.setScoredAt(LocalDateTime.now());
-                    pickRepository.save(pick);
-                }
+                int pickCount = gradePicksForGame(game);
                 
-                System.out.println("✅ Updated " + picksForGame.size() + " picks for " + 
+                System.out.println("✅ Updated " + pickCount + " picks for " + 
                     game.getAwayTeam() + " " + result.getAwayScore() + " @ " + 
                     game.getHomeTeam() + " " + result.getHomeScore() + " - Winner: " + winningTeam);
             }
@@ -91,4 +83,54 @@ public class ScoringService {
             System.out.println("Skipping scoring due to API error - games will remain unscored until next attempt");
         }
     }
-} 
+
+    /**
+     * Grade all picks for a game based on its winningTeam.
+     * Returns the number of picks updated.
+     */
+    public int gradePicksForGame(Game game) {
+        if (game == null || game.getWinningTeam() == null) {
+            return 0;
+        }
+
+        List<Pick> picksForGame = pickRepository.findByGame(game);
+        String winningTeam = game.getWinningTeam();
+        for (Pick pick : picksForGame) {
+            boolean isCorrect = pick.getPickedTeam().equals(winningTeam);
+            pick.setCorrect(isCorrect);
+            pick.setScoredAt(LocalDateTime.now());
+            pickRepository.save(pick);
+        }
+        return picksForGame.size();
+    }
+
+    /**
+     * Re-grade picks for games that already have winners set.
+     * Use this to repair weeks where games were marked scored without updating pick.correct
+     * (e.g. admin UI / scrapers / Saturday games that never hit the Odds API path).
+     *
+     * @param week optional week filter; null regrades all scored games
+     * @return number of games whose picks were regraded
+     */
+    public int regradePicksForScoredGames(Integer week) {
+        List<Game> games = week != null
+                ? gameRepository.findByWeek(week)
+                : gameRepository.findAll();
+
+        int gamesRegraded = 0;
+        int picksUpdated = 0;
+
+        for (Game game : games) {
+            if (game.isScored() && game.getWinningTeam() != null) {
+                picksUpdated += gradePicksForGame(game);
+                gamesRegraded++;
+                System.out.println("Regraded picks for week " + game.getWeek() + ": " +
+                        game.getAwayTeam() + " @ " + game.getHomeTeam() + " -> " + game.getWinningTeam());
+            }
+        }
+
+        System.out.println("Regraded " + picksUpdated + " picks across " + gamesRegraded +
+                " scored games" + (week != null ? " for week " + week : ""));
+        return gamesRegraded;
+    }
+}

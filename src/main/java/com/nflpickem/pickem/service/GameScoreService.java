@@ -3,6 +3,7 @@ package com.nflpickem.pickem.service;
 import com.nflpickem.pickem.model.Game;
 import com.nflpickem.pickem.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,6 +24,7 @@ public class GameScoreService {
     private final GameRepository gameRepository;
     private final RestTemplate restTemplate;
     private final AlertService alertService;
+    private final ScoringService scoringService;
     
     @Value("${ODDS_API_KEY:}")
     private String oddsApiKey;
@@ -30,10 +32,12 @@ public class GameScoreService {
     @Value("${ODDS_API_BASE_URL}")
     private String oddsApiBaseUrl;
     
-    public GameScoreService(GameRepository gameRepository, RestTemplate restTemplate, AlertService alertService) {
+    public GameScoreService(GameRepository gameRepository, RestTemplate restTemplate,
+                            AlertService alertService, @Lazy ScoringService scoringService) {
         this.gameRepository = gameRepository;
         this.restTemplate = restTemplate;
         this.alertService = alertService;
+        this.scoringService = scoringService;
     }
     
     /**
@@ -490,31 +494,32 @@ public class GameScoreService {
     }
     
     /**
-     * Check if it's a game day (Thursday, Sunday, or Monday during NFL season)
-     * Also returns true if yesterday was Monday and there are unscored games from yesterday
+     * Check if it's a game day (Thursday, Saturday, Sunday, or Monday during NFL season).
+     * Saturday is required for Week 18 (and occasional other late-season games).
+     * Also returns true if yesterday was a game day and there are unscored games from yesterday.
      */
     public boolean isGameDay() {
         LocalDate today = LocalDate.now();
         int dayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
         
-        // Check if today is a game day
-        if (dayOfWeek == 1 || dayOfWeek == 4 || dayOfWeek == 7) {
+        // Monday, Thursday, Saturday, Sunday
+        if (isPrimaryGameDay(dayOfWeek)) {
             return true;
         }
         
         // Special case: Check if yesterday was a game day and there are unscored games from yesterday
-        // This handles Monday night games that finish on Tuesday morning and Thursday night games that finish on Friday morning
+        // Handles late finishes (Mon night → Tue, Thu night → Fri, Sat night → Sun morning)
         LocalDate yesterday = today.minusDays(1);
         int yesterdayDayOfWeek = yesterday.getDayOfWeek().getValue();
-        if (yesterdayDayOfWeek == 1 || yesterdayDayOfWeek == 4) { // Yesterday was Monday or Thursday
+        if (isPrimaryGameDay(yesterdayDayOfWeek)) {
             try {
                 Instant startOfYesterday = yesterday.atStartOfDay(ZoneId.of("America/New_York")).toInstant();
                 Instant endOfYesterday = today.atStartOfDay(ZoneId.of("America/New_York")).toInstant();
                 List<Game> unscoredYesterday = gameRepository.findByScoredFalseAndKickoffTimeBetween(startOfYesterday, endOfYesterday);
                 
                 if (!unscoredYesterday.isEmpty()) {
-                    String dayName = yesterdayDayOfWeek == 1 ? "Monday" : "Thursday";
-                    System.out.println("Found " + unscoredYesterday.size() + " unscored games from yesterday (" + dayName + "), continuing to fetch scores");
+                    System.out.println("Found " + unscoredYesterday.size() + " unscored games from yesterday (" +
+                            dayName(yesterdayDayOfWeek) + "), continuing to fetch scores");
                     return true;
                 }
             } catch (Exception e) {
@@ -523,6 +528,20 @@ public class GameScoreService {
         }
         
         return false;
+    }
+
+    private boolean isPrimaryGameDay(int dayOfWeek) {
+        return dayOfWeek == 1 || dayOfWeek == 4 || dayOfWeek == 6 || dayOfWeek == 7;
+    }
+
+    private String dayName(int dayOfWeek) {
+        return switch (dayOfWeek) {
+            case 1 -> "Monday";
+            case 4 -> "Thursday";
+            case 6 -> "Saturday";
+            case 7 -> "Sunday";
+            default -> "Day " + dayOfWeek;
+        };
     }
     
     /**
@@ -545,17 +564,17 @@ public class GameScoreService {
             return true;
         }
         
-        // Special case: Check for unscored games from yesterday (Monday night games and Thursday night games)
+        // Special case: Check for unscored games from yesterday (Mon/Thu/Sat late finishes)
         LocalDate yesterday = today.minusDays(1);
         int yesterdayDayOfWeek = yesterday.getDayOfWeek().getValue();
-        if (yesterdayDayOfWeek == 1 || yesterdayDayOfWeek == 4) { // Yesterday was Monday or Thursday
+        if (isPrimaryGameDay(yesterdayDayOfWeek)) {
             Instant startOfYesterday = yesterday.atStartOfDay(ZoneId.of("America/New_York")).toInstant();
             Instant endOfYesterday = today.atStartOfDay(ZoneId.of("America/New_York")).toInstant();
             List<Game> unscoredYesterday = gameRepository.findByScoredFalseAndKickoffTimeBetween(startOfYesterday, endOfYesterday);
             
             if (!unscoredYesterday.isEmpty()) {
-                String dayName = yesterdayDayOfWeek == 1 ? "Monday" : "Thursday";
-                System.out.println("Found " + unscoredYesterday.size() + " unscored games from yesterday (" + dayName + "), continuing to fetch scores");
+                System.out.println("Found " + unscoredYesterday.size() + " unscored games from yesterday (" +
+                        dayName(yesterdayDayOfWeek) + "), continuing to fetch scores");
                 return true;
             }
         }
@@ -607,15 +626,14 @@ public class GameScoreService {
     
     /**
      * Manually check and update scores for unscored games from yesterday
-     * This is useful for recovering from missed Monday night and Thursday night game updates
+     * Useful for recovering from missed Monday/Thursday/Saturday night game updates
      */
     public int updateYesterdayScores() {
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
         int yesterdayDayOfWeek = yesterday.getDayOfWeek().getValue();
         
-        // Only check if yesterday was a game day (Monday or Thursday)
-        if (yesterdayDayOfWeek != 1 && yesterdayDayOfWeek != 4) {
+        if (!isPrimaryGameDay(yesterdayDayOfWeek)) {
             System.out.println("Yesterday was not a game day, no games to update");
             return 0;
         }
@@ -626,13 +644,12 @@ public class GameScoreService {
         List<Game> unscoredYesterday = gameRepository.findByScoredFalseAndKickoffTimeBetween(startOfYesterday, endOfYesterday);
         
         if (unscoredYesterday.isEmpty()) {
-            String dayName = yesterdayDayOfWeek == 1 ? "Monday" : "Thursday";
-            System.out.println("No unscored games found from yesterday (" + dayName + ")");
+            System.out.println("No unscored games found from yesterday (" + dayName(yesterdayDayOfWeek) + ")");
             return 0;
         }
         
-        String dayName = yesterdayDayOfWeek == 1 ? "Monday" : "Thursday";
-        System.out.println("Found " + unscoredYesterday.size() + " unscored games from yesterday (" + dayName + "), attempting to fetch scores");
+        System.out.println("Found " + unscoredYesterday.size() + " unscored games from yesterday (" +
+                dayName(yesterdayDayOfWeek) + "), attempting to fetch scores");
         
         try {
             List<GameScoreResult> scoreResults = fetchLiveScores();
@@ -647,15 +664,17 @@ public class GameScoreService {
                     game.getKickoffTime().isBefore(endOfYesterday) && 
                     !game.isScored()) {
                     
-                    System.out.println("Updating yesterday's " + dayName + " game: " + game.getAwayTeam() + " @ " + game.getHomeTeam() + " - Winner: " + winningTeam);
+                    System.out.println("Updating yesterday's " + dayName(yesterdayDayOfWeek) + " game: " +
+                            game.getAwayTeam() + " @ " + game.getHomeTeam() + " - Winner: " + winningTeam);
                     game.setWinningTeam(winningTeam);
                     game.setScored(true);
                     gameRepository.save(game);
+                    scoringService.gradePicksForGame(game);
                     updatedCount++;
                 }
             }
             
-            System.out.println("Updated " + updatedCount + " games from yesterday (" + dayName + ")");
+            System.out.println("Updated " + updatedCount + " games from yesterday (" + dayName(yesterdayDayOfWeek) + ")");
             return updatedCount;
             
         } catch (Exception e) {

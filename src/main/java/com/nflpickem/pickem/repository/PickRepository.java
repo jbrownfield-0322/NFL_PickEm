@@ -18,4 +18,5 @@ public interface PickRepository extends JpaRepository<Pick, Long> {
     List<Pick> findByUserAndLeague(User user, League league);
     List<Pick> findByGameAndLeague(Game game, League league);
     List<Pick> findByLeague(League league);
+    void deleteByGame(Game game);
 } 
