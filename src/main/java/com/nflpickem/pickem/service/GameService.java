@@ -176,11 +176,7 @@ public class GameService {
 
     private int calculateCurrentNflWeek(int seasonYear) {
         LocalDate today = LocalDate.now(ZoneId.of("America/New_York"));
-        LocalDate septemberFirst = LocalDate.of(seasonYear, 9, 1);
-        LocalDate nflSeasonStart = septemberFirst.with(TemporalAdjusters.firstInMonth(DayOfWeek.THURSDAY));
-        if (septemberFirst.getDayOfWeek() == DayOfWeek.SUNDAY) {
-            nflSeasonStart = septemberFirst;
-        }
+        LocalDate nflSeasonStart = seasonService.getSeasonStartDate(seasonYear);
         if (today.isBefore(nflSeasonStart)) {
             return 1;
         }
