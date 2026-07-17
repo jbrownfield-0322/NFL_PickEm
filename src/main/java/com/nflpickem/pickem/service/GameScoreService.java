@@ -237,22 +237,49 @@ public class GameScoreService {
      */
     private Game findMatchingGame(ScoreApiResponse response) {
         System.out.println("Looking for match: " + response.away_team + " @ " + response.home_team);
+
+        Integer seasonYear = null;
+        if (response.commence_time != null) {
+            try {
+                seasonYear = Instant.parse(response.commence_time)
+                        .atZone(ZoneId.of("America/New_York")).toLocalDate().getYear();
+                int month = Instant.parse(response.commence_time)
+                        .atZone(ZoneId.of("America/New_York")).toLocalDate().getMonthValue();
+                if (month == 1 || month == 2) {
+                    seasonYear = seasonYear - 1;
+                }
+            } catch (Exception ignored) {
+                // fall through to fuzzy match
+            }
+        }
+
+        if (seasonYear != null) {
+            // Prefer season-scoped match via fuzzy over all games in that season
+            List<Game> seasonGames = gameRepository.findBySeasonYear(seasonYear);
+            for (Game game : seasonGames) {
+                if (fuzzyTeamMatch(game.getHomeTeam(), response.home_team) &&
+                    fuzzyTeamMatch(game.getAwayTeam(), response.away_team)) {
+                    return game;
+                }
+                if (fuzzyTeamMatch(game.getHomeTeam(), response.away_team) &&
+                    fuzzyTeamMatch(game.getAwayTeam(), response.home_team)) {
+                    return game;
+                }
+            }
+        }
         
-        // Try exact match first
         Optional<Game> exactMatch = gameRepository.findByHomeTeamAndAwayTeam(response.home_team, response.away_team);
         if (exactMatch.isPresent()) {
             System.out.println("Found exact match: " + exactMatch.get().getAwayTeam() + " @ " + exactMatch.get().getHomeTeam());
             return exactMatch.get();
         }
         
-        // Try reverse match
         Optional<Game> reverseMatch = gameRepository.findByHomeTeamAndAwayTeam(response.away_team, response.home_team);
         if (reverseMatch.isPresent()) {
             System.out.println("Found reverse match: " + reverseMatch.get().getAwayTeam() + " @ " + reverseMatch.get().getHomeTeam());
             return reverseMatch.get();
         }
         
-        // Try fuzzy matching for team name variations
         List<Game> allGames = gameRepository.findAll();
         
         for (Game game : allGames) {

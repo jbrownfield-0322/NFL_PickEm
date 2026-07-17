@@ -26,19 +26,23 @@ public class LeaderboardService {
     private final PickRepository pickRepository;
     private final GameRepository gameRepository;
     private final LeagueRepository leagueRepository;
+    private final SeasonService seasonService;
 
-    public LeaderboardService(PickRepository pickRepository, GameRepository gameRepository, LeagueRepository leagueRepository) {
+    public LeaderboardService(PickRepository pickRepository, GameRepository gameRepository,
+                              LeagueRepository leagueRepository, SeasonService seasonService) {
         this.pickRepository = pickRepository;
         this.gameRepository = gameRepository;
         this.leagueRepository = leagueRepository;
+        this.seasonService = seasonService;
     }
 
-    public List<PlayerScore> getWeeklyLeaderboard(Integer week, Long leagueId) {
-        logger.info("Getting weekly leaderboard for week: {}, leagueId: {}", week, leagueId);
+    public List<PlayerScore> getWeeklyLeaderboard(Integer week, Long leagueId, Integer seasonYear) {
+        int season = seasonService.normalizeSeasonYear(seasonYear);
+        logger.info("Getting weekly leaderboard for season: {}, week: {}, leagueId: {}", season, week, leagueId);
         
         try {
-            List<Game> gamesInWeek = gameRepository.findByWeek(week);
-            logger.info("Found {} games for week {}", gamesInWeek.size(), week);
+            List<Game> gamesInWeek = gameRepository.findBySeasonYearAndWeek(season, week);
+            logger.info("Found {} games for season {} week {}", gamesInWeek.size(), season, week);
             
             Set<Long> gameIdsInWeek = gamesInWeek.stream()
                     .map(Game::getId)
@@ -47,52 +51,49 @@ public class LeaderboardService {
             List<Pick> picksToScore;
 
             if (leagueId != null) {
-                logger.info("Fetching picks for league: {}", leagueId);
                 League league = leagueRepository.findById(leagueId)
                         .orElseThrow(() -> new RuntimeException("League not found with id: " + leagueId));
                 picksToScore = pickRepository.findByLeague(league).stream()
                         .filter(pick -> gameIdsInWeek.contains(pick.getGame().getId()))
                         .collect(Collectors.toList());
-                logger.info("Found {} picks for league {} in week {}", picksToScore.size(), leagueId, week);
             } else {
-                logger.info("Fetching all picks for week {}", week);
                 picksToScore = pickRepository.findAll().stream()
                         .filter(pick -> gameIdsInWeek.contains(pick.getGame().getId()))
                         .collect(Collectors.toList());
-                logger.info("Found {} picks for week {}", picksToScore.size(), week);
             }
             
-            List<PlayerScore> result = calculateLeaderboard(picksToScore);
-            logger.info("Calculated leaderboard with {} players", result.size());
-            return result;
+            return calculateLeaderboard(picksToScore);
         } catch (Exception e) {
-            logger.error("Error getting weekly leaderboard for week: {}, leagueId: {}", week, leagueId, e);
+            logger.error("Error getting weekly leaderboard for season: {}, week: {}, leagueId: {}", season, week, leagueId, e);
             throw e;
         }
     }
 
-    public List<PlayerScore> getSeasonLeaderboard(Long leagueId) {
-        logger.info("Getting season leaderboard for leagueId: {}", leagueId);
+    public List<PlayerScore> getSeasonLeaderboard(Long leagueId, Integer seasonYear) {
+        int season = seasonService.normalizeSeasonYear(seasonYear);
+        logger.info("Getting season leaderboard for season: {}, leagueId: {}", season, leagueId);
         
         try {
+            Set<Long> seasonGameIds = gameRepository.findBySeasonYear(season).stream()
+                    .map(Game::getId)
+                    .collect(Collectors.toSet());
+
             List<Pick> allPicks;
             if (leagueId != null) {
-                logger.info("Fetching picks for league: {}", leagueId);
                 League league = leagueRepository.findById(leagueId)
                         .orElseThrow(() -> new RuntimeException("League not found with id: " + leagueId));
-                allPicks = pickRepository.findByLeague(league);
-                logger.info("Found {} picks for league {}", allPicks.size(), leagueId);
+                allPicks = pickRepository.findByLeague(league).stream()
+                        .filter(pick -> seasonGameIds.contains(pick.getGame().getId()))
+                        .collect(Collectors.toList());
             } else {
-                logger.info("Fetching all picks for season");
-                allPicks = pickRepository.findAll();
-                logger.info("Found {} picks for season", allPicks.size());
+                allPicks = pickRepository.findAll().stream()
+                        .filter(pick -> seasonGameIds.contains(pick.getGame().getId()))
+                        .collect(Collectors.toList());
             }
             
-            List<PlayerScore> result = calculateLeaderboard(allPicks);
-            logger.info("Calculated season leaderboard with {} players", result.size());
-            return result;
+            return calculateLeaderboard(allPicks);
         } catch (Exception e) {
-            logger.error("Error getting season leaderboard for leagueId: {}", leagueId, e);
+            logger.error("Error getting season leaderboard for season: {}, leagueId: {}", season, leagueId, e);
             throw e;
         }
     }
@@ -118,63 +119,47 @@ public class LeaderboardService {
                 .collect(Collectors.toList());
     }
 
-    public List<WeeklyWinsDto> getWeeklyWins(Long leagueId) {
-        logger.info("Getting weekly wins for leagueId: {}", leagueId);
+    public List<WeeklyWinsDto> getWeeklyWins(Long leagueId, Integer seasonYear) {
+        int season = seasonService.normalizeSeasonYear(seasonYear);
+        logger.info("Getting weekly wins for season: {}, leagueId: {}", season, leagueId);
         
         try {
             Map<String, Long> weeklyWinsMap = new HashMap<>();
             
-            // Get all weeks that have games
-            List<Integer> weeks = gameRepository.findAll().stream()
+            List<Integer> weeks = gameRepository.findBySeasonYear(season).stream()
                     .map(Game::getWeek)
                     .distinct()
                     .sorted()
                     .collect(Collectors.toList());
             
-            logger.info("Found weeks: {}", weeks);
-            
             for (Integer week : weeks) {
-                // Check if all games for this week have been scored
-                List<Game> weekGames = gameRepository.findByWeek(week);
-                boolean allGamesScored = weekGames.stream().allMatch(Game::isScored);
+                List<Game> weekGames = gameRepository.findBySeasonYearAndWeek(season, week);
+                boolean allGamesScored = !weekGames.isEmpty() && weekGames.stream().allMatch(Game::isScored);
                 
                 if (!allGamesScored) {
-                    logger.info("Week {}: Not all games scored yet ({} of {} games scored), skipping weekly wins calculation", 
-                        week, 
-                        weekGames.stream().mapToInt(g -> g.isScored() ? 1 : 0).sum(),
-                        weekGames.size());
-                    continue; // Skip this week if not all games are scored
+                    continue;
                 }
                 
-                // Get weekly leaderboard for this week
-                List<PlayerScore> weeklyLeaderboard = getWeeklyLeaderboard(week, leagueId);
+                List<PlayerScore> weeklyLeaderboard = getWeeklyLeaderboard(week, leagueId, season);
                 
                 if (!weeklyLeaderboard.isEmpty()) {
-                    // Find the highest score for this week
                     Long highestScore = weeklyLeaderboard.get(0).getScore();
-                    
-                    // Count all players who tied for the highest score
                     List<PlayerScore> winners = weeklyLeaderboard.stream()
                             .filter(player -> player.getScore().equals(highestScore))
                             .collect(Collectors.toList());
                     
-                    logger.info("Week {}: All games scored, {} players tied with score {}", week, winners.size(), highestScore);
-                    
-                    // Award a win to each player who tied for first
                     for (PlayerScore winner : winners) {
                         weeklyWinsMap.merge(winner.getUsername(), 1L, Long::sum);
                     }
                 }
             }
             
-            // Convert to WeeklyWinsDto list
             List<WeeklyWinsDto> result = weeklyWinsMap.entrySet().stream()
                     .map(entry -> {
                         String username = entry.getKey();
                         Long wins = entry.getValue();
                         
-                        // Get the name from any pick by this user
-                        String name = username; // Default to username
+                        String name = username;
                         if (leagueId != null) {
                             League league = leagueRepository.findById(leagueId)
                                     .orElseThrow(() -> new RuntimeException("League not found with id: " + leagueId));
@@ -192,22 +177,19 @@ public class LeaderboardService {
                             .thenComparing(WeeklyWinsDto::getUsername))
                     .collect(Collectors.toList());
             
-            logger.info("Calculated weekly wins for {} players", result.size());
             return result;
         } catch (Exception e) {
-            logger.error("Error getting weekly wins for leagueId: {}", leagueId, e);
+            logger.error("Error getting weekly wins for season: {}, leagueId: {}", season, leagueId, e);
             throw e;
         }
     }
 
-    /**
-     * Check if all games for a specific week have been scored
-     */
-    public boolean isWeekComplete(Integer week) {
-        List<Game> weekGames = gameRepository.findByWeek(week);
+    public boolean isWeekComplete(Integer week, Integer seasonYear) {
+        int season = seasonService.normalizeSeasonYear(seasonYear);
+        List<Game> weekGames = gameRepository.findBySeasonYearAndWeek(season, week);
         if (weekGames.isEmpty()) {
-            return false; // No games for this week
+            return false;
         }
         return weekGames.stream().allMatch(Game::isScored);
     }
-} 
+}

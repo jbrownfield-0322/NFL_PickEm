@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../AuthContext';
+import { fetchSeasonOptions, appendSeasonParam } from '../utils/season';
 
 const GameList = () => {
   const [games, setGames] = useState([]);
   const [userPicks, setUserPicks] = useState([]);
   const [selectedLeagueId, setSelectedLeagueId] = useState('');
+  const [selectedSeason, setSelectedSeason] = useState(null);
+  const [availableSeasons, setAvailableSeasons] = useState([]);
   const [selectedWeek, setSelectedWeek] = useState(1);
   const [leagues, setLeagues] = useState([]);
   const [pickMessages, setPickMessages] = useState({});
@@ -18,25 +21,39 @@ const GameList = () => {
   const API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8080');
 
   useEffect(() => {
-    fetchGames();
-    fetchUserPicks();
+    const initSeasons = async () => {
+      try {
+        const { seasons, currentSeason } = await fetchSeasonOptions(API_BASE);
+        setAvailableSeasons(seasons);
+        setSelectedSeason(currentSeason);
+      } catch (error) {
+        console.error('Error fetching seasons:', error);
+        const fallback = new Date().getFullYear();
+        setAvailableSeasons([fallback]);
+        setSelectedSeason(fallback);
+      }
+    };
+    initSeasons();
     fetchLeagues();
-  }, []);
+  }, [API_BASE]);
+
+  useEffect(() => {
+    if (selectedSeason == null) return;
+    setHasInitializedWeek(false);
+    fetchGames(selectedSeason);
+  }, [selectedSeason]);
 
   // Fetch current week and set as default
   const fetchCurrentWeek = useCallback(async () => {
-    if (hasInitializedWeek) return; // Already initialized
+    if (hasInitializedWeek || selectedSeason == null) return;
     
     try {
-      const response = await fetch(`${API_BASE}/games/currentWeek`);
+      const response = await fetch(appendSeasonParam(`${API_BASE}/games/currentWeek`, selectedSeason));
       if (response.ok) {
         const weekData = await response.text();
         const fetchedWeek = parseInt(weekData, 10);
-        // Only set selectedWeek to current week on initial load
-        // Also verify the week exists in available weeks
         if (fetchedWeek) {
           const availableWeeks = [...new Set(games.map(game => game.week))].sort((a, b) => a - b);
-          // If current week is available, use it; otherwise use the first available week
           if (availableWeeks.includes(fetchedWeek)) {
             setSelectedWeek(fetchedWeek);
           } else if (availableWeeks.length > 0) {
@@ -47,7 +64,6 @@ const GameList = () => {
       }
     } catch (error) {
       console.error('Error fetching current week:', error);
-      // Fallback to first available week if fetch fails
       if (games.length > 0) {
         const availableWeeks = [...new Set(games.map(game => game.week))].sort((a, b) => a - b);
         if (availableWeeks.length > 0) {
@@ -56,7 +72,7 @@ const GameList = () => {
         }
       }
     }
-  }, [games, hasInitializedWeek, API_BASE]);
+  }, [games, hasInitializedWeek, API_BASE, selectedSeason]);
 
   // Set current week as default when games are loaded
   useEffect(() => {
@@ -78,9 +94,9 @@ const GameList = () => {
     }
   }, [selectedLeagueId, user]);
 
-  const fetchGames = async () => {
+  const fetchGames = async (seasonYear) => {
     try {
-      const response = await fetch(`${API_BASE}/games`);
+      const response = await fetch(appendSeasonParam(`${API_BASE}/games`, seasonYear));
       if (response.ok) {
         const data = await response.json();
         setGames(data);
@@ -343,6 +359,21 @@ const GameList = () => {
       <h2>NFL Games</h2>
       <div className="game-list-container">
         <div className="league-controls">
+          <div>
+            <label htmlFor="season-select">Season:</label>
+            <select
+              id="season-select"
+              value={selectedSeason ?? ''}
+              onChange={(e) => setSelectedSeason(parseInt(e.target.value, 10))}
+            >
+              {availableSeasons.map((year) => (
+                <option key={year} value={year}>
+                  {year} Season
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div>
             <label htmlFor="week-select">Select Week:</label>
             <select 

@@ -15,11 +15,14 @@ public class ScoringService {
     private final GameRepository gameRepository;
     private final PickRepository pickRepository;
     private final GameScoreService gameScoreService;
+    private final SeasonService seasonService;
 
-    public ScoringService(GameRepository gameRepository, PickRepository pickRepository, GameScoreService gameScoreService) {
+    public ScoringService(GameRepository gameRepository, PickRepository pickRepository,
+                          GameScoreService gameScoreService, SeasonService seasonService) {
         this.gameRepository = gameRepository;
         this.pickRepository = pickRepository;
         this.gameScoreService = gameScoreService;
+        this.seasonService = seasonService;
     }
 
     // OPTIMIZATION: Reduced frequency to every 2 hours instead of every hour to conserve API quota
@@ -113,9 +116,24 @@ public class ScoringService {
      * @return number of games whose picks were regraded
      */
     public int regradePicksForScoredGames(Integer week) {
-        List<Game> games = week != null
-                ? gameRepository.findByWeek(week)
-                : gameRepository.findAll();
+        return regradePicksForScoredGames(week, null);
+    }
+
+    /**
+     * Re-grade picks for games that already have winners set.
+     * @param week optional week filter
+     * @param seasonYear optional season filter; when week is set without season, uses current season
+     */
+    public int regradePicksForScoredGames(Integer week, Integer seasonYear) {
+        List<Game> games;
+        if (week != null) {
+            int season = seasonService.normalizeSeasonYear(seasonYear);
+            games = gameRepository.findBySeasonYearAndWeek(season, week);
+        } else if (seasonYear != null) {
+            games = gameRepository.findBySeasonYear(seasonYear);
+        } else {
+            games = gameRepository.findAll();
+        }
 
         int gamesRegraded = 0;
         int picksUpdated = 0;
@@ -124,13 +142,12 @@ public class ScoringService {
             if (game.isScored() && game.getWinningTeam() != null) {
                 picksUpdated += gradePicksForGame(game);
                 gamesRegraded++;
-                System.out.println("Regraded picks for week " + game.getWeek() + ": " +
+                System.out.println("Regraded picks for season " + game.getSeasonYear() + " week " + game.getWeek() + ": " +
                         game.getAwayTeam() + " @ " + game.getHomeTeam() + " -> " + game.getWinningTeam());
             }
         }
 
-        System.out.println("Regraded " + picksUpdated + " picks across " + gamesRegraded +
-                " scored games" + (week != null ? " for week " + week : ""));
+        System.out.println("Regraded " + picksUpdated + " picks across " + gamesRegraded + " scored games");
         return gamesRegraded;
     }
 }

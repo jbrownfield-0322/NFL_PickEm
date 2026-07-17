@@ -22,44 +22,53 @@ public class LeaderboardController {
     }
 
     @GetMapping("/weekly/{weekNum}")
-    public ResponseEntity<List<PlayerScore>> getWeeklyLeaderboard(@PathVariable Integer weekNum, @RequestParam Long leagueId) {
+    public ResponseEntity<List<PlayerScore>> getWeeklyLeaderboard(
+            @PathVariable Integer weekNum,
+            @RequestParam Long leagueId,
+            @RequestParam(required = false) Integer seasonYear) {
         try {
             if (weekNum == null || weekNum < 1) {
                 return ResponseEntity.badRequest().build();
             }
-            return ResponseEntity.ok(leaderboardService.getWeeklyLeaderboard(weekNum, leagueId));
+            return ResponseEntity.ok(leaderboardService.getWeeklyLeaderboard(weekNum, leagueId, seasonYear));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping("/season")
-    public ResponseEntity<List<PlayerScore>> getSeasonLeaderboard(@RequestParam Long leagueId) {
+    public ResponseEntity<List<PlayerScore>> getSeasonLeaderboard(
+            @RequestParam Long leagueId,
+            @RequestParam(required = false) Integer seasonYear) {
         try {
-            return ResponseEntity.ok(leaderboardService.getSeasonLeaderboard(leagueId));
+            return ResponseEntity.ok(leaderboardService.getSeasonLeaderboard(leagueId, seasonYear));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping("/weekly-wins")
-    public ResponseEntity<List<WeeklyWinsDto>> getWeeklyWins(@RequestParam Long leagueId) {
+    public ResponseEntity<List<WeeklyWinsDto>> getWeeklyWins(
+            @RequestParam Long leagueId,
+            @RequestParam(required = false) Integer seasonYear) {
         try {
-            return ResponseEntity.ok(leaderboardService.getWeeklyWins(leagueId));
+            return ResponseEntity.ok(leaderboardService.getWeeklyWins(leagueId, seasonYear));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping("/week/{weekNum}/complete")
-    public ResponseEntity<Boolean> isWeekComplete(@PathVariable Integer weekNum) {
+    public ResponseEntity<Boolean> isWeekComplete(
+            @PathVariable Integer weekNum,
+            @RequestParam(required = false) Integer seasonYear) {
         try {
             if (weekNum == null || weekNum < 1) {
                 return ResponseEntity.badRequest().build();
             }
-            return ResponseEntity.ok(leaderboardService.isWeekComplete(weekNum));
+            return ResponseEntity.ok(leaderboardService.isWeekComplete(weekNum, seasonYear));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
     }
-} 
+}

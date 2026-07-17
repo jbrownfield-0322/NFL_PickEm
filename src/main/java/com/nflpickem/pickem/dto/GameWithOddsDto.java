@@ -10,6 +10,7 @@ import java.util.List;
 public class GameWithOddsDto {
     private Long id;
     private Integer week;
+    private Integer seasonYear;
     private String homeTeam;
     private String awayTeam;
     private String kickoffTime;
@@ -21,6 +22,7 @@ public class GameWithOddsDto {
     public GameWithOddsDto(Game game, List<BettingOdds> odds) {
         this.id = game.getId();
         this.week = game.getWeek();
+        this.seasonYear = game.getSeasonYear();
         this.homeTeam = game.getHomeTeam();
         this.awayTeam = game.getAwayTeam();
         this.kickoffTime = game.getKickoffTime() != null ? game.getKickoffTime().toString() : null;

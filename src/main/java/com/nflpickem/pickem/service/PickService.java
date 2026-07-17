@@ -103,13 +103,15 @@ public class PickService {
     }
 
     public List<PickComparisonDto> getPickComparison(Long userId, Integer week, Long leagueId) {
+        return getPickComparison(userId, week, leagueId, null);
+    }
+
+    public List<PickComparisonDto> getPickComparison(Long userId, Integer week, Long leagueId, Integer seasonYear) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
-        // Get all games for the specified week and sort by kickoff time
-        List<Game> games = gameService.getGamesByWeek(week);
+        List<Game> games = gameService.getGamesByWeek(week, seasonYear);
         
-        // Sort games by kickoff time (Thursday night first, Monday night last)
         games.sort((a, b) -> {
             return a.getKickoffTime().compareTo(b.getKickoffTime());
         });
