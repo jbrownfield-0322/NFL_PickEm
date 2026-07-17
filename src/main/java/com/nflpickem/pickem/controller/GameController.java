@@ -29,8 +29,11 @@ public class GameController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GameWithOddsDto>> getAllGames() {
-        List<Game> games = gameService.getAllGames();
+    public ResponseEntity<List<GameWithOddsDto>> getAllGames(
+            @RequestParam(required = false) Integer seasonYear) {
+        List<Game> games = seasonYear != null
+                ? gameService.getGamesBySeason(seasonYear)
+                : gameService.getAllGames();
         List<GameWithOddsDto> gamesWithOdds = games.stream()
             .map(game -> {
                 var odds = gameService.getOddsForGame(game.getId());
@@ -40,9 +43,21 @@ public class GameController {
         return ResponseEntity.ok(gamesWithOdds);
     }
 
+    @GetMapping("/seasons")
+    public ResponseEntity<List<Integer>> getAvailableSeasons() {
+        return ResponseEntity.ok(gameService.getAvailableSeasonYears());
+    }
+
+    @GetMapping("/currentSeason")
+    public ResponseEntity<Integer> getCurrentSeason() {
+        return ResponseEntity.ok(gameService.getCurrentSeasonYear());
+    }
+
     @GetMapping("/week/{weekNum}")
-    public ResponseEntity<List<GameWithOddsDto>> getGamesByWeek(@PathVariable Integer weekNum) {
-        List<Game> games = gameService.getGamesByWeek(weekNum);
+    public ResponseEntity<List<GameWithOddsDto>> getGamesByWeek(
+            @PathVariable Integer weekNum,
+            @RequestParam(required = false) Integer seasonYear) {
+        List<Game> games = gameService.getGamesByWeek(weekNum, seasonYear);
         List<GameWithOddsDto> gamesWithOdds = games.stream()
             .map(game -> {
                 var odds = gameService.getOddsForGame(game.getId());
@@ -53,8 +68,8 @@ public class GameController {
     }
 
     @GetMapping("/currentWeek")
-    public ResponseEntity<Integer> getCurrentWeek() {
-        return ResponseEntity.ok(gameService.getCurrentWeek());
+    public ResponseEntity<Integer> getCurrentWeek(@RequestParam(required = false) Integer seasonYear) {
+        return ResponseEntity.ok(gameService.getCurrentWeek(seasonYear));
     }
     
     @GetMapping("/{gameId}/odds")
@@ -68,9 +83,11 @@ public class GameController {
     }
     
     @GetMapping("/week/{weekNum}/odds")
-    public ResponseEntity<?> getOddsForWeek(@PathVariable Integer weekNum) {
+    public ResponseEntity<?> getOddsForWeek(
+            @PathVariable Integer weekNum,
+            @RequestParam(required = false) Integer seasonYear) {
         try {
-            var odds = gameService.getOddsForWeek(weekNum);
+            var odds = gameService.getOddsForWeek(weekNum, seasonYear);
             return ResponseEntity.ok(odds);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
@@ -85,16 +102,18 @@ public class GameController {
             game.setHomeTeam(request.getHomeTeam());
             game.setAwayTeam(request.getAwayTeam());
             
-            // Parse the kickoff time string to Instant
             if (request.getKickoffTime() != null && !request.getKickoffTime().isEmpty()) {
                 Instant kickoffInstant = parseKickoffTime(request.getKickoffTime());
                 game.setKickoffTime(kickoffInstant);
+            }
+
+            if (request.getSeasonYear() != null) {
+                game.setSeasonYear(request.getSeasonYear());
             }
             
             game.setWinningTeam(request.getWinningTeam());
             game.setScored(request.getScored() != null ? request.getScored() : false);
             
-            // Save the game using the service
             Game savedGame = gameService.saveGame(game);
             return ResponseEntity.ok(savedGame);
         } catch (Exception e) {
@@ -133,11 +152,14 @@ public class GameController {
      * Remove playoff games incorrectly stored as a regular-season week (e.g. week 18).
      */
     @PostMapping("/week/{weekNum}/cleanup-playoffs")
-    public ResponseEntity<?> cleanupPlayoffGames(@PathVariable Integer weekNum) {
+    public ResponseEntity<?> cleanupPlayoffGames(
+            @PathVariable Integer weekNum,
+            @RequestParam(required = false) Integer seasonYear) {
         try {
-            List<String> deleted = gameService.removeGamesOutsideRegularSeasonWeek(weekNum);
+            List<String> deleted = gameService.removeGamesOutsideRegularSeasonWeek(weekNum, seasonYear);
             return ResponseEntity.ok(java.util.Map.of(
                 "week", weekNum,
+                "seasonYear", seasonYear != null ? seasonYear : gameService.getCurrentSeasonYear(),
                 "deletedCount", deleted.size(),
                 "deleted", deleted
             ));
@@ -160,14 +182,17 @@ public class GameController {
 
     /**
      * Re-grade picks for games that already have winners set.
-     * Fixes weeks where games were marked scored without updating pick.correct
-     * (common for Week 18 Saturday games / admin score entry).
      */
     @PostMapping("/regrade-picks")
-    public ResponseEntity<String> regradePicks(@RequestParam(required = false) Integer week) {
+    public ResponseEntity<String> regradePicks(
+            @RequestParam(required = false) Integer week,
+            @RequestParam(required = false) Integer seasonYear) {
         try {
-            int gamesRegraded = scoringService.regradePicksForScoredGames(week);
+            int gamesRegraded = scoringService.regradePicksForScoredGames(week, seasonYear);
             String scope = week != null ? "week " + week : "all weeks";
+            if (seasonYear != null) {
+                scope += " season " + seasonYear;
+            }
             return ResponseEntity.ok("Regraded picks for " + gamesRegraded + " scored games (" + scope + ")");
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
@@ -262,6 +287,7 @@ public class GameController {
 
     // Request DTOs
     public static class CreateGameRequest {
+        private Integer seasonYear;
         private Integer week;
         private String homeTeam;
         private String awayTeam;
@@ -269,7 +295,9 @@ public class GameController {
         private String winningTeam;
         private Boolean scored;
 
-        // Getters and setters
+        public Integer getSeasonYear() { return seasonYear; }
+        public void setSeasonYear(Integer seasonYear) { this.seasonYear = seasonYear; }
+
         public Integer getWeek() { return week; }
         public void setWeek(Integer week) { this.week = week; }
         

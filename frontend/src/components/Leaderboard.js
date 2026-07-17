@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../AuthContext';
+import { fetchSeasonOptions, appendSeasonParam } from '../utils/season';
 
 function Leaderboard() {
   const [weeklyLeaderboard, setWeeklyLeaderboard] = useState([]);
@@ -7,6 +8,8 @@ function Leaderboard() {
   const [weeklyWins, setWeeklyWins] = useState([]);
   const [leagues, setLeagues] = useState([]);
   const [selectedLeagueId, setSelectedLeagueId] = useState('');
+  const [availableSeasons, setAvailableSeasons] = useState([]);
+  const [selectedSeason, setSelectedSeason] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentWeek, setCurrentWeek] = useState(1);
@@ -22,6 +25,25 @@ function Leaderboard() {
   const { user } = useAuth();
 
   const API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8080');
+
+  useEffect(() => {
+    const initSeasons = async () => {
+      try {
+        const { seasons, currentSeason } = await fetchSeasonOptions(API_BASE);
+        setAvailableSeasons(seasons);
+        setSelectedSeason(currentSeason);
+      } catch (e) {
+        const fallback = new Date().getFullYear();
+        setAvailableSeasons([fallback]);
+        setSelectedSeason(fallback);
+      }
+    };
+    initSeasons();
+  }, [API_BASE]);
+
+  useEffect(() => {
+    setHasInitialized(false);
+  }, [selectedSeason]);
 
   // Function to calculate pick differences matrix between all players
   const calculatePickDifferencesMatrix = (comparisonData, currentUser) => {
@@ -147,79 +169,76 @@ function Leaderboard() {
 
   useEffect(() => {
     const fetchLeaderboards = async () => {
-      if (!user) {
+      if (!user || selectedSeason == null) {
         setLoading(false);
         return;
       }
 
       try {
-        // Fetch current week
-        const weekResponse = await fetch(`${API_BASE}/games/currentWeek`);
+        const weekResponse = await fetch(appendSeasonParam(`${API_BASE}/games/currentWeek`, selectedSeason));
         if (weekResponse.ok) {
           const weekData = await weekResponse.text();
           const fetchedWeek = parseInt(weekData, 10);
           setCurrentWeek(fetchedWeek);
-          // Only set selectedWeek to current week on initial load
           if (!hasInitialized) {
             setSelectedWeek(fetchedWeek);
             setHasInitialized(true);
           }
         }
 
-        // Fetch user's leagues
         const leaguesResponse = await fetch(`${API_BASE}/leagues/user/${user.id}`);
         if (leaguesResponse.ok) {
           const leaguesData = await leaguesResponse.json();
           setLeagues(leaguesData);
           
-          // Auto-select league if user is only in one league
           if (leaguesData.length === 1 && !selectedLeagueId) {
             setSelectedLeagueId(leaguesData[0].id.toString());
           }
         }
 
-        // Fetch weekly leaderboard only if league is selected
+        const seasonParam = `seasonYear=${selectedSeason}`;
+
         if (selectedLeagueId) {
-          const weeklyResponse = await fetch(`${API_BASE}/leaderboard/weekly/${selectedWeek}?leagueId=${parseInt(selectedLeagueId, 10)}`);
+          const weeklyResponse = await fetch(
+            `${API_BASE}/leaderboard/weekly/${selectedWeek}?leagueId=${parseInt(selectedLeagueId, 10)}&${seasonParam}`
+          );
           if (weeklyResponse.ok) {
-            const weeklyData = await weeklyResponse.json();
-            setWeeklyLeaderboard(weeklyData);
+            setWeeklyLeaderboard(await weeklyResponse.json());
           }
         } else {
           setWeeklyLeaderboard([]);
         }
 
-        // Fetch season leaderboard only if league is selected
         if (selectedLeagueId) {
-          const seasonResponse = await fetch(`${API_BASE}/leaderboard/season?leagueId=${parseInt(selectedLeagueId, 10)}`);
+          const seasonResponse = await fetch(
+            `${API_BASE}/leaderboard/season?leagueId=${parseInt(selectedLeagueId, 10)}&${seasonParam}`
+          );
           if (seasonResponse.ok) {
-            const seasonData = await seasonResponse.json();
-            setSeasonLeaderboard(seasonData);
+            setSeasonLeaderboard(await seasonResponse.json());
           }
         } else {
           setSeasonLeaderboard([]);
         }
 
-        // Fetch weekly wins only if league is selected
         if (selectedLeagueId) {
-          const weeklyWinsResponse = await fetch(`${API_BASE}/leaderboard/weekly-wins?leagueId=${parseInt(selectedLeagueId, 10)}`);
+          const weeklyWinsResponse = await fetch(
+            `${API_BASE}/leaderboard/weekly-wins?leagueId=${parseInt(selectedLeagueId, 10)}&${seasonParam}`
+          );
           if (weeklyWinsResponse.ok) {
-            const weeklyWinsData = await weeklyWinsResponse.json();
-            setWeeklyWins(weeklyWinsData);
+            setWeeklyWins(await weeklyWinsResponse.json());
           }
         } else {
           setWeeklyWins([]);
         }
 
-        // Fetch pick comparison only if league is selected
         if (user && selectedLeagueId) {
-          const comparisonResponse = await fetch(`${API_BASE}/picks/comparison/${user.id}/${selectedWeek}?leagueId=${parseInt(selectedLeagueId, 10)}`);
+          const comparisonResponse = await fetch(
+            `${API_BASE}/picks/comparison/${user.id}/${selectedWeek}?leagueId=${parseInt(selectedLeagueId, 10)}&${seasonParam}`
+          );
           if (comparisonResponse.ok) {
             const comparisonData = await comparisonResponse.json();
             setPickComparison(comparisonData);
-            // Calculate pick differences matrix
-            const matrixData = calculatePickDifferencesMatrix(comparisonData, user);
-            setPickDifferences(matrixData);
+            setPickDifferences(calculatePickDifferencesMatrix(comparisonData, user));
           } else {
             setPickComparison([]);
             setPickDifferences([]);
@@ -238,7 +257,7 @@ function Leaderboard() {
     };
 
     fetchLeaderboards();
-  }, [user, selectedWeek, selectedLeagueId, API_BASE]);
+  }, [user, selectedWeek, selectedLeagueId, selectedSeason, API_BASE, hasInitialized]);
 
   // Handle scrollable detection for mobile
   useEffect(() => {
@@ -943,6 +962,19 @@ function Leaderboard() {
       <h2>Leaderboards</h2>
 
       <div className="leaderboard-controls">
+        <div>
+          <label htmlFor="season-select">Season:</label>
+          <select
+            id="season-select"
+            value={selectedSeason ?? ''}
+            onChange={(e) => setSelectedSeason(parseInt(e.target.value, 10))}
+          >
+            {availableSeasons.map((year) => (
+              <option key={year} value={year}>{year} Season</option>
+            ))}
+          </select>
+        </div>
+
         <div>
           <label htmlFor="week-select">Select Week:</label>
           <select id="week-select" value={selectedWeek} onChange={(e) => setSelectedWeek(parseInt(e.target.value, 10))}>

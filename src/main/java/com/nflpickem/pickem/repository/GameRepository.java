@@ -13,26 +13,49 @@ import java.util.Optional;
 @Repository
 public interface GameRepository extends JpaRepository<Game, Long> {
     List<Game> findByWeek(Integer week);
+
+    List<Game> findBySeasonYear(Integer seasonYear);
+
+    List<Game> findBySeasonYearAndWeek(Integer seasonYear, Integer week);
+
     List<Game> findByScoredFalseAndKickoffTimeBefore(Instant dateTime);
+
     List<Game> findByScoredFalseAndKickoffTimeBetween(Instant startTime, Instant endTime);
-    
-    // Check for exact duplicate
+
     Optional<Game> findByWeekAndHomeTeamAndAwayTeam(Integer week, String homeTeam, String awayTeam);
-    
-    // Find games by team names (for score matching)
+
+    Optional<Game> findBySeasonYearAndWeekAndHomeTeamAndAwayTeam(
+            Integer seasonYear, Integer week, String homeTeam, String awayTeam);
+
     Optional<Game> findByHomeTeamAndAwayTeam(String homeTeam, String awayTeam);
-    
-    // Find games within a time range (for game day detection)
+
     List<Game> findByKickoffTimeBetween(Instant startTime, Instant endTime);
-    
-    // Find games with similar teams and time (within 2 hours)
+
+    @Query("SELECT DISTINCT g.seasonYear FROM Game g WHERE g.seasonYear IS NOT NULL ORDER BY g.seasonYear DESC")
+    List<Integer> findDistinctSeasonYears();
+
+    @Query("SELECT g FROM Game g WHERE g.seasonYear IS NULL")
+    List<Game> findBySeasonYearIsNull();
+
+    @Query("SELECT g FROM Game g WHERE g.seasonYear = :seasonYear AND g.week = :week AND " +
+           "((g.homeTeam = :homeTeam AND g.awayTeam = :awayTeam) OR " +
+           "(g.homeTeam = :awayTeam AND g.awayTeam = :homeTeam)) AND " +
+           "g.kickoffTime BETWEEN :startTime AND :endTime")
+    List<Game> findSimilarGames(@Param("seasonYear") Integer seasonYear,
+                               @Param("week") Integer week,
+                               @Param("homeTeam") String homeTeam,
+                               @Param("awayTeam") String awayTeam,
+                               @Param("startTime") Instant startTime,
+                               @Param("endTime") Instant endTime);
+
+    /** Legacy similar-games lookup without season (prefer season-aware overload). */
     @Query("SELECT g FROM Game g WHERE g.week = :week AND " +
            "((g.homeTeam = :homeTeam AND g.awayTeam = :awayTeam) OR " +
            "(g.homeTeam = :awayTeam AND g.awayTeam = :homeTeam)) AND " +
            "g.kickoffTime BETWEEN :startTime AND :endTime")
-    List<Game> findSimilarGames(@Param("week") Integer week, 
-                               @Param("homeTeam") String homeTeam, 
-                               @Param("awayTeam") String awayTeam, 
+    List<Game> findSimilarGamesByWeek(@Param("week") Integer week,
+                               @Param("homeTeam") String homeTeam,
+                               @Param("awayTeam") String awayTeam,
                                @Param("startTime") Instant startTime,
                                @Param("endTime") Instant endTime);
-} 
+}

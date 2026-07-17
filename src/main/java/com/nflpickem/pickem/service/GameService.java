@@ -29,6 +29,7 @@ public class GameService {
     private final PickRepository pickRepository;
     private final NflScheduleScraper nflScheduleScraper;
     private final ScoringService scoringService;
+    private final SeasonService seasonService;
     
     @Value("${ENABLE_NFL_SCRAPING:false}")
     private boolean enableNflScraping;
@@ -38,12 +39,13 @@ public class GameService {
 
     public GameService(GameRepository gameRepository, BettingOddsRepository bettingOddsRepository,
                        PickRepository pickRepository, NflScheduleScraper nflScheduleScraper,
-                       @Lazy ScoringService scoringService) {
+                       @Lazy ScoringService scoringService, SeasonService seasonService) {
         this.gameRepository = gameRepository;
         this.bettingOddsRepository = bettingOddsRepository;
         this.pickRepository = pickRepository;
         this.nflScheduleScraper = nflScheduleScraper;
         this.scoringService = scoringService;
+        this.seasonService = seasonService;
     }
 
     @PostConstruct
@@ -51,12 +53,11 @@ public class GameService {
         if (gameRepository.count() == 0) {
             if (enableNflScraping) {
                 try {
-                    int currentYear = LocalDate.now().getYear();
-                    // Scrape all regular season weeks (configurable via NFL_SEASON_WEEKS)
+                    int seasonYear = seasonService.getCurrentSeasonYear();
                     for (int week = 1; week <= nflSeasonWeeks; week++) {
-                        List<Game> games = nflScheduleScraper.scrapeGames(currentYear, week);
+                        List<Game> games = nflScheduleScraper.scrapeGames(seasonYear, week);
                         gameRepository.saveAll(games);
-                        System.out.println("Scraped and saved " + games.size() + " games for Week " + week + " of " + currentYear + " from Pro-Football-Reference.com");
+                        System.out.println("Scraped and saved " + games.size() + " games for Week " + week + " of " + seasonYear);
                     }
                 } catch (IOException e) {
                     System.err.println("Error scraping NFL schedule: " + e.getMessage());
@@ -73,8 +74,24 @@ public class GameService {
         return gameRepository.findAll();
     }
 
+    public List<Game> getGamesBySeason(Integer seasonYear) {
+        return gameRepository.findBySeasonYear(seasonService.normalizeSeasonYear(seasonYear));
+    }
+
     public List<Game> getGamesByWeek(Integer week) {
-        return gameRepository.findByWeek(week);
+        return getGamesByWeek(week, null);
+    }
+
+    public List<Game> getGamesByWeek(Integer week, Integer seasonYear) {
+        return gameRepository.findBySeasonYearAndWeek(seasonService.normalizeSeasonYear(seasonYear), week);
+    }
+
+    public List<Integer> getAvailableSeasonYears() {
+        return seasonService.getAvailableSeasonYears();
+    }
+
+    public int getCurrentSeasonYear() {
+        return seasonService.getCurrentSeasonYear();
     }
 
     public Game getGameById(Long id) {
@@ -82,6 +99,9 @@ public class GameService {
     }
 
     public Game saveGame(Game game) {
+        if (game.getSeasonYear() == null) {
+            game.setSeasonYear(seasonService.resolveSeasonYear(game.getKickoffTime()));
+        }
         return gameRepository.save(game);
     }
 
@@ -91,16 +111,12 @@ public class GameService {
             game.setWinningTeam(winningTeam);
             game.setScored(true);
             Game saved = gameRepository.save(game);
-            // Grade picks so leaderboards stay in sync with admin/scraper score updates
             scoringService.gradePicksForGame(saved);
             return saved;
         }
         return null;
     }
 
-    /**
-     * Delete a game and its related picks/odds.
-     */
     @Transactional
     public boolean deleteGame(Long gameId) {
         Game game = gameRepository.findById(gameId).orElse(null);
@@ -113,21 +129,14 @@ public class GameService {
         return true;
     }
 
-    /**
-     * Remove playoff (or other post-regular-season) games that were incorrectly stored
-     * as the final regular-season week. Keeps only games whose kickoff falls within
-     * that week's Thursday–Wednesday window.
-     *
-     * @return descriptions of deleted games
-     */
     @Transactional
-    public List<String> removeGamesOutsideRegularSeasonWeek(Integer week) {
-        List<Game> weekGames = gameRepository.findByWeek(week);
+    public List<String> removeGamesOutsideRegularSeasonWeek(Integer week, Integer seasonYear) {
+        int season = seasonService.normalizeSeasonYear(seasonYear);
+        List<Game> weekGames = gameRepository.findBySeasonYearAndWeek(season, week);
         if (weekGames.isEmpty()) {
             return List.of();
         }
 
-        // Infer season start from the earliest kickoff in this week, then back up (week-1)*7 days to Thursday
         Instant earliestKickoff = weekGames.stream()
                 .map(Game::getKickoffTime)
                 .filter(t -> t != null)
@@ -138,9 +147,8 @@ public class GameService {
         }
 
         LocalDate earliestDate = earliestKickoff.atZone(ZoneId.of("America/New_York")).toLocalDate();
-        // Week N runs Thursday → Wednesday; find that week's Thursday from an in-week game date
         LocalDate weekStart = earliestDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.THURSDAY));
-        LocalDate weekEnd = weekStart.plusDays(6); // Wednesday
+        LocalDate weekEnd = weekStart.plusDays(6);
         Instant cutoff = weekEnd.plusDays(1).atStartOfDay(ZoneId.of("America/New_York")).toInstant();
 
         List<String> deleted = new ArrayList<>();
@@ -158,12 +166,17 @@ public class GameService {
     }
 
     public Integer getCurrentWeek() {
-        return calculateCurrentNflWeek(LocalDate.now().getYear());
+        return getCurrentWeek(null);
     }
 
-    private int calculateCurrentNflWeek(int year) {
-        LocalDate today = LocalDate.now();
-        LocalDate septemberFirst = LocalDate.of(year, 9, 1);
+    public Integer getCurrentWeek(Integer seasonYear) {
+        int season = seasonService.normalizeSeasonYear(seasonYear);
+        return calculateCurrentNflWeek(season);
+    }
+
+    private int calculateCurrentNflWeek(int seasonYear) {
+        LocalDate today = LocalDate.now(ZoneId.of("America/New_York"));
+        LocalDate septemberFirst = LocalDate.of(seasonYear, 9, 1);
         LocalDate nflSeasonStart = septemberFirst.with(TemporalAdjusters.firstInMonth(DayOfWeek.THURSDAY));
         if (septemberFirst.getDayOfWeek() == DayOfWeek.SUNDAY) {
             nflSeasonStart = septemberFirst;
@@ -172,33 +185,26 @@ public class GameService {
             return 1;
         }
         long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(nflSeasonStart, today);
-        return (int) (daysBetween / 7) + 1;
+        int week = (int) (daysBetween / 7) + 1;
+        return Math.min(week, nflSeasonWeeks);
     }
     
-    /**
-     * Get odds for a specific game
-     */
     public List<BettingOdds> getOddsForGame(Long gameId) {
         return bettingOddsRepository.findByGameId(gameId);
     }
     
-    /**
-     * Get odds for a specific week
-     */
     public List<BettingOdds> getOddsForWeek(Integer week) {
-        return bettingOddsRepository.findByWeek(week);
+        return getOddsForWeek(week, null);
+    }
+
+    public List<BettingOdds> getOddsForWeek(Integer week, Integer seasonYear) {
+        return bettingOddsRepository.findBySeasonYearAndWeek(seasonService.normalizeSeasonYear(seasonYear), week);
     }
     
-    /**
-     * Check if a game has odds
-     */
     public boolean gameHasOdds(Long gameId) {
         return !bettingOddsRepository.findByGameId(gameId).isEmpty();
     }
     
-    /**
-     * Get the primary odds for a game (first available odds)
-     */
     public Optional<BettingOdds> getPrimaryOddsForGame(Long gameId) {
         List<BettingOdds> odds = bettingOddsRepository.findByGameId(gameId);
         return odds.isEmpty() ? Optional.empty() : Optional.of(odds.get(0));

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { fetchSeasonOptions, appendSeasonParam } from '../utils/season';
 
 function LeagueDetails() {
   const { leagueId } = useParams();
@@ -7,20 +8,40 @@ function LeagueDetails() {
   const [weeklyLeaderboard, setWeeklyLeaderboard] = useState([]);
   const [seasonLeaderboard, setSeasonLeaderboard] = useState([]);
   const [weeklyWins, setWeeklyWins] = useState([]);
-  const [currentWeek, setCurrentWeek] = useState(1); // Default, will be fetched
+  const [currentWeek, setCurrentWeek] = useState(1);
+  const [availableSeasons, setAvailableSeasons] = useState([]);
+  const [selectedSeason, setSelectedSeason] = useState(null);
   const [seasonComplete, setSeasonComplete] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // API base URL - will work for both development and Railway production
   const API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8080');
   const FINAL_WEEK = 18;
 
   useEffect(() => {
-    const fetchLeagueDetails = async () => {
+    const initSeasons = async () => {
       try {
-        // Fetch current week from backend
-        const weekResponse = await fetch(`${API_BASE}/games/currentWeek`);
+        const { seasons, currentSeason } = await fetchSeasonOptions(API_BASE);
+        setAvailableSeasons(seasons);
+        setSelectedSeason(currentSeason);
+      } catch (e) {
+        const fallback = new Date().getFullYear();
+        setAvailableSeasons([fallback]);
+        setSelectedSeason(fallback);
+      }
+    };
+    initSeasons();
+  }, [API_BASE]);
+
+  useEffect(() => {
+    if (selectedSeason == null) return;
+
+    const fetchLeagueDetails = async () => {
+      setLoading(true);
+      try {
+        const seasonParam = `seasonYear=${selectedSeason}`;
+
+        const weekResponse = await fetch(appendSeasonParam(`${API_BASE}/games/currentWeek`, selectedSeason));
         if (!weekResponse.ok) {
           throw new Error(`HTTP error! status: ${weekResponse.status}`);
         }
@@ -28,7 +49,6 @@ function LeagueDetails() {
         const fetchedWeek = parseInt(weekData, 10);
         setCurrentWeek(fetchedWeek);
 
-        // Fetch league details
         const leagueResponse = await fetch(`${API_BASE}/leagues/${leagueId}`);
         if (!leagueResponse.ok) {
           throw new Error(`HTTP error! status: ${leagueResponse.status}`);
@@ -36,38 +56,37 @@ function LeagueDetails() {
         const leagueData = await leagueResponse.json();
         setLeague(leagueData);
 
-        // Fetch weekly leaderboard for the league
-        const weeklyLeaderboardUrl = `${API_BASE}/leaderboard/weekly/${fetchedWeek}?leagueId=${leagueId}`;
-        const weeklyResponse = await fetch(weeklyLeaderboardUrl);
+        const weeklyResponse = await fetch(
+          `${API_BASE}/leaderboard/weekly/${fetchedWeek}?leagueId=${leagueId}&${seasonParam}`
+        );
         if (!weeklyResponse.ok) {
           throw new Error(`HTTP error! status: ${weeklyResponse.status}`);
         }
-        const weeklyData = await weeklyResponse.json();
-        setWeeklyLeaderboard(weeklyData);
+        setWeeklyLeaderboard(await weeklyResponse.json());
 
-        // Fetch season leaderboard for the league
-        const seasonLeaderboardUrl = `${API_BASE}/leaderboard/season?leagueId=${leagueId}`;
-        const seasonResponse = await fetch(seasonLeaderboardUrl);
+        const seasonResponse = await fetch(
+          `${API_BASE}/leaderboard/season?leagueId=${leagueId}&${seasonParam}`
+        );
         if (!seasonResponse.ok) {
           throw new Error(`HTTP error! status: ${seasonResponse.status}`);
         }
-        const seasonData = await seasonResponse.json();
-        setSeasonLeaderboard(seasonData);
+        setSeasonLeaderboard(await seasonResponse.json());
 
-        // Fetch weekly wins for the league
-        const weeklyWinsUrl = `${API_BASE}/leaderboard/weekly-wins?leagueId=${leagueId}`;
-        const weeklyWinsResponse = await fetch(weeklyWinsUrl);
+        const weeklyWinsResponse = await fetch(
+          `${API_BASE}/leaderboard/weekly-wins?leagueId=${leagueId}&${seasonParam}`
+        );
         if (!weeklyWinsResponse.ok) {
           throw new Error(`HTTP error! status: ${weeklyWinsResponse.status}`);
         }
-        const weeklyWinsData = await weeklyWinsResponse.json();
-        setWeeklyWins(weeklyWinsData);
+        setWeeklyWins(await weeklyWinsResponse.json());
 
-        // Crown champion once the final regular-season week is fully scored
-        const seasonCompleteResponse = await fetch(`${API_BASE}/leaderboard/week/${FINAL_WEEK}/complete`);
+        const seasonCompleteResponse = await fetch(
+          `${API_BASE}/leaderboard/week/${FINAL_WEEK}/complete?${seasonParam}`
+        );
         if (seasonCompleteResponse.ok) {
-          const isComplete = await seasonCompleteResponse.json();
-          setSeasonComplete(Boolean(isComplete));
+          setSeasonComplete(Boolean(await seasonCompleteResponse.json()));
+        } else {
+          setSeasonComplete(false);
         }
 
       } catch (error) {
@@ -78,13 +97,13 @@ function LeagueDetails() {
     };
 
     fetchLeagueDetails();
-  }, [leagueId, API_BASE]);
+  }, [leagueId, API_BASE, selectedSeason]);
 
-  if (loading) {
+  if (loading && !league) {
     return <div>Loading league details...</div>;
   }
 
-  if (error) {
+  if (error && !league) {
     return <div>Error: {error.message}</div>;
   }
 
@@ -214,6 +233,7 @@ function LeagueDetails() {
         <div className="league-champion-copy">
           <p className="league-champion-eyebrow">
             {isTie ? 'League Co-Champions' : 'League Champion'}
+            {selectedSeason ? ` · ${selectedSeason}` : ''}
           </p>
           <h3 className="league-champion-name">{championNames.join(' & ')}</h3>
           <p className="league-champion-score">{topScore} season points</p>
@@ -383,6 +403,21 @@ function LeagueDetails() {
       <h2>League: {league.name}</h2>
       <p>Join Code: <strong>{league.joinCode}</strong></p>
       <p>Admin: {league.admin.name || league.admin.username}</p>
+
+      <div className="league-controls">
+        <div>
+          <label htmlFor="league-season-select">Season:</label>
+          <select
+            id="league-season-select"
+            value={selectedSeason ?? ''}
+            onChange={(e) => setSelectedSeason(parseInt(e.target.value, 10))}
+          >
+            {availableSeasons.map((year) => (
+              <option key={year} value={year}>{year} Season</option>
+            ))}
+          </select>
+        </div>
+      </div>
 
       {renderChampionBanner()}
 

@@ -49,9 +49,10 @@ public class PickController {
     public ResponseEntity<List<PickComparisonDto>> getPickComparison(
             @PathVariable Long userId, 
             @PathVariable Integer week,
-            @RequestParam Long leagueId) {
+            @RequestParam Long leagueId,
+            @RequestParam(required = false) Integer seasonYear) {
         try {
-            List<PickComparisonDto> comparison = pickService.getPickComparison(userId, week, leagueId);
+            List<PickComparisonDto> comparison = pickService.getPickComparison(userId, week, leagueId, seasonYear);
             return ResponseEntity.ok(comparison);
         } catch (RuntimeException e) {
             logger.error("Error getting pick comparison: {}", e.getMessage(), e);

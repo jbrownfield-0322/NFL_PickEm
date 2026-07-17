@@ -99,10 +99,11 @@ public class NflScheduleScraper {
 
                     if (kickoffInstant != null) {
                         Game game = new Game();
+                        game.setSeasonYear(year);
                         game.setWeek(targetWeekNum);
                         game.setHomeTeam(homeTeam);
                         game.setAwayTeam(awayTeam);
-                        game.setKickoffTime(kickoffInstant); // Set Instant
+                        game.setKickoffTime(kickoffInstant);
                         game.setWinningTeam(winningTeam);
                         games.add(game);
                     } else {

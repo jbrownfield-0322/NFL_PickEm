@@ -23,6 +23,9 @@ public interface BettingOddsRepository extends JpaRepository<BettingOdds, Long> 
     
     @Query("SELECT bo FROM BettingOdds bo WHERE bo.game.week = :week")
     List<BettingOdds> findByWeek(@Param("week") Integer week);
+
+    @Query("SELECT bo FROM BettingOdds bo WHERE bo.game.seasonYear = :seasonYear AND bo.game.week = :week")
+    List<BettingOdds> findBySeasonYearAndWeek(@Param("seasonYear") Integer seasonYear, @Param("week") Integer week);
     
     @Query("SELECT bo FROM BettingOdds bo WHERE bo.game.week = :week AND bo.sportsbook = :sportsbook")
     List<BettingOdds> findByWeekAndSportsbook(@Param("week") Integer week, @Param("sportsbook") String sportsbook);
