@@ -4,16 +4,21 @@ import com.nflpickem.pickem.model.BettingOdds;
 import com.nflpickem.pickem.model.Game;
 import com.nflpickem.pickem.repository.BettingOddsRepository;
 import com.nflpickem.pickem.repository.GameRepository;
+import com.nflpickem.pickem.repository.PickRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.nflpickem.pickem.util.NflScheduleScraper;
 
 import java.io.IOException;
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +26,9 @@ import java.util.Optional;
 public class GameService {
     private final GameRepository gameRepository;
     private final BettingOddsRepository bettingOddsRepository;
+    private final PickRepository pickRepository;
     private final NflScheduleScraper nflScheduleScraper;
+    private final ScoringService scoringService;
     
     @Value("${ENABLE_NFL_SCRAPING:false}")
     private boolean enableNflScraping;
@@ -29,10 +36,14 @@ public class GameService {
     @Value("${NFL_SEASON_WEEKS:18}")
     private int nflSeasonWeeks;
 
-    public GameService(GameRepository gameRepository, BettingOddsRepository bettingOddsRepository, NflScheduleScraper nflScheduleScraper) {
+    public GameService(GameRepository gameRepository, BettingOddsRepository bettingOddsRepository,
+                       PickRepository pickRepository, NflScheduleScraper nflScheduleScraper,
+                       @Lazy ScoringService scoringService) {
         this.gameRepository = gameRepository;
         this.bettingOddsRepository = bettingOddsRepository;
+        this.pickRepository = pickRepository;
         this.nflScheduleScraper = nflScheduleScraper;
+        this.scoringService = scoringService;
     }
 
     @PostConstruct
@@ -79,9 +90,71 @@ public class GameService {
         if (game != null) {
             game.setWinningTeam(winningTeam);
             game.setScored(true);
-            return gameRepository.save(game);
+            Game saved = gameRepository.save(game);
+            // Grade picks so leaderboards stay in sync with admin/scraper score updates
+            scoringService.gradePicksForGame(saved);
+            return saved;
         }
         return null;
+    }
+
+    /**
+     * Delete a game and its related picks/odds.
+     */
+    @Transactional
+    public boolean deleteGame(Long gameId) {
+        Game game = gameRepository.findById(gameId).orElse(null);
+        if (game == null) {
+            return false;
+        }
+        pickRepository.deleteByGame(game);
+        bettingOddsRepository.deleteByGame(game);
+        gameRepository.delete(game);
+        return true;
+    }
+
+    /**
+     * Remove playoff (or other post-regular-season) games that were incorrectly stored
+     * as the final regular-season week. Keeps only games whose kickoff falls within
+     * that week's Thursday–Wednesday window.
+     *
+     * @return descriptions of deleted games
+     */
+    @Transactional
+    public List<String> removeGamesOutsideRegularSeasonWeek(Integer week) {
+        List<Game> weekGames = gameRepository.findByWeek(week);
+        if (weekGames.isEmpty()) {
+            return List.of();
+        }
+
+        // Infer season start from the earliest kickoff in this week, then back up (week-1)*7 days to Thursday
+        Instant earliestKickoff = weekGames.stream()
+                .map(Game::getKickoffTime)
+                .filter(t -> t != null)
+                .min(Instant::compareTo)
+                .orElse(null);
+        if (earliestKickoff == null) {
+            return List.of();
+        }
+
+        LocalDate earliestDate = earliestKickoff.atZone(ZoneId.of("America/New_York")).toLocalDate();
+        // Week N runs Thursday → Wednesday; find that week's Thursday from an in-week game date
+        LocalDate weekStart = earliestDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.THURSDAY));
+        LocalDate weekEnd = weekStart.plusDays(6); // Wednesday
+        Instant cutoff = weekEnd.plusDays(1).atStartOfDay(ZoneId.of("America/New_York")).toInstant();
+
+        List<String> deleted = new ArrayList<>();
+        for (Game game : weekGames) {
+            if (game.getKickoffTime() != null && !game.getKickoffTime().isBefore(cutoff)) {
+                String label = game.getId() + ": " + game.getAwayTeam() + " @ " + game.getHomeTeam()
+                        + " (" + game.getKickoffTime() + ")";
+                pickRepository.deleteByGame(game);
+                bettingOddsRepository.deleteByGame(game);
+                gameRepository.delete(game);
+                deleted.add(label);
+            }
+        }
+        return deleted;
     }
 
     public Integer getCurrentWeek() {
