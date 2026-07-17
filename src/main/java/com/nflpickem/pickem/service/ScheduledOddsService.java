@@ -51,14 +51,17 @@ public class ScheduledOddsService {
     }
     
     /**
-     * Check if we're in NFL season
+     * Check if we're in (or approaching) the NFL regular season.
+     * Includes August for early slate/odds loading and through mid-January for Week 18
+     * (2026 season ends Jan 10, 2027).
      */
     private boolean isNflSeason(LocalDate date) {
         Month month = date.getMonth();
-        return month == Month.SEPTEMBER || 
+        return month == Month.AUGUST ||
+               month == Month.SEPTEMBER || 
                month == Month.OCTOBER || 
                month == Month.NOVEMBER || 
                month == Month.DECEMBER || 
-               (month == Month.JANUARY && date.getDayOfMonth() <= 7); // First week of January for playoffs
+               (month == Month.JANUARY && date.getDayOfMonth() <= 15);
     }
 }

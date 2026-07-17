@@ -4,9 +4,11 @@ import com.nflpickem.pickem.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -43,6 +45,32 @@ public class SeasonService {
             return today.getYear();
         }
         return today.getYear() - 1;
+    }
+
+    /**
+     * Kickoff / Week 1 start date for a season year.
+     * Uses NFL_SEASON_START_DATE when it matches the requested year; otherwise
+     * falls back to the first Thursday after Labor Day.
+     */
+    public LocalDate getSeasonStartDate(int seasonYear) {
+        if (configuredSeasonStartDate != null && !configuredSeasonStartDate.trim().isEmpty()) {
+            try {
+                String cleanDate = configuredSeasonStartDate.trim().replaceAll("^\"|\"$", "");
+                LocalDate configured = LocalDate.parse(cleanDate);
+                if (configured.getYear() == seasonYear) {
+                    return configured;
+                }
+            } catch (Exception ignored) {
+                // fall through to calculated start
+            }
+        }
+
+        LocalDate septemberFirst = LocalDate.of(seasonYear, 9, 1);
+        LocalDate laborDay = septemberFirst.with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY));
+        if (laborDay.getDayOfWeek() == DayOfWeek.THURSDAY) {
+            return laborDay;
+        }
+        return laborDay.with(TemporalAdjusters.next(DayOfWeek.THURSDAY));
     }
 
     /**

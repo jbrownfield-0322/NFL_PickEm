@@ -521,21 +521,19 @@ public class GameScoreService {
     }
     
     /**
-     * Check if it's a game day (Thursday, Saturday, Sunday, or Monday during NFL season).
-     * Saturday is required for Week 18 (and occasional other late-season games).
+     * Check if it's a game day (Wed–Mon NFL slate days).
+     * Wednesday covers Kickoff (e.g. 2026 opener); Saturday covers Week 18 / late-season games.
      * Also returns true if yesterday was a game day and there are unscored games from yesterday.
      */
     public boolean isGameDay() {
         LocalDate today = LocalDate.now();
         int dayOfWeek = today.getDayOfWeek().getValue(); // 1=Monday, 7=Sunday
         
-        // Monday, Thursday, Saturday, Sunday
         if (isPrimaryGameDay(dayOfWeek)) {
             return true;
         }
         
-        // Special case: Check if yesterday was a game day and there are unscored games from yesterday
-        // Handles late finishes (Mon night → Tue, Thu night → Fri, Sat night → Sun morning)
+        // Late finishes: Wed night → Thu, Thu night → Fri, Sat night → Sun, Mon night → Tue
         LocalDate yesterday = today.minusDays(1);
         int yesterdayDayOfWeek = yesterday.getDayOfWeek().getValue();
         if (isPrimaryGameDay(yesterdayDayOfWeek)) {
@@ -557,13 +555,15 @@ public class GameScoreService {
         return false;
     }
 
+    /** Mon, Wed, Thu, Sat, Sun — covers Kickoff Wednesday and Week 18 Saturday. */
     private boolean isPrimaryGameDay(int dayOfWeek) {
-        return dayOfWeek == 1 || dayOfWeek == 4 || dayOfWeek == 6 || dayOfWeek == 7;
+        return dayOfWeek == 1 || dayOfWeek == 3 || dayOfWeek == 4 || dayOfWeek == 6 || dayOfWeek == 7;
     }
 
     private String dayName(int dayOfWeek) {
         return switch (dayOfWeek) {
             case 1 -> "Monday";
+            case 3 -> "Wednesday";
             case 4 -> "Thursday";
             case 6 -> "Saturday";
             case 7 -> "Sunday";
@@ -591,7 +591,7 @@ public class GameScoreService {
             return true;
         }
         
-        // Special case: Check for unscored games from yesterday (Mon/Thu/Sat late finishes)
+        // Special case: Check for unscored games from yesterday (Wed/Thu/Sat/Mon late finishes)
         LocalDate yesterday = today.minusDays(1);
         int yesterdayDayOfWeek = yesterday.getDayOfWeek().getValue();
         if (isPrimaryGameDay(yesterdayDayOfWeek)) {
@@ -653,7 +653,7 @@ public class GameScoreService {
     
     /**
      * Manually check and update scores for unscored games from yesterday
-     * Useful for recovering from missed Monday/Thursday/Saturday night game updates
+     * Useful for recovering from missed Wed/Thu/Sat/Mon night game updates
      */
     public int updateYesterdayScores() {
         LocalDate today = LocalDate.now();

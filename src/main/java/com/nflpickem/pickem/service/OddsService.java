@@ -44,9 +44,6 @@ public class OddsService {
     @Value("${ODDS_UPDATE_INTERVAL_HOURS}")
     private int updateIntervalHours;
     
-    @Value("${NFL_SEASON_START_DATE}")
-    private String nflSeasonStartDate;
-    
     public OddsService(BettingOddsRepository bettingOddsRepository, GameRepository gameRepository,
                        RestTemplate restTemplate, AlertService alertService, SeasonService seasonService) {
         this.bettingOddsRepository = bettingOddsRepository;
@@ -299,35 +296,7 @@ public class OddsService {
      * Can be overridden by configuration
      */
     private LocalDate calculateNflSeasonStart(int year) {
-        // Check if season start date is configured
-        if (nflSeasonStartDate != null && !nflSeasonStartDate.trim().isEmpty()) {
-            try {
-                // Remove quotes if present (common issue with environment variables)
-                String cleanDate = nflSeasonStartDate.trim().replaceAll("^\"|\"$", "");
-                LocalDate configuredStart = LocalDate.parse(cleanDate);
-                if (configuredStart.getYear() == year) {
-                    logger.debug("Using configured NFL season start date: {}", configuredStart);
-                    return configuredStart;
-                }
-            } catch (Exception e) {
-                logger.warn("Invalid NFL_SEASON_START_DATE format '{}', using calculated date: {}", nflSeasonStartDate, e.getMessage());
-            }
-        }
-        
-        // Default calculation: Labor Day is the first Monday of September
-        LocalDate septemberFirst = LocalDate.of(year, 9, 1);
-        LocalDate laborDay = septemberFirst.with(java.time.temporal.TemporalAdjusters.firstInMonth(java.time.DayOfWeek.MONDAY));
-        
-        // NFL season starts the first Thursday after Labor Day
-        LocalDate nflSeasonStart = laborDay.with(java.time.temporal.TemporalAdjusters.next(java.time.DayOfWeek.THURSDAY));
-        
-        // Special case: if Labor Day is already Thursday, season starts that day
-        if (laborDay.getDayOfWeek() == java.time.DayOfWeek.THURSDAY) {
-            nflSeasonStart = laborDay;
-        }
-        
-        logger.debug("Calculated NFL season start date for {}: {}", year, nflSeasonStart);
-        return nflSeasonStart;
+        return seasonService.getSeasonStartDate(year);
     }
     
     /**
