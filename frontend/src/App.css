@@ -2162,6 +2162,98 @@ table tbody tr:hover {
   }
 }
 
+/* League champion crowning (My Leagues → View Details) */
+.league-champion-banner {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 24px 0;
+  padding: 20px 24px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2c3e50 0%, #1a252f 55%, #3d2e0a 100%);
+  color: #fff8e7;
+  box-shadow: 0 6px 18px rgba(44, 62, 80, 0.28);
+}
+
+.league-champion-crown {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.league-champion-copy {
+  min-width: 0;
+}
+
+.league-champion-eyebrow {
+  margin: 0 0 4px;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #f0d78c;
+  font-weight: 700;
+}
+
+.league-champion-name {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.league-champion-score {
+  margin: 6px 0 0;
+  font-size: 0.95rem;
+  color: #e8d9a8;
+}
+
+.score-tally-table tr.champion-row td {
+  background: linear-gradient(90deg, #fff8e1 0%, #ffffff 60%);
+}
+
+.score-tally-table tr.champion-row:nth-child(even) td {
+  background: linear-gradient(90deg, #fff3cd 0%, #f8f9fa 60%);
+}
+
+.score-tally-table tr.champion-row:hover td {
+  background: linear-gradient(90deg, #ffe8a3 0%, #e9ecef 60%);
+}
+
+.champion-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #d4a017;
+  color: #1a252f;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+@media (max-width: 768px) {
+  .league-champion-banner {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+    padding: 18px 16px;
+  }
+
+  .league-champion-name {
+    font-size: 1.35rem;
+  }
+
+  .champion-badge {
+    display: block;
+    width: fit-content;
+    margin: 6px 0 0;
+  }
+}
+
 /* Score Tally Table Styles - Similar to comparison tables */
 .score-tally-table {
   width: 100%;
