@@ -1,6 +1,7 @@
 package com.nflpickem.pickem.controller;
 
 import com.nflpickem.pickem.dto.ErrorResponse;
+import com.nflpickem.pickem.dto.UserResponse;
 import com.nflpickem.pickem.model.User;
 import com.nflpickem.pickem.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import java.time.Instant;
 
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin(origins = "*")
 public class UserController {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -34,7 +36,7 @@ public class UserController {
             user.setName(request.getName().trim());
             User updatedUser = userRepository.save(user);
             
-            return ResponseEntity.ok(updatedUser);
+            return ResponseEntity.ok(new UserResponse(updatedUser));
         } catch (RuntimeException e) {
             ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value(), Instant.now().toEpochMilli());
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -60,7 +62,7 @@ public class UserController {
             user.setUsername(request.getUsername().trim());
             User updatedUser = userRepository.save(user);
             
-            return ResponseEntity.ok(updatedUser);
+            return ResponseEntity.ok(new UserResponse(updatedUser));
         } catch (RuntimeException e) {
             ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value(), Instant.now().toEpochMilli());
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -80,7 +82,7 @@ public class UserController {
             user.setPassword(bCryptPasswordEncoder.encode(request.getNewPassword()));
             User updatedUser = userRepository.save(user);
             
-            return ResponseEntity.ok(updatedUser);
+            return ResponseEntity.ok(new UserResponse(updatedUser));
         } catch (RuntimeException e) {
             ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value(), Instant.now().toEpochMilli());
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

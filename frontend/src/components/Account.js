@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../AuthContext';
+import { API_BASE } from '../utils/api';
 
 function Account() {
-  const { user, login } = useAuth(); // Assuming 'login' can also update user data
+  const { user, login } = useAuth();
   const [currentUsername, setCurrentUsername] = useState(user ? user.username : '');
   const [currentName, setCurrentName] = useState(user ? user.name : '');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [message, setMessage] = useState('');
-
-  // API base URL - will work for both development and Railway production
-  const API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8080');
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -19,73 +18,65 @@ function Account() {
     }
   }, [user]);
 
+  const updateUserField = async (path, body, onSuccess) => {
+    setMessage('');
+    setSaving(true);
+    try {
+      const response = await fetch(`${API_BASE}/user/${user.id}/${path}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      const text = await response.text();
+      let data = {};
+      if (text) {
+        try {
+          data = JSON.parse(text);
+        } catch {
+          data = { message: text };
+        }
+      }
+
+      if (response.ok) {
+        onSuccess(data);
+      } else {
+        setMessage(`Update failed: ${data.message || response.statusText || response.status}`);
+      }
+    } catch (error) {
+      setMessage(`Error: ${error.message}`);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleUpdateUsername = async (e) => {
     e.preventDefault();
-    setMessage('');
-
     if (!currentUsername) {
       setMessage('Username cannot be empty.');
       return;
     }
-
-    try {
-      const response = await fetch(`${API_BASE}/user/${user.id}/updateUsername`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          // Add authorization header if your API requires it
-          // 'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ username: currentUsername }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        setMessage('Username updated successfully!');
-        login({ ...user, username: currentUsername }); // Update user in context
-      } else {
-        setMessage(`Failed to update username: ${data.message || response.statusText}`);
-      }
-    } catch (error) {
-      setMessage(`Error: ${error.message}`);
-    }
+    await updateUserField('updateUsername', { username: currentUsername }, (data) => {
+      setMessage('Username updated successfully!');
+      login({ ...user, username: data.username || currentUsername, name: data.name ?? user.name });
+    });
   };
 
   const handleUpdateName = async (e) => {
     e.preventDefault();
-    setMessage('');
-
     if (!currentName) {
       setMessage('Name cannot be empty.');
       return;
     }
-
-    try {
-      const response = await fetch(`${API_BASE}/user/${user.id}/updateName`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          // Add authorization header if your API requires it
-          // 'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ name: currentName }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        setMessage('Name updated successfully!');
-        login({ ...user, name: currentName }); // Update user in context
-      } else {
-        setMessage(`Failed to update name: ${data.message || response.statusText}`);
-      }
-    } catch (error) {
-      setMessage(`Error: ${error.message}`);
-    }
+    await updateUserField('updateName', { name: currentName }, (data) => {
+      setMessage('Name updated successfully!');
+      login({ ...user, name: data.name || currentName, username: data.username || user.username });
+    });
   };
 
   const handleUpdatePassword = async (e) => {
     e.preventDefault();
-    setMessage('');
+    e.stopPropagation();
 
     if (!newPassword || !confirmNewPassword) {
       setMessage('Please enter and confirm your new password.');
@@ -97,27 +88,11 @@ function Account() {
       return;
     }
 
-    try {
-      const response = await fetch(`${API_BASE}/user/${user.id}/updatePassword`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          // 'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ newPassword }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        setMessage('Password updated successfully!');
-        setNewPassword('');
-        setConfirmNewPassword('');
-      } else {
-        setMessage(`Failed to update password: ${data.message || response.statusText}`);
-      }
-    } catch (error) {
-      setMessage(`Error: ${error.message}`);
-    }
+    await updateUserField('updatePassword', { newPassword }, () => {
+      setMessage('Password updated successfully!');
+      setNewPassword('');
+      setConfirmNewPassword('');
+    });
   };
 
   if (!user) {
@@ -148,7 +123,7 @@ function Account() {
             placeholder="Enter your display name"
           />
         </div>
-        <button type="submit">Update Name</button>
+        <button type="submit" disabled={saving}>Update Name</button>
       </form>
 
       <h3>Update Username</h3>
@@ -163,16 +138,18 @@ function Account() {
             required
           />
         </div>
-        <button type="submit">Update Email</button>
+        <button type="submit" disabled={saving}>Update Email</button>
       </form>
 
       <h3>Update Password</h3>
-      <form onSubmit={handleUpdatePassword}>
+      <form onSubmit={handleUpdatePassword} action="#" method="post">
         <div>
           <label htmlFor="newPassword">New Password:</label>
           <input
             type="password"
             id="newPassword"
+            name="newPassword"
+            autoComplete="new-password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             required
@@ -183,12 +160,16 @@ function Account() {
           <input
             type="password"
             id="confirmNewPassword"
+            name="confirmNewPassword"
+            autoComplete="new-password"
             value={confirmNewPassword}
             onChange={(e) => setConfirmNewPassword(e.target.value)}
             required
           />
         </div>
-        <button type="submit">Update Password</button>
+        <button type="submit" disabled={saving}>
+          {saving ? 'Updating...' : 'Update Password'}
+        </button>
       </form>
     </section>
   );

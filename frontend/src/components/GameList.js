@@ -108,11 +108,15 @@ const GameList = () => {
 
   const fetchUserPicks = async () => {
     if (!user) return;
-    
+    // Backend requires leagueId; skip until a league is selected
+    if (!selectedLeagueId) {
+      setUserPicks([]);
+      setSelectedGamePicks({});
+      return;
+    }
+
     try {
-      const url = selectedLeagueId 
-        ? `${API_BASE}/picks/user/${user.id}?leagueId=${selectedLeagueId}`
-        : `${API_BASE}/picks/user/${user.id}`;
+      const url = `${API_BASE}/picks/user/${user.id}?leagueId=${selectedLeagueId}`;
       
       const response = await fetch(url);
       if (response.ok) {

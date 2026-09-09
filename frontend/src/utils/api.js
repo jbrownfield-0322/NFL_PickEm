@@ -1,5 +1,7 @@
 // API configuration utility
-export const API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8080');
+// Local backend controllers are under /api; production relative paths use /api as well.
+export const API_BASE = process.env.REACT_APP_API_URL
+  || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8080/api');
 
 // Helper function to make API calls with consistent error handling
 export const apiCall = async (endpoint, options = {}) => {
