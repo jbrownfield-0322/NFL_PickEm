@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ public class OddsService {
     private final RestTemplate restTemplate;
     private final AlertService alertService;
     private final SeasonService seasonService;
+    private final GamePersistService gamePersistService;
     
     @Value("${ODDS_API_KEY:}")
     private String oddsApiKey;
@@ -45,12 +47,14 @@ public class OddsService {
     private int updateIntervalHours;
     
     public OddsService(BettingOddsRepository bettingOddsRepository, GameRepository gameRepository,
-                       RestTemplate restTemplate, AlertService alertService, SeasonService seasonService) {
+                       RestTemplate restTemplate, AlertService alertService, SeasonService seasonService,
+                       GamePersistService gamePersistService) {
         this.bettingOddsRepository = bettingOddsRepository;
         this.gameRepository = gameRepository;
         this.restTemplate = restTemplate;
         this.alertService = alertService;
         this.seasonService = seasonService;
+        this.gamePersistService = gamePersistService;
     }
     
     /**
@@ -229,13 +233,15 @@ public class OddsService {
             try {
                 // Determine the week from the game time
                 Integer week = determineWeekFromGameTime(response.commence_time);
-                if (week == null) {
-                    logger.warn("Could not determine week for game: {} @ {}", response.getAwayTeam(), response.getHomeTeam());
+                if (week == null || week < 1 || week > 18) {
+                    logger.warn("Skipping non-regular-season game (week={}): {} @ {}",
+                            week, response.getAwayTeam(), response.getHomeTeam());
                     continue;
                 }
-                
-                // Get all games for this week
-                List<Game> weekGames = gameRepository.findBySeasonYearAndWeek(seasonService.getCurrentSeasonYear(), week);
+
+                Instant kickoff = Instant.parse(response.commence_time);
+                int seasonYear = seasonService.resolveSeasonYear(kickoff);
+                List<Game> weekGames = gameRepository.findBySeasonYearAndWeek(seasonYear, week);
                 
                 // Find or create the game
                 Game game = findOrCreateGame(response, weekGames, week);
@@ -503,63 +509,32 @@ public class OddsService {
     }
     
     /**
-     * Create a new game from the odds API response
+     * Create a new game from the odds API response.
+     * Inserts run in a REQUIRES_NEW transaction so duplicate-key failures
+     * cannot leave a null-id Game in this service's persistence context.
      */
     private Game createNewGameFromResponse(OddsApiResponse response, Integer week) {
         try {
             Instant kickoff = Instant.parse(response.commence_time);
             int seasonYear = seasonService.resolveSeasonYear(kickoff);
 
-            Optional<Game> existingGame = gameRepository.findBySeasonYearAndWeekAndHomeTeamAndAwayTeam(
-                    seasonYear, week, response.getHomeTeam(), response.getAwayTeam());
-            if (existingGame.isPresent()) {
-                System.out.println("Game already exists, skipping creation: " + response.getAwayTeam() + " @ " + response.getHomeTeam());
-                return existingGame.get();
+            try {
+                Optional<Game> saved = gamePersistService.createIfAbsent(
+                        seasonYear, week, response.getHomeTeam(), response.getAwayTeam(), kickoff);
+                return saved.orElse(null);
+            } catch (DataIntegrityViolationException e) {
+                // Isolated insert rolled back; re-read in a clean transaction
+                Optional<Game> existing = gamePersistService.findExisting(
+                        seasonYear, week, response.getHomeTeam(), response.getAwayTeam());
+                if (existing.isPresent()) {
+                    return existing.get();
+                }
+                logger.error("Could not find existing game after constraint violation: {} @ {} week {}",
+                        response.getAwayTeam(), response.getHomeTeam(), week);
+                return null;
             }
-            
-            existingGame = gameRepository.findBySeasonYearAndWeekAndHomeTeamAndAwayTeam(
-                    seasonYear, week, response.getAwayTeam(), response.getHomeTeam());
-            if (existingGame.isPresent()) {
-                System.out.println("Game already exists (reverse order), skipping creation: " + response.getAwayTeam() + " @ " + response.getHomeTeam());
-                return existingGame.get();
-            }
-            
-            Game newGame = new Game();
-            newGame.setSeasonYear(seasonYear);
-            newGame.setWeek(week);
-            newGame.setHomeTeam(response.getHomeTeam());
-            newGame.setAwayTeam(response.getAwayTeam());
-            newGame.setKickoffTime(kickoff);
-            newGame.setScored(false);
-            newGame.setWinningTeam("");
-            
-            Game savedGame = gameRepository.save(newGame);
-            System.out.println("Created new game: " + savedGame.getAwayTeam() + " @ " + savedGame.getHomeTeam() + 
-                " for Season " + seasonYear + " Week " + week + " at " + savedGame.getKickoffTime());
-            
-            return savedGame;
-        } catch (org.springframework.dao.DataIntegrityViolationException e) {
-            System.err.println("Duplicate game detected by database constraint: " + response.getAwayTeam() + " @ " + response.getHomeTeam() + 
-                " for Week " + week + ". Attempting to find existing game.");
-            
-            Instant kickoff = Instant.parse(response.commence_time);
-            int seasonYear = seasonService.resolveSeasonYear(kickoff);
-            Optional<Game> existingGame = gameRepository.findBySeasonYearAndWeekAndHomeTeamAndAwayTeam(
-                    seasonYear, week, response.getHomeTeam(), response.getAwayTeam());
-            if (existingGame.isPresent()) {
-                return existingGame.get();
-            }
-            
-            existingGame = gameRepository.findBySeasonYearAndWeekAndHomeTeamAndAwayTeam(
-                    seasonYear, week, response.getAwayTeam(), response.getHomeTeam());
-            if (existingGame.isPresent()) {
-                return existingGame.get();
-            }
-            
-            System.err.println("Could not find existing game after constraint violation");
-            return null;
         } catch (Exception e) {
-            System.err.println("Error creating new game from odds response: " + e.getMessage());
+            logger.error("Error creating new game from odds response: {}", e.getMessage());
             return null;
         }
     }
@@ -621,6 +596,10 @@ public class OddsService {
         List<BettingOdds> savedOdds = new ArrayList<>();
         
         for (BettingOdds odds : fetchedOdds) {
+            if (odds.getGame() == null || odds.getGame().getId() == null) {
+                logger.warn("Skipping odds upsert for game without persisted id");
+                continue;
+            }
             // Use upsert to atomically insert or update odds
             bettingOddsRepository.upsertOdds(
                 odds.getGame().getId(),
@@ -651,6 +630,10 @@ public class OddsService {
         List<BettingOdds> savedOdds = new ArrayList<>();
         
         for (BettingOdds odds : fetchedOdds) {
+            if (odds.getGame() == null || odds.getGame().getId() == null) {
+                logger.warn("Skipping odds upsert for game without persisted id");
+                continue;
+            }
             // Use upsert to atomically insert or update odds
             bettingOddsRepository.upsertOdds(
                 odds.getGame().getId(),
