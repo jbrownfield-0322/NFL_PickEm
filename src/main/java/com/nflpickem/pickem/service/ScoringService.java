@@ -61,14 +61,15 @@ public class ScoringService {
             for (GameScoreService.GameScoreResult result : scoreResults) {
                 Game game = result.getGame();
                 String winningTeam = result.getWinningTeam();
-                String previousWinner = game.getWinningTeam();
-                
-                if (!game.isScored()) {
-                    System.out.println("Scoring game: " + game.getAwayTeam() + " @ " + game.getHomeTeam() + " - Winner: " + winningTeam);
-                } else {
-                    System.out.println("Re-scoring game: " + game.getAwayTeam() + " @ " + game.getHomeTeam() + 
-                        " - Previous: " + previousWinner + ", New: " + winningTeam);
+
+                // Never overwrite an already-scored game (prevents bad rematches from corrupting data)
+                if (game.isScored()) {
+                    System.out.println("Skipping already-scored game: " + game.getAwayTeam() + " @ " + game.getHomeTeam()
+                        + " (winner already " + game.getWinningTeam() + ")");
+                    continue;
                 }
+
+                System.out.println("Scoring game: " + game.getAwayTeam() + " @ " + game.getHomeTeam() + " - Winner: " + winningTeam);
                 
                 game.setWinningTeam(winningTeam);
                 game.setScored(true);
@@ -102,6 +103,22 @@ public class ScoringService {
             boolean isCorrect = pick.getPickedTeam().equals(winningTeam);
             pick.setCorrect(isCorrect);
             pick.setScoredAt(LocalDateTime.now());
+            pickRepository.save(pick);
+        }
+        return picksForGame.size();
+    }
+
+    /**
+     * Reset pick grades when a game score is cleared.
+     */
+    public int clearPickGradesForGame(Game game) {
+        if (game == null) {
+            return 0;
+        }
+        List<Pick> picksForGame = pickRepository.findByGame(game);
+        for (Pick pick : picksForGame) {
+            pick.setCorrect(false);
+            pick.setScoredAt(null);
             pickRepository.save(pick);
         }
         return picksForGame.size();

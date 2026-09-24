@@ -117,6 +117,22 @@ public class GameService {
         return null;
     }
 
+    /**
+     * Clear a mistaken score (e.g. auto-scorer matched the wrong game) and reset picks for that game.
+     */
+    @Transactional
+    public Game clearGameScore(Long gameId) {
+        Game game = gameRepository.findById(gameId).orElse(null);
+        if (game == null) {
+            return null;
+        }
+        game.setWinningTeam("");
+        game.setScored(false);
+        Game saved = gameRepository.save(game);
+        scoringService.clearPickGradesForGame(saved);
+        return saved;
+    }
+
     @Transactional
     public boolean deleteGame(Long gameId) {
         Game game = gameRepository.findById(gameId).orElse(null);
