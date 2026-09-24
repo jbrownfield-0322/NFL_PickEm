@@ -109,6 +109,23 @@ function GameManagement() {
     }
   };
 
+  const clearGameScore = async (gameId) => {
+    try {
+      const response = await fetch(`${API_BASE}/games/${gameId}/unscore`, {
+        method: 'POST',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const updatedGame = await response.json();
+      setGames(prev => prev.map(game =>
+        game.id === gameId ? updatedGame : game
+      ));
+    } catch (error) {
+      setError(error);
+    }
+  };
+
   const formatKickoffTime = (kickoffTime) => {
     if (!kickoffTime) return 'TBD';
     const date = new Date(kickoffTime);
@@ -244,7 +261,7 @@ function GameManagement() {
                 <td data-label="Winning Team">{game.winningTeam || 'Not played'}</td>
                 <td data-label="Scored">{game.scored ? 'Yes' : 'No'}</td>
                 <td data-label="Action">
-                  {!game.scored && (
+                  {!game.scored ? (
                     <div>
                       <button onClick={() => updateGameScore(game.id, game.awayTeam)}>
                         {game.awayTeam} Wins
@@ -253,6 +270,10 @@ function GameManagement() {
                         {game.homeTeam} Wins
                       </button>
                     </div>
+                  ) : (
+                    <button onClick={() => clearGameScore(game.id)}>
+                      Clear score
+                    </button>
                   )}
                 </td>
               </tr>

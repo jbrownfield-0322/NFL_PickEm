@@ -218,9 +218,10 @@ public class GameScoreService {
                 // Find matching game in our database
                 Game game = findMatchingGame(response);
                 if (game != null) {
-                    String winningTeam = determineWinner(response);
+                    String winningTeam = mapWinnerToDbTeam(game, determineWinner(response));
                     results.add(new GameScoreResult(game, winningTeam, awayScore, homeScore));
-                    System.out.println("✅ Found completed game: " + response.away_team + " @ " + response.home_team + 
+                    System.out.println("✅ Found completed game: " + response.away_team + " @ " + response.home_team +
+                        " matched to " + game.getAwayTeam() + " @ " + game.getHomeTeam() +
                         " (" + awayScore + "-" + homeScore + ") - Winner: " + winningTeam);
                 }
                 
@@ -238,13 +239,13 @@ public class GameScoreService {
     private Game findMatchingGame(ScoreApiResponse response) {
         System.out.println("Looking for match: " + response.away_team + " @ " + response.home_team);
 
+        Instant commenceTime = null;
         Integer seasonYear = null;
         if (response.commence_time != null) {
             try {
-                seasonYear = Instant.parse(response.commence_time)
-                        .atZone(ZoneId.of("America/New_York")).toLocalDate().getYear();
-                int month = Instant.parse(response.commence_time)
-                        .atZone(ZoneId.of("America/New_York")).toLocalDate().getMonthValue();
+                commenceTime = Instant.parse(response.commence_time);
+                seasonYear = commenceTime.atZone(ZoneId.of("America/New_York")).toLocalDate().getYear();
+                int month = commenceTime.atZone(ZoneId.of("America/New_York")).toLocalDate().getMonthValue();
                 if (month == 1 || month == 2) {
                     seasonYear = seasonYear - 1;
                 }
@@ -253,50 +254,71 @@ public class GameScoreService {
             }
         }
 
+        List<Game> candidates = new ArrayList<>();
         if (seasonYear != null) {
-            // Prefer season-scoped match via fuzzy over all games in that season
-            List<Game> seasonGames = gameRepository.findBySeasonYear(seasonYear);
-            for (Game game : seasonGames) {
-                if (fuzzyTeamMatch(game.getHomeTeam(), response.home_team) &&
-                    fuzzyTeamMatch(game.getAwayTeam(), response.away_team)) {
-                    return game;
-                }
-                if (fuzzyTeamMatch(game.getHomeTeam(), response.away_team) &&
-                    fuzzyTeamMatch(game.getAwayTeam(), response.home_team)) {
-                    return game;
+            for (Game game : gameRepository.findBySeasonYear(seasonYear)) {
+                if (teamsMatchEitherOrientation(game, response)) {
+                    candidates.add(game);
                 }
             }
         }
-        
-        Optional<Game> exactMatch = gameRepository.findByHomeTeamAndAwayTeam(response.home_team, response.away_team);
-        if (exactMatch.isPresent()) {
-            System.out.println("Found exact match: " + exactMatch.get().getAwayTeam() + " @ " + exactMatch.get().getHomeTeam());
-            return exactMatch.get();
-        }
-        
-        Optional<Game> reverseMatch = gameRepository.findByHomeTeamAndAwayTeam(response.away_team, response.home_team);
-        if (reverseMatch.isPresent()) {
-            System.out.println("Found reverse match: " + reverseMatch.get().getAwayTeam() + " @ " + reverseMatch.get().getHomeTeam());
-            return reverseMatch.get();
-        }
-        
-        List<Game> allGames = gameRepository.findAll();
-        
-        for (Game game : allGames) {
-            if (fuzzyTeamMatch(game.getHomeTeam(), response.home_team) && 
-                fuzzyTeamMatch(game.getAwayTeam(), response.away_team)) {
-                return game;
-            }
-            if (fuzzyTeamMatch(game.getHomeTeam(), response.away_team) && 
-                fuzzyTeamMatch(game.getAwayTeam(), response.home_team)) {
-                return game;
+
+        if (candidates.isEmpty()) {
+            Optional<Game> exactMatch = gameRepository.findByHomeTeamAndAwayTeam(response.home_team, response.away_team);
+            exactMatch.ifPresent(candidates::add);
+
+            if (candidates.isEmpty()) {
+                Optional<Game> reverseMatch = gameRepository.findByHomeTeamAndAwayTeam(response.away_team, response.home_team);
+                reverseMatch.ifPresent(candidates::add);
             }
         }
-        return null;
+
+        if (candidates.isEmpty()) {
+            for (Game game : gameRepository.findAll()) {
+                if (teamsMatchEitherOrientation(game, response)) {
+                    candidates.add(game);
+                }
+            }
+        }
+
+        if (candidates.isEmpty()) {
+            return null;
+        }
+
+        // Prefer kickoff near the API commence time so Week 1 Jets@Titans cannot match Week 3 Giants@Titans
+        if (commenceTime != null) {
+            Game bestByTime = null;
+            long bestDiffHours = Long.MAX_VALUE;
+            for (Game game : candidates) {
+                if (game.getKickoffTime() == null) {
+                    continue;
+                }
+                long diffHours = Math.abs(java.time.Duration.between(commenceTime, game.getKickoffTime()).toHours());
+                if (diffHours <= 36 && diffHours < bestDiffHours) {
+                    bestDiffHours = diffHours;
+                    bestByTime = game;
+                }
+            }
+            if (bestByTime != null) {
+                System.out.println("Found time-matched game: " + bestByTime.getAwayTeam() + " @ " + bestByTime.getHomeTeam());
+                return bestByTime;
+            }
+        }
+
+        System.out.println("Found match: " + candidates.get(0).getAwayTeam() + " @ " + candidates.get(0).getHomeTeam());
+        return candidates.get(0);
+    }
+
+    private boolean teamsMatchEitherOrientation(Game game, ScoreApiResponse response) {
+        return (fuzzyTeamMatch(game.getHomeTeam(), response.home_team) &&
+                fuzzyTeamMatch(game.getAwayTeam(), response.away_team))
+            || (fuzzyTeamMatch(game.getHomeTeam(), response.away_team) &&
+                fuzzyTeamMatch(game.getAwayTeam(), response.home_team));
     }
     
     /**
-     * Check if two team names match with fuzzy logic
+     * Check if two team names match with fuzzy logic.
+     * Matches full names or nicknames (Jets/Giants both play in New York — city alone is NOT enough).
      */
     private boolean fuzzyTeamMatch(String team1, String team2) {
         if (team1 == null || team2 == null) return false;
@@ -311,29 +333,35 @@ public class GameScoreService {
         String clean2 = normalized2.replaceAll("\\b(football|team|club|fc)\\b", "").trim();
         
         if (clean1.equals(clean2)) return true;
-        
-        // Check for city-only matches
-        String city1 = extractCity(normalized1);
-        String city2 = extractCity(normalized2);
-        if (!city1.isEmpty() && !city2.isEmpty() && city1.equals(city2)) {
-            return true;
-        }
-        
-        return false;
+
+        // Nickname / mascot match (last word): "NY Jets" ~= "New York Jets", but not Jets ~= Giants
+        String nick1 = extractNickname(clean1);
+        String nick2 = extractNickname(clean2);
+        return !nick1.isEmpty() && nick1.equals(nick2);
     }
-    
-    /**
-     * Extract city name from team name
-     */
-    private String extractCity(String teamName) {
+
+    private String extractNickname(String teamName) {
         String[] parts = teamName.split("\\s+");
-        if (parts.length >= 2) {
-            String firstPart = parts[0].toLowerCase();
-            if (firstPart.matches("(new|los|san|las|kansas|green|tampa|atlanta|buffalo|carolina|chicago|cleveland|dallas|denver|detroit|houston|indianapolis|jacksonville|miami|minnesota|oakland|philadelphia|pittsburgh|seattle|tennessee|washington)")) {
-                return parts[0] + (parts.length > 2 ? " " + parts[1] : "");
-            }
+        if (parts.length == 0) {
+            return "";
         }
-        return "";
+        return parts[parts.length - 1];
+    }
+
+    /**
+     * Map Odds API winner name onto the DB home/away string so pick grading uses exact equals.
+     */
+    private String mapWinnerToDbTeam(Game game, String apiWinner) {
+        if (apiWinner == null || "TIE".equals(apiWinner)) {
+            return apiWinner;
+        }
+        if (fuzzyTeamMatch(game.getHomeTeam(), apiWinner)) {
+            return game.getHomeTeam();
+        }
+        if (fuzzyTeamMatch(game.getAwayTeam(), apiWinner)) {
+            return game.getAwayTeam();
+        }
+        return apiWinner;
     }
     
     /**

@@ -134,6 +134,22 @@ public class GameController {
         }
     }
 
+    /**
+     * Clear a mistaken score and reset pick grades for the game.
+     */
+    @PostMapping("/{id}/unscore")
+    public ResponseEntity<Game> clearGameScore(@PathVariable Long id) {
+        try {
+            Game updatedGame = gameService.clearGameScore(id);
+            if (updatedGame == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(updatedGame);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteGame(@PathVariable Long id) {
         try {
